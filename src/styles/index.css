@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* Dark is StudyApp's primary theme. The `dark:` variant keys off a `dark`
+   class on <html> (set in index.html) rather than the OS preference, so the
+   app looks the same everywhere and a light theme can be added later by
+   toggling that one class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* App surfaces, darkest to lightest. */
+  --color-surface-900: oklch(0.17 0.012 265);
+  --color-surface-800: oklch(0.22 0.014 265);
+  --color-surface-700: oklch(0.28 0.016 265);
+
+  /* Foreground text. */
+  --color-content-100: oklch(0.96 0.005 265);
+  --color-content-300: oklch(0.78 0.012 265);
+  --color-content-500: oklch(0.62 0.016 265);
+
+  /* Accent, used sparingly for interactive elements. */
+  --color-accent-400: oklch(0.75 0.14 235);
+  --color-accent-500: oklch(0.66 0.16 235);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  /* Painted on <body> as well as <html> so there is no white flash between
+     first paint and React mounting. */
+  html,
+  body {
+    background-color: var(--color-surface-900);
+    color: var(--color-content-100);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family:
+      "Inter",
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      "Cantarell",
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The webview lets you select and drag UI text like a web page; a desktop
+     app should not. Inputs opt back in. */
+  body {
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    user-select: text;
+  }
+}

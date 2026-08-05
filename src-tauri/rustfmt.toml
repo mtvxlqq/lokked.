@@ -1,0 +1,4 @@
+# Stable rustfmt options only, so `cargo fmt` behaves the same on stable and nightly.
+edition = "2021"
+max_width = 100
+newline_style = "Unix"

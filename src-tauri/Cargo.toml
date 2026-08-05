@@ -1,0 +1,36 @@
+[package]
+name = "studyapp"
+version = "0.1.0"
+description = "StudyApp — study timers, flashcards and statistics"
+authors = ["StudyApp contributors"]
+edition = "2021"
+rust-version = "1.77"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "studyapp_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# NOTE: no SQLite driver yet. Choosing between rusqlite (bundled C) and sqlx
+# has real consequences for the Android build, so it is deferred to the step
+# that actually implements `db/`.
+
+[profile.release]
+# Smaller, faster binaries for the shipped app.
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
