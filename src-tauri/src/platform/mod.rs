@@ -5,6 +5,11 @@
 //! [`PlatformServices`]. The rest of the codebase depends on the trait, never
 //! on a concrete backend, so [`crate::core`] stays portable and testable.
 //!
+//! Reading the wall clock is a host service too, so it lives here as well, in
+//! [`clock::SystemClock`]. It sits outside `PlatformServices` because it needs
+//! no per-target implementation and because [`crate::core`] consumes it
+//! through its own [`crate::core::clock::Clock`] trait.
+//!
 //! All backend modules are declared unconditionally while they are still
 //! stubs, so `cargo clippy` and `cargo fmt` cover every one of them on every
 //! host. Once a backend pulls in OS-specific dependencies, gate its `mod`
@@ -14,6 +19,7 @@
 use std::error::Error;
 use std::fmt;
 
+pub mod clock;
 pub mod linux;
 pub mod mobile;
 pub mod noop;
