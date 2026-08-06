@@ -1,4 +1,4 @@
-//! Pure domain logic for StudyApp.
+//! Pure domain logic for Lokked.
 //!
 //! Everything under `core` must stay free of Tauri, of the filesystem and of
 //! the database, so it can be unit-tested with plain `cargo test`. Anything

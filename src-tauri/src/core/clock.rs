@@ -6,7 +6,7 @@
 //! The clock deals in **wall-clock UTC**, not in [`std::time::Instant`]. A
 //! monotonic instant cannot survive the app being written to the database,
 //! killed by the OS and restarted — and on mobile that happens routinely — so
-//! every duration in StudyApp is the difference between two stored UTC
+//! every duration in Lokked is the difference between two stored UTC
 //! timestamps.
 //!
 //! Nothing inside [`crate::core`] may call `Utc::now` directly; it goes
@@ -35,7 +35,7 @@ pub trait Clock: Send + Sync {
 ///
 /// ```
 /// use chrono::{TimeDelta, TimeZone, Utc};
-/// use studyapp_lib::core::clock::{Clock, FakeClock};
+/// use lokked_lib::core::clock::{Clock, FakeClock};
 ///
 /// let clock = FakeClock::new(Utc.with_ymd_and_hms(2026, 8, 6, 9, 0, 0).unwrap());
 /// let start = clock.now();

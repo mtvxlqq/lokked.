@@ -19,7 +19,7 @@ describe("Home", () => {
     render(<Home />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "StudyApp" }),
+      screen.getByRole("heading", { level: 1, name: "Lokked" }),
     ).toBeInTheDocument();
 
     await expect(screen.findByTestId("ping-reply")).resolves.toHaveTextContent(

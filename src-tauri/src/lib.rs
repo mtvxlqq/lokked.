@@ -1,4 +1,4 @@
-//! StudyApp — library entry point.
+//! Lokked — library entry point.
 //!
 //! `main.rs` is a thin wrapper around [`run`]; the real entry point lives here
 //! because Tauri's mobile targets build this crate as a library.

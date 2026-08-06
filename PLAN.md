@@ -1,4 +1,4 @@
-# StudyApp — план реализации v2 (Linux + Windows + мобилка)
+# Lokked — план реализации v2 (Linux + Windows + мобилка)
 
 Приложение для учёбы: таймеры по предметам (Pomodoro, свободный отсчёт, «чёрный экран»),
 учебные карточки с самопроверкой, статистика.
@@ -37,7 +37,7 @@ Tauri 2 собирает **один** проект под Linux, Windows, macOS,
 Правило: **всё, что должно быть правильным — в Rust. Всё, что должно быть красивым — в TS.**
 
 ```
-studyapp/
+lokked/
   src/                        # TypeScript + React — только интерфейс
     routes/                   # экраны
     components/               # виджеты
@@ -352,12 +352,12 @@ Android (понадобится на M14, не сейчас): JDK 17, Android St
 
 ## 5. Начальный промпт для Claude Code
 
-Открой Claude Code в пустой папке `~/projects/studyapp`, **включи plan mode**
+Открой Claude Code в пустой папке `~/projects/lokked`, **включи plan mode**
 (Shift+Tab дважды) и дай ровно это:
 
 ---
 
-> Мы начинаем проект StudyApp — кросс-платформенное приложение для учёбы
+> Мы начинаем проект Lokked — кросс-платформенное приложение для учёбы
 > (таймеры по предметам + учебные карточки + статистика).
 > Целевые платформы по порядку: Linux (Fedora 43, GNOME, Wayland) → Windows → Android → iOS.
 > Стек: Tauri 2, Rust в бэкенде, TypeScript + React + Vite во фронтенде, SQLite для данных.
@@ -366,7 +366,7 @@ Android (понадобится на M14, не сейчас): JDK 17, Android St
 >
 > Сделай:
 > 1. Инициализируй Tauri 2 проект с шаблоном React + TypeScript + Vite. Название
->    приложения StudyApp, identifier `com.studyapp.app`.
+>    приложения Lokked, identifier `com.lokked.app`.
 > 2. Создай структуру каталогов:
 >    - `src-tauri/src/core/` — чистая Rust-логика (позже: clock, dayline, timer,
 >      scheduler, stats). Пока только `mod.rs` с заглушками модулей.
@@ -377,7 +377,7 @@ Android (понадобится на M14, не сейчас): JDK 17, Android St
 >    - `src-tauri/src/commands.rs` — тонкий слой tauri-команд.
 >    - `src/routes/`, `src/components/`, `src/lib/`, `src/styles/` во фронтенде.
 > 3. Подключи Tailwind CSS. Настрой тёмную тему как основную.
-> 4. Сделай минимальный рабочий экран: заголовок StudyApp и одна tauri-команда
+> 4. Сделай минимальный рабочий экран: заголовок Lokked и одна tauri-команда
 >    `ping() -> String`, которую фронтенд вызывает и показывает результат — чтобы
 >    убедиться, что мост Rust↔TS работает.
 > 5. Настрой линтеры и форматтеры: `cargo fmt`, `cargo clippy`, ESLint + Prettier.
@@ -404,7 +404,7 @@ Android (понадобится на M14, не сейчас): JDK 17, Android St
 ## 6. Содержимое `CLAUDE.md`
 
 ```markdown
-# StudyApp
+# Lokked
 
 Кросс-платформенное приложение для учёбы: таймеры по предметам + учебные карточки +
 статистика. Платформы по приоритету: Linux (Fedora 43, GNOME, Wayland) → Windows →

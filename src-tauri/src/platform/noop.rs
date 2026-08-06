@@ -1,4 +1,4 @@
-//! Fallback backend for targets StudyApp does not ship to (macOS, BSDs, …).
+//! Fallback backend for targets Lokked does not ship to (macOS, BSDs, …).
 //!
 //! Every method succeeds without doing anything, so the crate builds and
 //! `cargo test` runs on any host a contributor happens to use.

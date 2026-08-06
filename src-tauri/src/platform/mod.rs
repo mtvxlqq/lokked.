@@ -106,6 +106,6 @@ mod tests {
         // not that the OS actually did anything.
         assert!(services.inhibit_sleep().is_ok());
         assert!(services.release_sleep().is_ok());
-        assert!(services.notify("StudyApp", "skeleton").is_ok());
+        assert!(services.notify("Lokked", "skeleton").is_ok());
     }
 }

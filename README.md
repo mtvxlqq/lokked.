@@ -1,4 +1,4 @@
-# StudyApp
+# Lokked
 
 Cross-platform study app — per-subject timers, flashcards and statistics.
 
@@ -33,7 +33,7 @@ npm install
 npm run tauri dev     # opens the app window
 ```
 
-The window should show **StudyApp** and `ping() → pong`. If it shows an error
+The window should show **Lokked** and `ping() → pong`. If it shows an error
 instead, the Rust ↔ TypeScript bridge is broken — start at
 `src-tauri/src/commands.rs` and `src/lib/tauri.ts`.
 

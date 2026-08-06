@@ -7,8 +7,8 @@
 //! Every test drives a [`FakeClock`]; nothing here sleeps.
 
 use chrono::{DateTime, TimeDelta, TimeZone, Utc};
-use studyapp_lib::core::clock::{Clock, FakeClock};
-use studyapp_lib::core::timer::{Timer, TimerError};
+use lokked_lib::core::clock::{Clock, FakeClock};
+use lokked_lib::core::timer::{Timer, TimerError};
 
 /// 2026-08-06 at the given wall-clock time, UTC.
 fn at(hour: u32, minute: u32, second: u32) -> DateTime<Utc> {
