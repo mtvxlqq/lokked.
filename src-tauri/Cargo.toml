@@ -23,10 +23,12 @@ tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 chrono = { version = "0.4.45", features = ["serde"] }
+rusqlite = { version = "0.40.1", features = ["bundled", "chrono"] }
+uuid = { version = "1.20.0", features = ["v7", "serde"] }
 
-# NOTE: no SQLite driver yet. Choosing between rusqlite (bundled C) and sqlx
-# has real consequences for the Android build, so it is deferred to the step
-# that actually implements `db/`.
+# NOTE: rusqlite's own `uuid` feature is deliberately not enabled — it stores
+# Uuid as a 16-byte BLOB, but CLAUDE.md requires UUIDv7 primary keys as TEXT.
+# IDs are bound as `Uuid::to_string()`, which uses the plain String impl.
 
 [profile.release]
 # Smaller, faster binaries for the shipped app.
