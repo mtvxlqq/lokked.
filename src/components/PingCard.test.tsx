@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { Home } from "@/routes/Home";
+import { PingCard } from "@/components/PingCard";
 
 // `@tauri-apps/api/core` only works inside a Tauri webview, so the IPC bridge
 // is mocked here. The real round-trip is exercised by running `npm run tauri
@@ -9,18 +9,14 @@ import { Home } from "@/routes/Home";
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
 
-describe("Home", () => {
+describe("PingCard", () => {
   beforeEach(() => {
     invoke.mockReset();
     invoke.mockResolvedValue("pong");
   });
 
-  it("renders the app title and the reply from the ping command", async () => {
-    render(<Home />);
-
-    expect(
-      screen.getByRole("heading", { level: 1, name: "Lokked" }),
-    ).toBeInTheDocument();
+  it("renders the reply from the ping command", async () => {
+    render(<PingCard />);
 
     await expect(screen.findByTestId("ping-reply")).resolves.toHaveTextContent(
       "pong",

@@ -260,6 +260,9 @@
   --glow-score:
     0 0 2px rgb(255 255 255 / 0.35), 0 0 20px rgb(226 232 248 / 0.24);
 
+  /* Иконка активной вкладки в таб-баре: не тень текста, а свечение контура. */
+  --glow-nav-icon: drop-shadow(0 0 7px rgb(126 156 196 / 0.45));
+
   /* Срочность: таймер блица на последних секундах. */
   --glow-danger:
     0 0 3px rgb(255 180 170 / 0.4), 0 0 22px rgb(226 138 128 / 0.35),
@@ -326,6 +329,10 @@
 @utility glow-score {
   color: var(--color-text-bright);
   text-shadow: var(--glow-score);
+}
+
+@utility glow-nav-icon {
+  filter: var(--glow-nav-icon);
 }
 
 @utility glow-danger {

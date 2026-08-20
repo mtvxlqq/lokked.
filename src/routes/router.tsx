@@ -1,11 +1,17 @@
 import { createHashRouter, type RouteObject } from "react-router";
 
-import { Home } from "@/routes/Home";
+import { AppShell } from "@/components/AppShell";
+import { Cards } from "@/routes/Cards";
+import { Settings } from "@/routes/Settings";
+import { Stats } from "@/routes/Stats";
+import { Timers } from "@/routes/Timers";
 
 /**
- * Служебные страницы для сверки с макетом. `import.meta.env.DEV` подставляется
- * сборщиком литералом, поэтому в релизе ветка мертва и динамический импорт
- * выбрасывается вместе с самим модулем.
+ * Служебные страницы для сверки с макетом. Живут вне `AppShell`: им нужна вся
+ * ширина окна, а навигация только мешает.
+ *
+ * `import.meta.env.DEV` подставляется сборщиком литералом, поэтому в релизе
+ * ветка мертва и динамические импорты выбрасываются вместе с модулями.
  */
 const devRoutes: RouteObject[] = import.meta.env.DEV
   ? [
@@ -14,6 +20,13 @@ const devRoutes: RouteObject[] = import.meta.env.DEV
         lazy: async () => {
           const { Tokens } = await import("@/routes/dev/Tokens");
           return { Component: Tokens };
+        },
+      },
+      {
+        path: "dev/ui",
+        lazy: async () => {
+          const { Ui } = await import("@/routes/dev/Ui");
+          return { Component: Ui };
         },
       },
     ]
@@ -27,7 +40,13 @@ const devRoutes: RouteObject[] = import.meta.env.DEV
 export const router = createHashRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <AppShell />,
+    children: [
+      { index: true, element: <Timers /> },
+      { path: "cards", element: <Cards /> },
+      { path: "stats", element: <Stats /> },
+      { path: "settings", element: <Settings /> },
+    ],
   },
   ...devRoutes,
 ]);
