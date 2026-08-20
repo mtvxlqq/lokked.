@@ -5,3 +5,6 @@ package-lock.json
 src-tauri/target/
 src-tauri/gen/
 src-tauri/icons/
+
+# Референсные макеты из Claude Design — хранятся как есть, не форматируются.
+docs/designs/mockups/

@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<style>
+html, body, x-dc, x-dc > * , #root, #app { background-color: #0A0A0B !important; }
+body { margin: 0 !important; color: #E8E8EC; }
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#000000">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#000000"/>
+    <ellipse cx="600" cy="400" rx="430" ry="180" fill="#7E9CC4" opacity="0.14"/>
+    <text x="600" y="450" text-anchor="middle" font-family="monospace" font-weight="700" font-size="150" fill="#F4F4F7" letter-spacing="-6">lokked<tspan fill="#7E9CC4">.</tspan></text>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230A0A0B'/%3E%3Ctext x='48' y='68' text-anchor='middle' font-family='monospace' font-weight='700' font-size='48' fill='%23F2F2F5'%3Elk%3Ctspan fill='%237E9CC4'%3E.%3C/tspan%3E%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0A0A0B; color:#E8E8EC; font-family:'IBM Plex Sans',system-ui,sans-serif; }
+  a { color:#8FA7C4; text-decoration:none; }
+  a:hover { color:#B6C7DE; }
+  @keyframes zenBreathe {
+    0%,100% { opacity:.94; }
+    50% { opacity:1; }
+  }
+  @keyframes splashRingSm {
+    0% { stroke-dashoffset:478; opacity:0; }
+    12% { opacity:1; }
+    52%,100% { stroke-dashoffset:0; opacity:1; }
+  }
+  @keyframes splashRing {
+    0% { stroke-dashoffset:760; opacity:0; }
+    12% { opacity:1; }
+    52%,100% { stroke-dashoffset:0; opacity:1; }
+  }
+  @keyframes splashRingFade {
+    0%,62% { opacity:1; transform:scale(1); }
+    82%,100% { opacity:0; transform:scale(1.14); }
+  }
+  @keyframes splashMark {
+    0%,8% { opacity:0; transform:scale(.86); }
+    30%,100% { opacity:1; transform:scale(1); }
+  }
+  @keyframes splashWord {
+    0%,26% { opacity:0; letter-spacing:.9em; filter:blur(6px); }
+    58%,100% { opacity:1; letter-spacing:.42em; filter:blur(0); }
+  }
+  @keyframes splashLogo {
+    0%,10% { opacity:0; letter-spacing:.34em; filter:blur(10px); transform:scale(.97); }
+    56%,100% { opacity:1; letter-spacing:-0.03em; filter:blur(0); transform:scale(1); }
+  }
+  @keyframes splashTag {
+    0%,58% { opacity:0; transform:translateY(8px); }
+    78%,100% { opacity:1; transform:translateY(0); }
+  }
+  @keyframes splashBloom {
+    0%,20% { opacity:0; transform:scale(.6); }
+    56% { opacity:1; transform:scale(1); }
+    100% { opacity:.55; transform:scale(1.1); }
+  }
+  @keyframes zenBreatheDim {
+    0%,100% { opacity:.82; }
+    50% { opacity:.9; }
+  }
+</style>
+</helmet>
+
+<section style="padding:64px 72px 40px; display:flex; flex-direction:column; gap:56px">
+
+  <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap">
+    <div style="border:1px solid #26262C; color:#8FA7C4; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; padding:6px 10px; border-radius:6px">5a</div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:700px">
+      <h1 style="margin:0; font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Этапы M18 — M22</h1>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#9A9AA4; text-wrap:pretty">Стрик, локальная дуэль, аккаунт, группы и онлайн-блиц. Тот же тёмный каркас: #0A0A0B фон, #101013 поверхности, акцент #7E9CC4, свечение только на главных цифрах.</p>
+    </div>
+  </div>
+
+  <!-- M18 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; align-items:baseline; gap:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; color:#7E9CC4">M18</span>
+      <h2 style="margin:0; font-size:19px; font-weight:600; color:#F2F2F5">Страница стрика</h2>
+      <span style="font-size:13.5px; color:#7C7C86">серия, календарь, вехи, заморозки, шеринг</span>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex">
+          <div style="width:248px; flex:none; background:#0C0C0E; border-right:1px solid #1A1A1F; padding:34px 22px; display:flex; flex-direction:column; gap:34px">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5; padding-left:14px">lokked<span style="color:#7E9CC4">.</span></div>
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Таймеры</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Карточки</div>
+              <div style="padding:11px 14px; border-radius:8px; background:#17171B; color:#F2F2F5; font-size:14.5px; font-weight:500">Серия</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Группы</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Статистика</div>
+            </div>
+          </div>
+          <div style="flex:1; padding:44px 56px; display:flex; flex-direction:column; gap:32px; min-width:0">
+            <div style="display:flex; gap:28px; align-items:stretch">
+              <div style="flex:1; position:relative; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:34px 38px; display:flex; flex-direction:column; gap:8px; overflow:hidden">
+                <div style="position:absolute; left:-40px; top:-60px; width:420px; height:260px; border-radius:50%; background:radial-gradient(ellipse at center, rgba(196,214,246,.10), rgba(0,0,0,0) 70%)"></div>
+                <span style="font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Текущая серия</span>
+                <div style="display:flex; align-items:baseline; gap:16px">
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:104px; font-weight:500; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.50), 0 0 22px rgba(226,232,248,.38), 0 0 64px rgba(186,206,240,.22)">12</span>
+                  <span style="font-size:20px; color:#9A9AA4">дней подряд</span>
+                </div>
+                <span style="font-size:13.5px; color:#7C7C86; margin-top:6px">Сегодня зачтено — 3 ч 32 м, минимум 10 м</span>
+              </div>
+              <div style="width:280px; display:flex; flex-direction:column; gap:14px">
+                <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:20px 22px; display:flex; flex-direction:column; gap:7px; justify-content:center">
+                  <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Рекорд</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">27 дней</span>
+                  <span style="font-size:12.5px; color:#7C7C86">март — апрель 2026</span>
+                </div>
+                <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:20px 22px; display:flex; flex-direction:column; gap:10px; justify-content:center">
+                  <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Заморозки</span>
+                  <div style="display:flex; align-items:center; gap:9px">
+                    <span style="width:26px; height:26px; border-radius:7px; background:#1B2A34; border:1px solid #2A3A4A"></span>
+                    <span style="width:26px; height:26px; border-radius:7px; background:#1B2A34; border:1px solid #2A3A4A"></span>
+                    <span style="width:26px; height:26px; border-radius:7px; background:#101013; border:1px dashed #2A2A32"></span>
+                    <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#8B8B95; margin-left:4px">2 / 3</span>
+                  </div>
+                  <span style="font-size:12.5px; color:#7C7C86">+1 за каждые 10 дней подряд</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:28px; flex:1; min-height:0">
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:18px">
+                <div style="display:flex; align-items:baseline; justify-content:space-between">
+                  <span style="font-size:14.5px; font-weight:500; color:#EDEDF1">Август 2026</span>
+                  <span style="font-size:12.5px; color:#6E6E78">граница дня — 04:00</span>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:8px">
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">ПН</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">ВТ</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">СР</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">ЧТ</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">ПТ</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">СБ</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:11px; text-align:center; color:#5C5C66">ВС</span>
+                  <sc-for list="{{ calendar }}" as="d" hint-placeholder-count="36">
+                    <span style="height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:14px; font-variant-numeric:tabular-nums; background:{{ d.bg }}; color:{{ d.fg }}; border:{{ d.ring }}">{{ d.label }}</span>
+                  </sc-for>
+                </div>
+                <div style="display:flex; gap:20px; flex-wrap:wrap; font-size:12.5px; color:#7C7C86; margin-top:auto">
+                  <span style="display:flex; align-items:center; gap:8px"><span style="width:14px; height:14px; border-radius:4px; background:#22384A"></span>зачтено</span>
+                  <span style="display:flex; align-items:center; gap:8px"><span style="width:14px; height:14px; border-radius:4px; background:#1B2A34"></span>заморозка</span>
+                  <span style="display:flex; align-items:center; gap:8px"><span style="width:14px; height:14px; border-radius:4px; background:#161619"></span>пропуск</span>
+                  <span style="display:flex; align-items:center; gap:8px"><span style="width:14px; height:14px; border-radius:4px; background:#101013; border:1px solid #7E9CC4"></span>сегодня</span>
+                </div>
+              </div>
+              <div style="width:380px; display:flex; flex-direction:column; gap:14px">
+                <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+                  <span style="font-size:14.5px; font-weight:500; color:#EDEDF1">Ближайшие вехи</span>
+                  <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="3">
+                    <div style="display:flex; flex-direction:column; gap:9px">
+                      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px">
+                        <span style="font-size:14px; color:#DCDCE2">{{ m.name }}</span>
+                        <span style="font-size:12.5px; color:#7C7C86">{{ m.note }}</span>
+                      </div>
+                      <span style="height:8px; background:#131317; border-radius:3px; overflow:hidden; display:flex">
+                        <span style="height:100%; border-radius:3px; width:{{ m.pct }}%; background:{{ m.color }}"></span>
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="background:#131A21; border:1px solid #2A3A4A; border-radius:12px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:14px">
+                  <div style="display:flex; flex-direction:column; gap:4px">
+                    <span style="font-size:14.5px; font-weight:500; color:#EDEDF1">Поделиться серией</span>
+                    <span style="font-size:12.5px; color:#8FA7C4">картинка в стиле Zen</span>
+                  </div>
+                  <span style="background:#7E9CC4; color:#0A0A0B; border-radius:8px; padding:12px 20px; font-size:14px; font-weight:600">Создать</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column">
+          <div style="padding:22px 20px 10px; display:flex; flex-direction:column; gap:12px">
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:17px; font-weight:600; color:#F2F2F5">Серия</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#8B8B95">рекорд 27</span>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding:2px 0 0">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:74px; font-weight:500; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.50), 0 0 22px rgba(226,232,248,.38), 0 0 60px rgba(186,206,240,.22)">12</span>
+              <span style="font-size:14px; letter-spacing:.2em; text-transform:uppercase; color:#6E6E78">дней подряд</span>
+            </div>
+          </div>
+          <div style="flex:1; padding:6px 20px 12px; display:flex; flex-direction:column; gap:14px; overflow:hidden">
+            <div style="background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:14px 16px; display:flex; flex-direction:column; gap:10px">
+              <div style="display:flex; align-items:baseline; justify-content:space-between">
+                <span style="font-size:13.5px; font-weight:500; color:#EDEDF1">Август 2026</span>
+                <span style="font-size:11.5px; color:#6E6E78">зачтено 20</span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px">
+                <sc-for list="{{ calendar }}" as="d" hint-placeholder-count="36">
+                  <span style="height:29px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:11.5px; font-variant-numeric:tabular-nums; background:{{ d.bg }}; color:{{ d.fg }}; border:{{ d.ring }}">{{ d.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:13px 16px; display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:13.5px; color:#DCDCE2">Заморозки</span>
+              <div style="display:flex; align-items:center; gap:7px">
+                <span style="width:22px; height:22px; border-radius:6px; background:#1B2A34; border:1px solid #2A3A4A"></span>
+                <span style="width:22px; height:22px; border-radius:6px; background:#1B2A34; border:1px solid #2A3A4A"></span>
+                <span style="width:22px; height:22px; border-radius:6px; background:#101013; border:1px dashed #2A2A32"></span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px">
+              <sc-for list="{{ milestones }}" as="m" hint-placeholder-count="3">
+                <div style="display:flex; flex-direction:column; gap:7px">
+                  <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px">
+                    <span style="font-size:13px; color:#DCDCE2">{{ m.name }}</span>
+                    <span style="font-size:11.5px; color:#7C7C86">{{ m.note }}</span>
+                  </div>
+                  <span style="height:7px; background:#131317; border-radius:3px; overflow:hidden; display:flex">
+                    <span style="height:100%; border-radius:3px; width:{{ m.pct }}%; background:{{ m.color }}"></span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:0 20px 12px">
+            <span style="display:block; background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:15px; font-size:15px; font-weight:600; text-align:center">Поделиться серией</span>
+          </div>
+          <div style="border-top:1px solid #1A1A1F; background:#0C0C0E; padding:10px 14px 22px; display:flex; justify-content:space-between; align-items:flex-start">
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="12" cy="13" r="8"></circle><path d="M12 9.5V13l2.4 1.6"></path><path d="M9.5 2.6h5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Таймеры</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="7.6" width="14" height="12" rx="2.4"></rect><path d="M7 4.6h11a2.4 2.4 0 0 1 2.4 2.4v9"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Карточки</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7E9CC4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 7px rgba(126,156,196,.45))"><path d="M12 3.2c2.6 3.2 5.6 5 5.6 9a5.6 5.6 0 1 1-11.2 0c0-2 .9-3.4 2-4.6.3 1.4 1 2.2 2 2.5-.4-3 .6-5.2 1.6-6.9Z"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; font-weight:500; color:#E8E8EC">Серия</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="9" cy="8.6" r="3.3"></circle><path d="M3.4 19.4c.5-3 2.8-4.8 5.6-4.8s5.1 1.8 5.6 4.8"></path><path d="M16.2 6.2a3.1 3.1 0 0 1 0 5.9"></path><path d="M17.6 14.9c2 .6 3.3 2.2 3.6 4.5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Группы</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.4 19.6h15.2"></path><path d="M7.6 19.6v-6.4"></path><path d="M12 19.6V6.4"></path><path d="M16.4 19.6v-9.4"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Статистика</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Картинка для шеринга 1080 × 1350</span>
+        <div style="width:432px; height:540px; background:#000; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; position:relative">
+          <div style="position:absolute; width:400px; height:280px; border-radius:50%; background:radial-gradient(ellipse at center, rgba(196,214,246,.13), rgba(0,0,0,0) 70%)"></div>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:150px; font-weight:500; line-height:1; letter-spacing:-0.04em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.60), 0 0 26px rgba(226,232,248,.45), 0 0 80px rgba(186,206,240,.26)">12</span>
+          <span style="font-size:15px; letter-spacing:.34em; text-transform:uppercase; color:#8FA7C4; margin-top:4px">дней подряд</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:500; color:#C8C8D0; font-variant-numeric:tabular-nums; margin-top:36px">3:32:14</span>
+          <span style="font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:#5C5C66">сегодня</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; letter-spacing:-0.03em; color:#6E6E78; position:absolute; bottom:34px">lokked<span style="color:#7E9CC4">.</span></span>
+        </div>
+        <span style="font-size:12.5px; color:#7C7C86; max-width:432px; text-wrap:pretty">Рендер через canvas, 4:5 для сторис и постов. Ничего кроме серии, времени и логотипа.</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- M19 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; align-items:baseline; gap:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; color:#7E9CC4">M19</span>
+      <h2 style="margin:0; font-size:19px; font-weight:600; color:#F2F2F5">Блиц-дуэль на одном устройстве</h2>
+      <span style="font-size:13.5px; color:#7C7C86">2–4 игрока, полностью локально</span>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · настройка</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 24px; gap:20px">
+          <div style="display:flex; flex-direction:column; gap:5px">
+            <span style="font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:#7E9CC4">Дуэль</span>
+            <span style="font-size:21px; font-weight:600; color:#F2F2F5">Настройка</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:16px; overflow:hidden">
+            <div style="display:flex; flex-direction:column; gap:9px">
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Игроки</span>
+              <div style="display:flex; align-items:center; gap:12px; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:14px 16px">
+                <span style="width:26px; height:26px; border-radius:7px; background:#22384A; color:#BFD6EE; font-family:'JetBrains Mono',monospace; font-size:12px; display:flex; align-items:center; justify-content:center">1</span>
+                <span style="flex:1; font-size:15px; color:#EDEDF1">Ты</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:14px 16px">
+                <span style="width:26px; height:26px; border-radius:7px; background:#2A2438; color:#C0B4DC; font-family:'JetBrains Mono',monospace; font-size:12px; display:flex; align-items:center; justify-content:center">2</span>
+                <span style="flex:1; font-size:15px; color:#EDEDF1">Артём</span>
+                <span style="font-size:13px; color:#6E6E78">гость</span>
+              </div>
+              <span style="border:1px dashed #26262C; color:#8B8B95; border-radius:10px; padding:14px 16px; font-size:14px; text-align:center">+ добавить игрока (до 4)</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:9px">
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Колода</span>
+              <div style="display:flex; align-items:center; gap:12px; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:14px 16px">
+                <span style="width:6px; height:26px; border-radius:3px; background:#8FA88C"></span>
+                <span style="flex:1; font-size:15px; color:#EDEDF1">Линейная алгебра</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#7C7C86">126</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px">
+              <div style="flex:1; display:flex; flex-direction:column; gap:9px">
+                <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Карточек</span>
+                <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between">
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:17px; color:#F2F2F5; font-variant-numeric:tabular-nums">20</span>
+                  <span style="font-size:12.5px; color:#6E6E78">шт</span>
+                </div>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:9px">
+                <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">На карточку</span>
+                <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between">
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:17px; color:#F2F2F5; font-variant-numeric:tabular-nums">20</span>
+                  <span style="font-size:12.5px; color:#6E6E78">сек</span>
+                </div>
+              </div>
+            </div>
+            <p style="margin:0; font-size:12.5px; line-height:1.6; color:#6E6E78; text-wrap:pretty">Все игроки проходят одну и ту же последовательность карточек. Ответы гостей не попадают в твою статистику.</p>
+          </div>
+          <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:17px; font-size:15.5px; font-weight:600; text-align:center">Начать дуэль</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · передача устройства</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; padding:40px 28px; position:relative">
+          <div style="position:absolute; width:360px; height:260px; border-radius:50%; background:radial-gradient(ellipse at center, rgba(160,185,230,.07), rgba(0,0,0,0) 70%)"></div>
+          <span style="width:64px; height:64px; border-radius:18px; background:#2A2438; color:#C0B4DC; font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:500; display:flex; align-items:center; justify-content:center">2</span>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:12px">
+            <span style="font-size:13px; letter-spacing:.26em; text-transform:uppercase; color:#6E6E78">Передай устройство</span>
+            <span style="font-size:34px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Артём</span>
+            <span style="font-size:14px; color:#8B8B95; text-align:center; text-wrap:pretty">Результат предыдущего игрока скрыт до конца дуэли</span>
+          </div>
+          <span style="border:1px solid #2A3A4A; background:#131A21; color:#A8C0DC; border-radius:9px; padding:16px 40px; font-size:15px; font-weight:500">Я готов — начать</span>
+          <span style="position:absolute; bottom:34px; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; color:#4A4A52">ХОД 2 ИЗ 2 · 20 КАРТОЧЕК</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop · итоги дуэли</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:44px 56px 48px; gap:32px">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between">
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <span style="font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#7E9CC4">Дуэль завершена</span>
+              <span style="font-size:30px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Линейная алгебра · 20 карточек</span>
+            </div>
+            <span style="font-size:13.5px; color:#6E6E78">Результат сохранён в duels · статистика владельца не затронута</span>
+          </div>
+          <div style="display:flex; gap:24px">
+            <div style="flex:1; background:#101013; border:1px solid #2A3A4A; border-radius:12px; padding:28px 32px; display:flex; align-items:center; justify-content:space-between; box-shadow:inset 0 0 60px rgba(126,156,196,.07)">
+              <div style="display:flex; align-items:center; gap:18px">
+                <span style="width:44px; height:44px; border-radius:12px; background:#22384A; color:#BFD6EE; font-family:'JetBrains Mono',monospace; font-size:18px; display:flex; align-items:center; justify-content:center">1</span>
+                <div style="display:flex; flex-direction:column; gap:4px">
+                  <span style="font-size:22px; font-weight:600; color:#F2F2F5">Ты</span>
+                  <span style="font-size:13px; color:#8FA7C4">победа · серия ×7</span>
+                </div>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:52px; font-weight:500; color:#F4F4F7; font-variant-numeric:tabular-nums; text-shadow:0 0 2px rgba(255,255,255,.35), 0 0 20px rgba(226,232,248,.24)">1 240</span>
+            </div>
+            <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:28px 32px; display:flex; align-items:center; justify-content:space-between">
+              <div style="display:flex; align-items:center; gap:18px">
+                <span style="width:44px; height:44px; border-radius:12px; background:#2A2438; color:#C0B4DC; font-family:'JetBrains Mono',monospace; font-size:18px; display:flex; align-items:center; justify-content:center">2</span>
+                <div style="display:flex; flex-direction:column; gap:4px">
+                  <span style="font-size:22px; font-weight:600; color:#EDEDF1">Артём</span>
+                  <span style="font-size:13px; color:#7C7C86">серия ×4</span>
+                </div>
+              </div>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:52px; font-weight:500; color:#9A9AA4; font-variant-numeric:tabular-nums">980</span>
+            </div>
+          </div>
+          <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 32px; display:flex; flex-direction:column; gap:16px; min-height:0">
+            <div style="display:flex; align-items:baseline; justify-content:space-between">
+              <span style="font-size:15px; font-weight:500; color:#EDEDF1">Разбор по карточкам</span>
+              <span style="font-size:12.5px; color:#6E6E78">показаны первые 5 из 20</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 150px 150px; gap:10px 24px; align-items:center">
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">Карточка</span>
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">Ты</span>
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">Артём</span>
+              <sc-for list="{{ duelRows }}" as="r" hint-placeholder-count="5">
+                <span style="font-size:15px; color:#DCDCE2; padding:12px 0; border-top:1px solid #1A1A1F">{{ r.q }}</span>
+                <span style="font-size:14px; padding:12px 0; border-top:1px solid #1A1A1F; color:#A8C0DC">{{ r.a }}</span>
+                <span style="font-size:14px; padding:12px 0; border-top:1px solid #1A1A1F; color:#8B8B95">{{ r.b }}</span>
+              </sc-for>
+            </div>
+            <div style="margin-top:auto; display:flex; gap:12px">
+              <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:14px 32px; font-size:14.5px; font-weight:600">Ещё раз</span>
+              <span style="border:1px solid #26262C; color:#C8C8D0; border-radius:9px; padding:14px 28px; font-size:14.5px">Сменить колоду</span>
+              <span style="border:1px solid #26262C; color:#8B8B95; border-radius:9px; padding:14px 28px; font-size:14.5px">Выйти</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- M20 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; align-items:baseline; gap:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; color:#7E9CC4">M20</span>
+      <h2 style="margin:0; font-size:19px; font-weight:600; color:#F2F2F5">Аккаунт</h2>
+      <span style="font-size:13.5px; color:#7C7C86">вход по ссылке, никаких стен на пути к таймеру</span>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · вход (необязательный)</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 24px">
+          <span style="font-size:14px; color:#8B8B95; align-self:flex-end">Позже</span>
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:30px">
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5">lokked<span style="color:#7E9CC4">.</span></span>
+              <span style="font-size:22px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5; line-height:1.3">Вход нужен только для групп и синхронизации</span>
+              <span style="font-size:14px; line-height:1.55; color:#8B8B95; text-wrap:pretty">Таймеры, карточки и статистика работают без аккаунта — всё хранится на устройстве.</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:11px">
+              <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:16px 18px; display:flex; flex-direction:column; gap:5px">
+                <span style="font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">Почта</span>
+                <span style="font-size:15.5px; color:#EDEDF1">ты@example.com</span>
+              </div>
+              <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:17px; font-size:15.5px; font-weight:600; text-align:center">Прислать ссылку для входа</span>
+              <div style="display:flex; align-items:center; gap:14px; padding:6px 0">
+                <span style="flex:1; height:1px; background:#1D1D22"></span>
+                <span style="font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#5C5C66">или</span>
+                <span style="flex:1; height:1px; background:#1D1D22"></span>
+              </div>
+              <span style="border:1px solid #26262C; color:#EDEDF1; border-radius:9px; padding:16px; font-size:15px; text-align:center">Продолжить с Google</span>
+              <span style="border:1px solid #26262C; color:#EDEDF1; border-radius:9px; padding:16px; font-size:15px; text-align:center">Продолжить с Apple</span>
+            </div>
+          </div>
+          <span style="font-size:12px; line-height:1.55; color:#5C5C66; text-align:center; text-wrap:pretty">Аккаунт можно удалить в любой момент — вместе с ним удаляется вклад в групповую статистику</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · профиль и синхронизация</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 24px; gap:20px">
+          <span style="font-size:21px; font-weight:600; color:#F2F2F5">Аккаунт</span>
+          <div style="background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:18px; display:flex; align-items:center; gap:14px">
+            <span style="width:46px; height:46px; border-radius:13px; background:#22384A; color:#BFD6EE; font-family:'JetBrains Mono',monospace; font-size:18px; display:flex; align-items:center; justify-content:center">Т</span>
+            <div style="flex:1; display:flex; flex-direction:column; gap:3px; min-width:0">
+              <span style="font-size:15.5px; font-weight:500; color:#EDEDF1">Ты</span>
+              <span style="font-size:12.5px; color:#7C7C86; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">ты@example.com</span>
+            </div>
+            <span style="font-size:13px; color:#8FA7C4">Изменить</span>
+          </div>
+          <div style="background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:18px; display:flex; flex-direction:column; gap:14px">
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:14.5px; color:#EDEDF1">Синхронизация</span>
+              <span style="width:44px; height:26px; border-radius:13px; background:#7E9CC4; display:flex; align-items:center; padding:3px; box-sizing:border-box; justify-content:flex-end"><span style="width:20px; height:20px; border-radius:50%; background:#0A0A0B"></span></span>
+            </div>
+            <div style="height:1px; background:#1A1A1F"></div>
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:13px; color:#7C7C86">Последняя</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#C8C8D0">сегодня 15:04</span>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:13px; color:#7C7C86">Сессий в очереди</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#C8C8D0">0</span>
+            </div>
+          </div>
+          <div style="background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:4px 18px; display:flex; flex-direction:column">
+            <span style="font-size:14.5px; color:#EDEDF1; padding:15px 0; border-bottom:1px solid #1A1A1F">Экспорт данных</span>
+            <span style="font-size:14.5px; color:#EDEDF1; padding:15px 0; border-bottom:1px solid #1A1A1F">Политика хранения данных</span>
+            <span style="font-size:14.5px; color:#C4726A; padding:15px 0">Удалить аккаунт</span>
+          </div>
+          <p style="margin:0; font-size:12.5px; line-height:1.6; color:#6E6E78; text-wrap:pretty">При удалении аккаунта личные сессии стираются с сервера, а вклад в групповые таблицы обезличивается — участник помечается как «удалён», сумма группы не пересчитывается.</p>
+          <span style="margin-top:auto; border:1px solid #26262C; color:#8B8B95; border-radius:9px; padding:15px; font-size:14.5px; text-align:center">Выйти</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- M21 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; align-items:baseline; gap:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; color:#7E9CC4">M21</span>
+      <h2 style="margin:0; font-size:19px; font-weight:600; color:#F2F2F5">Группы и соревнование по времени</h2>
+      <span style="font-size:13.5px; color:#7C7C86">сезоны, лидерборд, антинакрутка</span>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex">
+          <div style="width:248px; flex:none; background:#0C0C0E; border-right:1px solid #1A1A1F; padding:34px 22px; display:flex; flex-direction:column; gap:34px">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5; padding-left:14px">lokked<span style="color:#7E9CC4">.</span></div>
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Таймеры</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Карточки</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Серия</div>
+              <div style="padding:11px 14px; border-radius:8px; background:#17171B; color:#F2F2F5; font-size:14.5px; font-weight:500">Группы</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Статистика</div>
+            </div>
+          </div>
+          <div style="flex:1; padding:44px 56px; display:flex; flex-direction:column; gap:30px; min-width:0">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px">
+              <div style="display:flex; flex-direction:column; gap:9px">
+                <span style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Группа</span>
+                <span style="font-size:30px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Матан или смерть · 14 человек</span>
+              </div>
+              <div style="display:flex; gap:12px; align-items:center">
+                <span style="border:1px solid #1D1D22; color:#8B8B95; border-radius:8px; padding:11px 16px; font-family:'JetBrains Mono',monospace; font-size:13.5px; letter-spacing:.1em">KOD-7F2A</span>
+                <span style="border:1px solid #2A3A4A; background:#131A21; color:#A8C0DC; border-radius:8px; padding:11px 20px; font-size:14px">Пригласить</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:16px">
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:18px 22px; display:flex; flex-direction:column; gap:7px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Сезон</span>
+                <span style="font-size:19px; font-weight:500; color:#F2F2F5">Неделя 32</span>
+                <span style="font-size:12.5px; color:#7C7C86">обнуление через 2 дня</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:18px 22px; display:flex; flex-direction:column; gap:7px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Суммарно</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">142 ч 10 м</span>
+                <span style="font-size:12.5px; color:#7C7C86">за текущий сезон</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:18px 22px; display:flex; flex-direction:column; gap:7px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Средняя серия</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">9 дней</span>
+                <span style="font-size:12.5px; color:#7C7C86">по 14 участникам</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:18px 22px; display:flex; flex-direction:column; gap:7px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Занимались сегодня</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">9 / 14</span>
+                <span style="font-size:12.5px; color:#7C7C86">обновлено 15:04</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:24px; flex:1; min-height:0">
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:24px 28px; display:flex; flex-direction:column; gap:16px; min-width:0">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <span style="background:#17171B; color:#F2F2F5; border-radius:7px; padding:8px 15px; font-size:13px; font-weight:500">Неделя</span>
+                  <span style="color:#7C7C86; border-radius:7px; padding:8px 15px; font-size:13px">День</span>
+                  <span style="color:#7C7C86; border-radius:7px; padding:8px 15px; font-size:13px">Месяц</span>
+                  <span style="color:#7C7C86; border-radius:7px; padding:8px 15px; font-size:13px">Всё время</span>
+                  <span style="margin-left:auto; font-size:12.5px; color:#6E6E78">архив сезонов</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px">
+                  <sc-for list="{{ leaders }}" as="l" hint-placeholder-count="6">
+                    <div style="display:flex; align-items:center; gap:16px; padding:13px 16px; border-radius:10px; background:#131317">
+                      <span style="width:26px; font-family:'JetBrains Mono',monospace; font-size:14px; color:#7C7C86; font-variant-numeric:tabular-nums">{{ l.pos }}</span>
+                      <span style="width:150px; flex:none; font-size:15px; color:#EDEDF1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ l.name }}</span>
+                      <span style="flex:1; height:10px; background:#0E0E11; border-radius:3px; overflow:hidden; display:flex">
+                        <span style="height:100%; border-radius:3px; width:{{ l.pct }}%; background:#7E9CC4"></span>
+                      </span>
+                      <span style="width:96px; text-align:right; font-family:'JetBrains Mono',monospace; font-size:14px; color:#C8C8D0; font-variant-numeric:tabular-nums">{{ l.time }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="width:340px; display:flex; flex-direction:column; gap:14px">
+                <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+                  <span style="font-size:14.5px; font-weight:500; color:#EDEDF1">На проверке</span>
+                  <div style="display:flex; flex-direction:column; gap:10px">
+                    <div style="display:flex; align-items:center; gap:12px; background:#141112; border:1px solid #2C2220; border-radius:9px; padding:13px 15px">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#C4726A; flex:none"></span>
+                      <div style="flex:1; display:flex; flex-direction:column; gap:3px; min-width:0">
+                        <span style="font-size:14px; color:#EDEDF1">Гоша Р.</span>
+                        <span style="font-size:12px; color:#A88680">19 ч за день — сверх лимита</span>
+                      </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px; background:#141112; border:1px solid #2C2220; border-radius:9px; padding:13px 15px">
+                      <span style="width:8px; height:8px; border-radius:50%; background:#C4726A; flex:none"></span>
+                      <div style="flex:1; display:flex; flex-direction:column; gap:3px; min-width:0">
+                        <span style="font-size:14px; color:#EDEDF1">Илья В.</span>
+                        <span style="font-size:12px; color:#A88680">пересечение сессий 14:00–15:30</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span style="font-size:12.5px; line-height:1.6; color:#6E6E78; text-wrap:pretty">Сервер проверяет длительность, пересечения и дневной максимум. Подозрительное не идёт в зачёт до решения создателя.</span>
+                </div>
+                <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:22px 24px; display:flex; flex-direction:column; gap:12px">
+                  <span style="font-size:14.5px; font-weight:500; color:#EDEDF1">Права создателя</span>
+                  <span style="font-size:13.5px; color:#8B8B95; line-height:1.55">Исключить участника, обнулить сезон, распустить группу</span>
+                  <span style="border:1px solid #26262C; color:#C8C8D0; border-radius:8px; padding:12px; font-size:13.5px; text-align:center">Управление участниками</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column">
+          <div style="padding:26px 20px 14px; display:flex; flex-direction:column; gap:16px">
+            <div style="display:flex; flex-direction:column; gap:5px">
+              <span style="font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Группа</span>
+              <span style="font-size:19px; font-weight:600; color:#F2F2F5">Матан или смерть</span>
+            </div>
+            <div style="display:flex; gap:8px">
+              <span style="background:#17171B; color:#F2F2F5; border-radius:7px; padding:8px 14px; font-size:12.5px; font-weight:500">Неделя</span>
+              <span style="color:#7C7C86; border-radius:7px; padding:8px 14px; font-size:12.5px">День</span>
+              <span style="color:#7C7C86; border-radius:7px; padding:8px 14px; font-size:12.5px">Месяц</span>
+              <span style="color:#7C7C86; border-radius:7px; padding:8px 14px; font-size:12.5px">Всё</span>
+            </div>
+          </div>
+          <div style="flex:1; padding:4px 20px 16px; display:flex; flex-direction:column; gap:8px; overflow:hidden">
+            <sc-for list="{{ leaders }}" as="l" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; gap:12px; padding:13px 14px; border-radius:10px; background:#101013; border:1px solid #1B1B20">
+                <span style="width:18px; font-family:'JetBrains Mono',monospace; font-size:13px; color:#7C7C86; font-variant-numeric:tabular-nums">{{ l.pos }}</span>
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:6px">
+                  <span style="font-size:14.5px; color:#EDEDF1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ l.name }}</span>
+                  <span style="height:6px; background:#0E0E11; border-radius:3px; overflow:hidden; display:flex">
+                    <span style="height:100%; border-radius:3px; width:{{ l.pct }}%; background:#7E9CC4"></span>
+                  </span>
+                </div>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#C8C8D0; font-variant-numeric:tabular-nums; flex:none">{{ l.time }}</span>
+              </div>
+            </sc-for>
+            <span style="font-size:12px; color:#6E6E78; padding-top:6px">Сезон обнуляется через 2 дня · 142 ч 10 м у группы</span>
+          </div>
+          <div style="border-top:1px solid #1A1A1F; background:#0C0C0E; padding:10px 14px 22px; display:flex; justify-content:space-between; align-items:flex-start">
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="12" cy="13" r="8"></circle><path d="M12 9.5V13l2.4 1.6"></path><path d="M9.5 2.6h5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Таймеры</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="7.6" width="14" height="12" rx="2.4"></rect><path d="M7 4.6h11a2.4 2.4 0 0 1 2.4 2.4v9"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Карточки</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2c2.6 3.2 5.6 5 5.6 9a5.6 5.6 0 1 1-11.2 0c0-2 .9-3.4 2-4.6.3 1.4 1 2.2 2 2.5-.4-3 .6-5.2 1.6-6.9Z"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Серия</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7E9CC4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 7px rgba(126,156,196,.45))"><circle cx="9" cy="8.6" r="3.3"></circle><path d="M3.4 19.4c.5-3 2.8-4.8 5.6-4.8s5.1 1.8 5.6 4.8"></path><path d="M16.2 6.2a3.1 3.1 0 0 1 0 5.9"></path><path d="M17.6 14.9c2 .6 3.3 2.2 3.6 4.5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; font-weight:500; color:#E8E8EC">Группы</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.4 19.6h15.2"></path><path d="M7.6 19.6v-6.4"></path><path d="M12 19.6V6.4"></path><path d="M16.4 19.6v-9.4"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Статистика</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- M22 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <div style="display:flex; align-items:baseline; gap:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; color:#7E9CC4">M22</span>
+      <h2 style="margin:0; font-size:19px; font-weight:600; color:#F2F2F5">Онлайн-блиц</h2>
+      <span style="font-size:13.5px; color:#7C7C86">асинхронный формат — сначала он, реалтайм потом</span>
+    </div>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · вызовы</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 24px; gap:18px">
+          <div style="display:flex; align-items:baseline; justify-content:space-between">
+            <span style="font-size:21px; font-weight:600; color:#F2F2F5">Онлайн-блиц</span>
+            <span style="font-size:12.5px; color:#6E6E78">асинхронно</span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Твой ход</span>
+            <div style="background:#101013; border:1px solid #2A3A4A; border-radius:11px; padding:16px 18px; display:flex; align-items:center; gap:14px; box-shadow:inset 0 0 40px rgba(126,156,196,.07)">
+              <span style="width:38px; height:38px; border-radius:11px; background:#22384A; color:#BFD6EE; font-family:'JetBrains Mono',monospace; font-size:15px; display:flex; align-items:center; justify-content:center; flex:none">М</span>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                <span style="font-size:15px; font-weight:500; color:#EDEDF1">Марина К.</span>
+                <span style="font-size:12.5px; color:#8FA7C4">прошла 20 карточек · ждёт тебя</span>
+              </div>
+              <span style="background:#7E9CC4; color:#0A0A0B; border-radius:8px; padding:11px 16px; font-size:13.5px; font-weight:600; flex:none">Играть</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Ждут соперника</span>
+            <div style="background:#101013; border:1px solid #1B1B20; border-radius:11px; padding:16px 18px; display:flex; align-items:center; gap:14px">
+              <span style="width:38px; height:38px; border-radius:11px; background:#1B1B21; color:#8B8B95; font-family:'JetBrains Mono',monospace; font-size:15px; display:flex; align-items:center; justify-content:center; flex:none">А</span>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                <span style="font-size:15px; color:#EDEDF1">Артём Д.</span>
+                <span style="font-size:12.5px; color:#7C7C86">ты прошёл · 1 240 очков</span>
+              </div>
+              <span style="font-size:12.5px; color:#6E6E78; flex:none">2 ч назад</span>
+            </div>
+            <div style="background:#101013; border:1px solid #1B1B20; border-radius:11px; padding:16px 18px; display:flex; align-items:center; gap:14px">
+              <span style="width:38px; height:38px; border-radius:11px; background:#1B1B21; color:#8B8B95; font-family:'JetBrains Mono',monospace; font-size:15px; display:flex; align-items:center; justify-content:center; flex:none">С</span>
+              <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                <span style="font-size:15px; color:#EDEDF1">Соня П.</span>
+                <span style="font-size:12.5px; color:#7C7C86">ты прошёл · 980 очков</span>
+              </div>
+              <span style="font-size:12.5px; color:#6E6E78; flex:none">вчера</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Завершённые</span>
+            <div style="background:#101013; border:1px solid #1B1B20; border-radius:11px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:14.5px; color:#EDEDF1">Илья В.</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:13.5px; color:#8FA7C4; font-variant-numeric:tabular-nums">1 180 : 940</span>
+            </div>
+            <div style="background:#101013; border:1px solid #1B1B20; border-radius:11px; padding:16px 18px; display:flex; align-items:center; justify-content:space-between">
+              <span style="font-size:14.5px; color:#EDEDF1">Гоша Р.</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:13.5px; color:#9A9AA4; font-variant-numeric:tabular-nums">860 : 1 020</span>
+            </div>
+          </div>
+          <span style="margin-top:auto; background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:17px; font-size:15.5px; font-weight:600; text-align:center">Новый вызов</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · сравнение результатов</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 24px; gap:20px">
+          <div style="display:flex; flex-direction:column; gap:5px">
+            <span style="font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:#7E9CC4">Итог</span>
+            <span style="font-size:19px; font-weight:600; color:#F2F2F5">Ты против Марины</span>
+          </div>
+          <div style="display:flex; align-items:stretch; gap:12px">
+            <div style="flex:1; background:#101013; border:1px solid #2A3A4A; border-radius:11px; padding:18px; display:flex; flex-direction:column; align-items:center; gap:8px">
+              <span style="font-size:13px; color:#8FA7C4">Ты</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:38px; font-weight:500; color:#F4F4F7; font-variant-numeric:tabular-nums; text-shadow:0 0 2px rgba(255,255,255,.35), 0 0 18px rgba(226,232,248,.24)">1 240</span>
+              <span style="font-size:12px; color:#7C7C86">серия ×7</span>
+            </div>
+            <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:11px; padding:18px; display:flex; flex-direction:column; align-items:center; gap:8px">
+              <span style="font-size:13px; color:#7C7C86">Марина К.</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:38px; font-weight:500; color:#9A9AA4; font-variant-numeric:tabular-nums">1 180</span>
+              <span style="font-size:12px; color:#7C7C86">серия ×5</span>
+            </div>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:12px; overflow:hidden">
+            <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Разбор · один и тот же набор</span>
+            <sc-for list="{{ duelRows }}" as="r" hint-placeholder-count="5">
+              <div style="background:#101013; border:1px solid #1B1B20; border-radius:10px; padding:13px 15px; display:flex; flex-direction:column; gap:9px">
+                <span style="font-size:14px; color:#DCDCE2; line-height:1.35">{{ r.q }}</span>
+                <div style="display:flex; gap:10px">
+                  <span style="flex:1; font-family:'JetBrains Mono',monospace; font-size:12px; color:#A8C0DC; background:#131A21; border-radius:6px; padding:7px 10px">ты · {{ r.a }}</span>
+                  <span style="flex:1; font-family:'JetBrains Mono',monospace; font-size:12px; color:#8B8B95; background:#131317; border-radius:6px; padding:7px 10px">она · {{ r.b }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font-size:12px; line-height:1.55; color:#5C5C66; text-wrap:pretty">Самооценка неверифицируема — рейтинг только внутри группы знакомых</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<section style="padding:24px 72px 40px; display:flex; flex-direction:column; gap:40px">
+
+  <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap">
+    <div style="border:1px solid #26262C; color:#8FA7C4; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; padding:6px 10px; border-radius:6px">4a</div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:680px">
+      <h1 style="margin:0; font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Логотип — 6 направлений</h1>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#9A9AA4; text-wrap:pretty">Все знаки строятся на одной геометрии: круг 240 × 240, обводка 16, скруглённые торцы. Ниже — знак, иконка приложения 1024 и горизонтальный локап. Скажи номер — доведу до финала и сделаю фавикон/адаптив.</p>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:20px; max-width:1500px">
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">01</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Точка в кольце</span>
+        <span style="font-size:13px; color:#7C7C86">из splash-анимации</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <svg width="120" height="120" viewBox="0 0 240 240">
+          <circle cx="120" cy="120" r="104" fill="none" stroke="#F4F4F7" stroke-width="16"></circle>
+          <circle cx="120" cy="120" r="26" fill="#7E9CC4"></circle>
+        </svg>
+        <div style="width:104px; height:104px; border-radius:24px; background:#0A0A0B; border:1px solid #23232A; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 40px rgba(126,156,196,.10)">
+          <svg width="60" height="60" viewBox="0 0 240 240">
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#F4F4F7" stroke-width="16"></circle>
+            <circle cx="120" cy="120" r="26" fill="#7E9CC4"></circle>
+          </svg>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; gap:14px; min-width:0">
+          <svg width="34" height="34" viewBox="0 0 240 240" style="flex:none">
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#F4F4F7" stroke-width="18"></circle>
+            <circle cx="120" cy="120" r="28" fill="#7E9CC4"></circle>
+          </svg>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">02</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Замок-дуга</span>
+        <span style="font-size:13px; color:#7C7C86">кольцо с разрывом</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <svg width="120" height="120" viewBox="0 0 240 240" style="transform:rotate(-90deg)">
+          <circle cx="120" cy="120" r="104" fill="none" stroke="#F4F4F7" stroke-width="16" stroke-linecap="round" stroke-dasharray="490 164"></circle>
+          <circle cx="120" cy="120" r="104" fill="none" stroke="#7E9CC4" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 490 90 200"></circle>
+        </svg>
+        <div style="width:104px; height:104px; border-radius:24px; background:#7E9CC4; display:flex; align-items:center; justify-content:center">
+          <svg width="60" height="60" viewBox="0 0 240 240" style="transform:rotate(-90deg)">
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#0A0A0B" stroke-width="18" stroke-linecap="round" stroke-dasharray="490 164"></circle>
+          </svg>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; gap:14px; min-width:0">
+          <svg width="34" height="34" viewBox="0 0 240 240" style="flex:none; transform:rotate(-90deg)">
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#F4F4F7" stroke-width="20" stroke-linecap="round" stroke-dasharray="490 164"></circle>
+          </svg>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">03</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Двоеточие</span>
+        <span style="font-size:13px; color:#7C7C86">таймер как знак</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <svg width="120" height="120" viewBox="0 0 240 240">
+          <rect x="8" y="8" width="224" height="224" rx="56" fill="none" stroke="#F4F4F7" stroke-width="16"></rect>
+          <circle cx="120" cy="88" r="20" fill="#7E9CC4"></circle>
+          <circle cx="120" cy="160" r="20" fill="#7E9CC4"></circle>
+        </svg>
+        <div style="width:104px; height:104px; border-radius:24px; background:#0A0A0B; border:1px solid #23232A; display:flex; align-items:center; justify-content:center">
+          <svg width="56" height="56" viewBox="0 0 240 240">
+            <circle cx="120" cy="80" r="26" fill="#F4F4F7"></circle>
+            <circle cx="120" cy="168" r="26" fill="#7E9CC4"></circle>
+          </svg>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; gap:14px; min-width:0">
+          <svg width="18" height="34" viewBox="0 0 100 240" style="flex:none">
+            <circle cx="50" cy="80" r="26" fill="#F4F4F7"></circle>
+            <circle cx="50" cy="168" r="26" fill="#7E9CC4"></circle>
+          </svg>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">04</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Монограмма K</span>
+        <span style="font-size:13px; color:#7C7C86">два штриха в круге</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <svg width="120" height="120" viewBox="0 0 240 240">
+          <circle cx="120" cy="120" r="112" fill="#141419"></circle>
+          <path d="M88 60 V180" stroke="#F4F4F7" stroke-width="16" stroke-linecap="round" fill="none"></path>
+          <path d="M162 60 L100 120 L162 180" stroke="#7E9CC4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        </svg>
+        <div style="width:104px; height:104px; border-radius:24px; background:#141419; display:flex; align-items:center; justify-content:center">
+          <svg width="56" height="56" viewBox="0 0 240 240">
+            <path d="M88 60 V180" stroke="#F4F4F7" stroke-width="18" stroke-linecap="round" fill="none"></path>
+            <path d="M162 60 L100 120 L162 180" stroke="#7E9CC4" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; gap:14px; min-width:0">
+          <svg width="34" height="34" viewBox="0 0 240 240" style="flex:none">
+            <circle cx="120" cy="120" r="112" fill="#1B1B21"></circle>
+            <path d="M88 62 V178" stroke="#F4F4F7" stroke-width="20" stroke-linecap="round" fill="none"></path>
+            <path d="M160 62 L102 120 L160 178" stroke="#7E9CC4" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+          </svg>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">05</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Прогресс-сектор</span>
+        <span style="font-size:13px; color:#7C7C86">кольцо + шкала</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <svg width="120" height="120" viewBox="0 0 240 240" style="transform:rotate(-90deg)">
+          <circle cx="120" cy="120" r="100" fill="none" stroke="#26262C" stroke-width="16"></circle>
+          <circle cx="120" cy="120" r="100" fill="none" stroke="#F4F4F7" stroke-width="16" stroke-linecap="round" stroke-dasharray="440 188"></circle>
+          <circle cx="120" cy="120" r="34" fill="#7E9CC4"></circle>
+        </svg>
+        <div style="width:104px; height:104px; border-radius:24px; background:#0A0A0B; border:1px solid #23232A; display:flex; align-items:center; justify-content:center">
+          <svg width="60" height="60" viewBox="0 0 240 240" style="transform:rotate(-90deg)">
+            <circle cx="120" cy="120" r="100" fill="none" stroke="#26262C" stroke-width="18"></circle>
+            <circle cx="120" cy="120" r="100" fill="none" stroke="#F4F4F7" stroke-width="18" stroke-linecap="round" stroke-dasharray="440 188"></circle>
+            <circle cx="120" cy="120" r="34" fill="#7E9CC4"></circle>
+          </svg>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; gap:14px; min-width:0">
+          <svg width="34" height="34" viewBox="0 0 240 240" style="flex:none; transform:rotate(-90deg)">
+            <circle cx="120" cy="120" r="100" fill="none" stroke="#33333A" stroke-width="20"></circle>
+            <circle cx="120" cy="120" r="100" fill="none" stroke="#F4F4F7" stroke-width="20" stroke-linecap="round" stroke-dasharray="440 188"></circle>
+            <circle cx="120" cy="120" r="34" fill="#7E9CC4"></circle>
+          </svg>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:12px; padding:26px 28px; display:flex; flex-direction:column; gap:22px">
+      <div style="display:flex; align-items:baseline; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; color:#8FA7C4">06</span>
+        <span style="font-size:15.5px; font-weight:600; color:#F2F2F5">Только логотип</span>
+        <span style="font-size:13px; color:#7C7C86">без знака, чистый текст</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:24px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:600; letter-spacing:-0.02em; margin-right:-0.02em; color:#F2F2F5">lokked<span style="color:#7E9CC4">.</span></span>
+        <div style="width:104px; height:104px; border-radius:24px; background:#0A0A0B; border:1px solid #23232A; display:flex; align-items:center; justify-content:center">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:38px; font-weight:600; letter-spacing:-0.04em; margin-right:-0.04em; color:#F2F2F5">lk<span style="color:#7E9CC4">.</span></span>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; gap:8px; min-width:0">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:19px; font-weight:500; letter-spacing:.26em; color:#F2F2F5">LOKKED</span>
+          <span style="font-size:12.5px; color:#7C7C86">версия для узких мест: <span style="font-family:'JetBrains Mono',monospace; color:#C8C8D0">lk.</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:22px 26px; background:#101013; border:1px solid #1D1D22; border-radius:12px; max-width:1500px">
+    <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">на светлом фоне</span>
+    <div style="display:flex; gap:14px; flex-wrap:wrap">
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <svg width="44" height="44" viewBox="0 0 240 240"><circle cx="120" cy="120" r="104" fill="none" stroke="#0A0A0B" stroke-width="16"></circle><circle cx="120" cy="120" r="26" fill="#4E6E92"></circle></svg>
+      </div>
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <svg width="44" height="44" viewBox="0 0 240 240" style="transform:rotate(-90deg)"><circle cx="120" cy="120" r="104" fill="none" stroke="#0A0A0B" stroke-width="18" stroke-linecap="round" stroke-dasharray="490 164"></circle></svg>
+      </div>
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <svg width="40" height="40" viewBox="0 0 240 240"><circle cx="120" cy="80" r="26" fill="#0A0A0B"></circle><circle cx="120" cy="168" r="26" fill="#4E6E92"></circle></svg>
+      </div>
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <svg width="42" height="42" viewBox="0 0 240 240"><path d="M88 60 V180" stroke="#0A0A0B" stroke-width="18" stroke-linecap="round" fill="none"></path><path d="M162 60 L100 120 L162 180" stroke="#4E6E92" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg>
+      </div>
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <svg width="44" height="44" viewBox="0 0 240 240" style="transform:rotate(-90deg)"><circle cx="120" cy="120" r="100" fill="none" stroke="#D5D5D0" stroke-width="18"></circle><circle cx="120" cy="120" r="100" fill="none" stroke="#0A0A0B" stroke-width="18" stroke-linecap="round" stroke-dasharray="440 188"></circle><circle cx="120" cy="120" r="34" fill="#4E6E92"></circle></svg>
+      </div>
+      <div style="width:76px; height:76px; border-radius:18px; background:#F2F2F0; display:flex; align-items:center; justify-content:center">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:600; letter-spacing:-0.04em; margin-right:-0.04em; color:#0A0A0B">lk<span style="color:#4E6E92">.</span></span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section style="padding:24px 72px 40px; display:flex; flex-direction:column; gap:40px">
+
+  <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap">
+    <div style="border:1px solid #26262C; color:#8FA7C4; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; padding:6px 10px; border-radius:6px">3a</div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:680px">
+      <h1 style="margin:0; font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">1 · Экран запуска</h1>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#9A9AA4; text-wrap:pretty">2.6 секунды: кольцо прочерчивается по кругу, точка в центре загорается, «LOKKED» собирается из разрежённого трекинга, кольцо растворяется наружу — и экран уступает место главному. Анимация зациклена для просмотра.</p>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+      <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center">
+        <div style="position:absolute; width:900px; height:520px; border-radius:50%; background:radial-gradient(ellipse at center, rgba(196,214,246,.13), rgba(160,185,230,.05) 42%, rgba(0,0,0,0) 72%); animation:splashBloom 2.6s cubic-bezier(.2,.7,.2,1) infinite"></div>
+        <div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:26px">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:76px; font-weight:600; letter-spacing:-0.03em; margin-right:-0.03em; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.40), 0 0 26px rgba(226,232,248,.30), 0 0 76px rgba(160,190,240,.16); animation:splashLogo 2.6s cubic-bezier(.2,.7,.2,1) infinite">lokked<span style="color:#7E9CC4">.</span></span>
+          <span style="font-size:13.5px; letter-spacing:.28em; text-transform:uppercase; color:#6E6E78; animation:splashTag 2.6s ease-out infinite">Lock in</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+      <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center">
+        <div style="position:absolute; width:420px; height:340px; border-radius:50%; background:radial-gradient(ellipse at center, rgba(196,214,246,.13), rgba(160,185,230,.05) 42%, rgba(0,0,0,0) 72%); animation:splashBloom 2.6s cubic-bezier(.2,.7,.2,1) infinite"></div>
+        <div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:18px">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:42px; font-weight:600; letter-spacing:-0.03em; margin-right:-0.03em; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.40), 0 0 18px rgba(226,232,248,.30), 0 0 52px rgba(160,190,240,.16); animation:splashLogo 2.6s cubic-bezier(.2,.7,.2,1) infinite">lokked<span style="color:#7E9CC4">.</span></span>
+          <span style="font-size:11px; letter-spacing:.26em; text-transform:uppercase; color:#6E6E78; animation:splashTag 2.6s ease-out infinite">Lock in</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="width:360px; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">тайминг · 2600 ms</div>
+      <pre style="margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.8; color:#C8C8D0; white-space:pre-wrap">0 → 1350   кольцо прочерчивается
+210 → 780  точка загорается
+680 → 1500 «LOKKED» собирается
+1500 → 2030 подпись всплывает
+1610 → 2130 кольцо тает наружу
+2600      переход на главный
+
+easing: cubic-bezier(.4,0,.2,1)
+        cubic-bezier(.2,.7,.2,1)</pre>
+    </div>
+
+  </div>
+
+</section>
+
+<section style="padding:24px 72px 40px; display:flex; flex-direction:column; gap:64px">
+
+  <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap">
+    <div style="border:1px solid #26262C; color:#8FA7C4; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; padding:6px 10px; border-radius:6px">2a</div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:680px">
+      <h1 style="margin:0; font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Экраны 2–6</h1>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#9A9AA4; text-wrap:pretty">Главный, активный таймер, карточки (Классика и Блиц), статистика. Каждый экран в десктопной (1440×900) и мобильной (390×844) версии. Свечение из Zen применяется только к цифрам таймера.</p>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; max-width:1440px">
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">accent · 3 варианта</div>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; align-items:center; gap:12px"><span style="width:26px; height:26px; border-radius:5px; background:#7E9CC4"></span><span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#E8E8EC">#7E9CC4</span><span style="font-size:13px; color:#8B8B95">Steel — используется ниже</span></div>
+        <div style="display:flex; align-items:center; gap:12px"><span style="width:26px; height:26px; border-radius:5px; background:#6FA3A0"></span><span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#E8E8EC">#6FA3A0</span><span style="font-size:13px; color:#8B8B95">Slate teal</span></div>
+        <div style="display:flex; align-items:center; gap:12px"><span style="width:26px; height:26px; border-radius:5px; background:#9A93C8"></span><span style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#E8E8EC">#9A93C8</span><span style="font-size:13px; color:#8B8B95">Cold lilac</span></div>
+      </div>
+    </div>
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">surfaces · text</div>
+      <pre style="margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.7; color:#C8C8D0; white-space:pre-wrap">bg      #0A0A0B    text      #F2F2F5
+surface #101013    secondary #9A9AA4
+raised  #17171B    muted     #6E6E78
+border  #1D1D22    disabled  #4A4A52
+hairline #232329   danger    #C4726A</pre>
+    </div>
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:14px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">предметы · 8 оттенков</div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px">
+        <div style="height:34px; border-radius:5px; background:#7E9CC4"></div>
+        <div style="height:34px; border-radius:5px; background:#8FA88C"></div>
+        <div style="height:34px; border-radius:5px; background:#B08E76"></div>
+        <div style="height:34px; border-radius:5px; background:#9A8CB0"></div>
+        <div style="height:34px; border-radius:5px; background:#C4907E"></div>
+        <div style="height:34px; border-radius:5px; background:#7FA9A4"></div>
+        <div style="height:34px; border-radius:5px; background:#A8996E"></div>
+        <div style="height:34px; border-radius:5px; background:#B2879B"></div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; line-height:1.7; color:#7C7C86">7E9CC4 · 8FA88C · B08E76 · 9A8CB0<br>C4907E · 7FA9A4 · A8996E · B2879B</div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН 2 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <h2 style="margin:0; font-size:19px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5">2 · Главный экран</h2>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex">
+          <div style="width:248px; flex:none; background:#0C0C0E; border-right:1px solid #1A1A1F; padding:34px 22px; display:flex; flex-direction:column; gap:34px">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5; padding-left:14px">lokked<span style="color:#7E9CC4">.</span></div>
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <div style="padding:11px 14px; border-radius:8px; background:#17171B; color:#F2F2F5; font-size:14.5px; font-weight:500">Таймеры</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Карточки</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Серия</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Группы</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Статистика</div>
+            </div>
+            <div style="margin-top:auto; border:1px solid #1D1D22; border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:6px">
+              <span style="font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#6E6E78">Streak</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:500; color:#E8E8EC; font-variant-numeric:tabular-nums">12 дней</span>
+            </div>
+          </div>
+          <div style="flex:1; padding:44px 56px; display:flex; flex-direction:column; gap:34px; min-width:0">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px">
+              <div style="display:flex; flex-direction:column; gap:10px">
+                <span style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Сегодня</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:64px; font-weight:500; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 2px rgba(255,255,255,.30), 0 0 18px rgba(226,232,248,.22), 0 0 56px rgba(186,206,240,.12)">3:32:14</span>
+              </div>
+              <div style="display:flex; gap:12px">
+                <div style="border:1px solid #1D1D22; border-radius:8px; padding:12px 18px; display:flex; flex-direction:column; gap:5px; min-width:132px">
+                  <span style="font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:#6E6E78">Цель дня</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:17px; color:#C8C8D0; font-variant-numeric:tabular-nums">3:32 / 5:00</span>
+                </div>
+                <div style="border:1px solid #1D1D22; border-radius:8px; padding:12px 18px; display:flex; flex-direction:column; gap:5px; min-width:132px">
+                  <span style="font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:#6E6E78">Сессий</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:17px; color:#C8C8D0; font-variant-numeric:tabular-nums">6</span>
+                </div>
+              </div>
+            </div>
+            <div style="height:1px; background:#1A1A1F"></div>
+            <div style="display:flex; flex-direction:column; gap:8px">
+              <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="6">
+                <div style="display:flex; align-items:center; gap:18px; background:#101013; border:1px solid #1B1B20; border-radius:10px; padding:18px 22px">
+                  <span style="width:8px; height:34px; border-radius:3px; flex:none; background:{{ s.color }}"></span>
+                  <span style="flex:1; font-size:16px; font-weight:500; color:#EDEDF1">{{ s.name }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:#8B8B95; font-variant-numeric:tabular-nums; min-width:64px; text-align:right">{{ s.today }}</span>
+                  <span style="border:1px solid #2A3A4A; color:#A8C0DC; background:#131A21; border-radius:7px; padding:9px 20px; font-size:13.5px; font-weight:500">Старт</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column">
+          <div style="padding:26px 20px 18px; display:flex; flex-direction:column; gap:16px">
+            <div style="display:flex; align-items:center; justify-content:space-between">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5">lokked<span style="color:#7E9CC4">.</span></span>
+              <span style="font-size:12.5px; color:#8B8B95">streak 12</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px">
+              <span style="font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Сегодня</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:40px; font-weight:500; line-height:1; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 2px rgba(255,255,255,.28), 0 0 14px rgba(226,232,248,.20), 0 0 40px rgba(186,206,240,.11)">3:32:14</span>
+            </div>
+          </div>
+          <div style="flex:1; overflow:hidden; padding:6px 20px 20px; display:flex; flex-direction:column; gap:8px">
+            <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; gap:14px; background:#101013; border:1px solid #1B1B20; border-radius:10px; padding:14px 16px">
+                <span style="width:6px; height:30px; border-radius:3px; flex:none; background:{{ s.color }}"></span>
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:3px">
+                  <span style="font-size:14.5px; font-weight:500; color:#EDEDF1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ s.name }}</span>
+                  <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#7C7C86; font-variant-numeric:tabular-nums">{{ s.today }}</span>
+                </div>
+                <span style="width:44px; height:44px; flex:none; border:1px solid #2A3A4A; background:#131A21; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#A8C0DC; font-size:13px">▶</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="border-top:1px solid #1A1A1F; background:#0C0C0E; padding:10px 14px 22px; display:flex; justify-content:space-between; align-items:flex-start">
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7E9CC4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 7px rgba(126,156,196,.45))"><circle cx="12" cy="13" r="8"></circle><path d="M12 9.5V13l2.4 1.6"></path><path d="M9.5 2.6h5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; font-weight:500; color:#E8E8EC">Таймеры</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="7.6" width="14" height="12" rx="2.4"></rect><path d="M7 4.6h11a2.4 2.4 0 0 1 2.4 2.4v9"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Карточки</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2c2.6 3.2 5.6 5 5.6 9a5.6 5.6 0 1 1-11.2 0c0-2 .9-3.4 2-4.6.3 1.4 1 2.2 2 2.5-.4-3 .6-5.2 1.6-6.9Z"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Серия</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="9" cy="8.6" r="3.3"></circle><path d="M3.4 19.4c.5-3 2.8-4.8 5.6-4.8s5.1 1.8 5.6 4.8"></path><path d="M16.2 6.2a3.1 3.1 0 0 1 0 5.9"></path><path d="M17.6 14.9c2 .6 3.3 2.2 3.6 4.5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Группы</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M4.4 19.6h15.2"></path><path d="M7.6 19.6v-6.4"></path><path d="M12 19.6V6.4"></path><path d="M16.4 19.6v-9.4"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Статистика</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ЭКРАН 3 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <h2 style="margin:0; font-size:19px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5">3 · Активный таймер (Pomodoro)</h2>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:36px 56px 56px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:12px">
+              <span style="width:8px; height:8px; border-radius:2px; background:#7E9CC4"></span>
+              <span style="font-size:15px; font-weight:500; color:#EDEDF1">Математический анализ</span>
+            </div>
+            <span style="font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Pomodoro 25 / 5</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:34px">
+            <div style="position:relative; width:440px; height:440px; display:flex; align-items:center; justify-content:center">
+              <svg width="440" height="440" viewBox="0 0 440 440" style="position:absolute; inset:0; transform:rotate(-90deg)">
+                <circle cx="220" cy="220" r="204" fill="none" stroke="#18181D" stroke-width="3"></circle>
+                <circle cx="220" cy="220" r="204" fill="none" stroke="#7E9CC4" stroke-width="3" stroke-linecap="round" stroke-dasharray="794 488"></circle>
+              </svg>
+              <span style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:112px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.50), 0 0 20px rgba(226,232,248,.38), 0 0 60px rgba(186,206,240,.24), 0 0 130px rgba(160,190,240,.16)">15:47</span>
+            </div>
+            <span style="font-size:13px; letter-spacing:.34em; text-transform:uppercase; color:#7E9CC4">работа 2/4</span>
+            <div style="display:flex; align-items:center; gap:14px">
+              <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:15px 42px; font-size:15px; font-weight:600">Пауза</span>
+              <span style="border:1px solid #26262C; color:#C8C8D0; border-radius:9px; padding:15px 28px; font-size:14.5px">Отвлёкся</span>
+              <span style="border:1px solid #26262C; color:#C8C8D0; border-radius:9px; padding:15px 28px; font-size:14.5px">Стоп</span>
+              <span style="border:1px solid #26262C; color:#8B8B95; border-radius:9px; padding:15px 28px; font-size:14.5px">Zen</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:44px; color:#6E6E78; font-size:13px">
+            <span>Сессия начата в 14:20</span>
+            <span>Отвлечений: 2</span>
+            <span>Сегодня по предмету: 1:12</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:26px 20px 32px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="width:7px; height:7px; border-radius:2px; background:#7E9CC4"></span>
+              <span style="font-size:13.5px; font-weight:500; color:#EDEDF1">Матанализ</span>
+            </div>
+            <span style="font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:#6E6E78">25 / 5</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; width:100%">
+            <div style="position:relative; width:258px; height:258px; display:flex; align-items:center; justify-content:center">
+              <svg width="258" height="258" viewBox="0 0 258 258" style="position:absolute; inset:0; transform:rotate(-90deg)">
+                <circle cx="129" cy="129" r="120" fill="none" stroke="#18181D" stroke-width="3"></circle>
+                <circle cx="129" cy="129" r="120" fill="none" stroke="#7E9CC4" stroke-width="3" stroke-linecap="round" stroke-dasharray="467 287"></circle>
+              </svg>
+              <span style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:58px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.50), 0 0 16px rgba(226,232,248,.36), 0 0 46px rgba(186,206,240,.22)">15:47</span>
+            </div>
+            <span style="font-size:11.5px; letter-spacing:.28em; text-transform:uppercase; color:#7E9CC4">работа 2/4</span>
+            <div style="width:100%; display:flex; flex-direction:column; gap:10px">
+              <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:16px; font-size:15px; font-weight:600; text-align:center">Пауза</span>
+              <div style="display:flex; gap:10px">
+                <span style="flex:1; border:1px solid #26262C; color:#C8C8D0; border-radius:9px; padding:14px; font-size:13.5px; text-align:center">Отвлёкся</span>
+                <span style="flex:1; border:1px solid #26262C; color:#C8C8D0; border-radius:9px; padding:14px; font-size:13.5px; text-align:center">Стоп</span>
+                <span style="flex:1; border:1px solid #26262C; color:#8B8B95; border-radius:9px; padding:14px; font-size:13.5px; text-align:center">Zen</span>
+              </div>
+            </div>
+          </div>
+          <span style="font-size:12px; color:#6E6E78">Отвлечений: 2 · сегодня 1:12</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ЭКРАН 4 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <h2 style="margin:0; font-size:19px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5">4 · Карточка — «Классика»</h2>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop · а) вопрос</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:36px 56px 56px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:12px">
+              <span style="width:8px; height:8px; border-radius:2px; background:#8FA88C"></span>
+              <span style="font-size:15px; font-weight:500; color:#EDEDF1">Линейная алгебра · Классика</span>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#6E6E78; font-variant-numeric:tabular-nums">14 / 40</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:44px">
+            <div style="width:860px; min-height:380px; background:#101013; border:1px solid #1D1D22; border-radius:14px; padding:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:32px">
+              <span style="font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:#6E6E78">Теорема</span>
+              <span style="font-size:40px; font-weight:500; line-height:1.28; letter-spacing:-0.02em; color:#F2F2F5; text-align:center; text-wrap:pretty">Критерий обратимости матрицы</span>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:26px">
+              <span style="font-size:14.5px; color:#8B8B95; letter-spacing:.02em">Проговори формулировку вслух</span>
+              <span style="background:#17171B; border:1px solid #26262C; color:#EDEDF1; border-radius:9px; padding:15px 46px; font-size:15px; font-weight:500">Показать ответ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop · б) ответ раскрыт</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:36px 56px 56px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:12px">
+              <span style="width:8px; height:8px; border-radius:2px; background:#8FA88C"></span>
+              <span style="font-size:15px; font-weight:500; color:#EDEDF1">Линейная алгебра · Классика</span>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#6E6E78; font-variant-numeric:tabular-nums">14 / 40</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:36px">
+            <div style="width:860px; background:#101013; border:1px solid #1D1D22; border-radius:14px; padding:44px 56px; display:flex; flex-direction:column; gap:28px">
+              <div style="display:flex; flex-direction:column; gap:10px">
+                <span style="font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:#6E6E78">Теорема</span>
+                <span style="font-size:26px; font-weight:500; letter-spacing:-0.01em; color:#EDEDF1">Критерий обратимости матрицы</span>
+              </div>
+              <div style="height:1px; background:#1D1D22"></div>
+              <p style="margin:0; font-size:19px; line-height:1.62; color:#DCDCE2; text-wrap:pretty">Квадратная матрица <em style="font-family:Georgia,serif; font-style:italic; color:#F2F2F5">A</em> порядка <em style="font-family:Georgia,serif; font-style:italic; color:#F2F2F5">n</em> обратима тогда и только тогда, когда её определитель отличен от нуля; при этом обратная матрица выражается через присоединённую.</p>
+              <div style="background:#0C0C0F; border:1px solid #1D1D22; border-radius:10px; padding:30px 34px; display:flex; flex-direction:column; gap:20px; align-items:center">
+                <span style="font-family:Georgia,'Times New Roman',serif; font-size:30px; color:#F2F2F5; letter-spacing:.01em">det <span style="font-style:italic">A</span> ≠ 0 &nbsp;⟺&nbsp; ∃ <span style="font-style:italic">A</span><sup style="font-size:.6em">−1</sup></span>
+                <span style="font-family:Georgia,'Times New Roman',serif; font-size:30px; color:#F2F2F5"><span style="font-style:italic">A</span><sup style="font-size:.6em">−1</sup> = <span style="display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15"><span style="padding:0 8px">1</span><span style="border-top:1px solid #6E6E78; padding:0 8px">det <span style="font-style:italic">A</span></span></span> · adj <span style="font-style:italic">A</span></span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">KaTeX · display mode</span>
+              </div>
+            </div>
+            <div style="width:860px; display:flex; flex-direction:column; gap:14px">
+              <span style="font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78; text-align:center">Насколько уверенно ты ответил?</span>
+              <div style="display:flex; gap:12px">
+                <span style="flex:1; border:1px solid #23232A; color:#8B8B95; border-radius:9px; padding:16px; font-size:14.5px; text-align:center">Не помню</span>
+                <span style="flex:1; border:1px solid #23232A; color:#A5A5AF; border-radius:9px; padding:16px; font-size:14.5px; text-align:center">С трудом</span>
+                <span style="flex:1.5; background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:16px; font-size:15.5px; font-weight:600; text-align:center; box-shadow:0 0 28px rgba(126,156,196,.22)">Знаю</span>
+                <span style="flex:1; border:1px solid #2A3A4A; color:#A8C0DC; border-radius:9px; padding:16px; font-size:14.5px; text-align:center">Легко</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · а) вопрос</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 30px">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="width:7px; height:7px; border-radius:2px; background:#8FA88C"></span>
+              <span style="font-size:13.5px; font-weight:500; color:#EDEDF1">Линейная алгебра</span>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#6E6E78; font-variant-numeric:tabular-nums">14/40</span>
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:28px">
+            <div style="background:#101013; border:1px solid #1D1D22; border-radius:14px; padding:38px 26px; min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px">
+              <span style="font-size:11.5px; letter-spacing:.22em; text-transform:uppercase; color:#6E6E78">Теорема</span>
+              <span style="font-size:26px; font-weight:500; line-height:1.3; color:#F2F2F5; text-align:center; text-wrap:pretty">Критерий обратимости матрицы</span>
+            </div>
+            <span style="font-size:13.5px; color:#8B8B95; text-align:center">Проговори формулировку вслух</span>
+          </div>
+          <span style="background:#17171B; border:1px solid #26262C; color:#EDEDF1; border-radius:9px; padding:17px; font-size:15px; font-weight:500; text-align:center">Показать ответ</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · б) ответ</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 30px; gap:18px">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <div style="display:flex; align-items:center; gap:10px">
+              <span style="width:7px; height:7px; border-radius:2px; background:#8FA88C"></span>
+              <span style="font-size:13.5px; font-weight:500; color:#EDEDF1">Линейная алгебра</span>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#6E6E78; font-variant-numeric:tabular-nums">14/40</span>
+          </div>
+          <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:14px; padding:24px 22px; display:flex; flex-direction:column; gap:18px; overflow:hidden">
+            <span style="font-size:18px; font-weight:500; color:#EDEDF1; line-height:1.3">Критерий обратимости матрицы</span>
+            <div style="height:1px; background:#1D1D22"></div>
+            <p style="margin:0; font-size:15.5px; line-height:1.6; color:#DCDCE2; text-wrap:pretty">Квадратная матрица <em style="font-family:Georgia,serif; color:#F2F2F5">A</em> порядка <em style="font-family:Georgia,serif; color:#F2F2F5">n</em> обратима тогда и только тогда, когда det <em style="font-family:Georgia,serif; color:#F2F2F5">A</em> ≠ 0.</p>
+            <div style="background:#0C0C0F; border:1px solid #1D1D22; border-radius:10px; padding:20px 16px; display:flex; flex-direction:column; align-items:center; gap:14px">
+              <span style="font-family:Georgia,'Times New Roman',serif; font-size:21px; color:#F2F2F5">det <span style="font-style:italic">A</span> ≠ 0 ⟺ ∃ <span style="font-style:italic">A</span><sup style="font-size:.6em">−1</sup></span>
+              <span style="font-family:Georgia,'Times New Roman',serif; font-size:21px; color:#F2F2F5"><span style="font-style:italic">A</span><sup style="font-size:.6em">−1</sup> = <span style="display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; line-height:1.15"><span style="padding:0 6px">1</span><span style="border-top:1px solid #6E6E78; padding:0 6px">det <span style="font-style:italic">A</span></span></span> · adj <span style="font-style:italic">A</span></span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#5C5C66">KaTeX</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px">
+            <span style="background:#7E9CC4; color:#0A0A0B; border-radius:9px; padding:17px; font-size:15.5px; font-weight:600; text-align:center; box-shadow:0 0 24px rgba(126,156,196,.20)">Знаю</span>
+            <div style="display:flex; gap:8px">
+              <span style="flex:1; border:1px solid #23232A; color:#8B8B95; border-radius:9px; padding:14px 6px; font-size:13px; text-align:center">Не помню</span>
+              <span style="flex:1; border:1px solid #23232A; color:#A5A5AF; border-radius:9px; padding:14px 6px; font-size:13px; text-align:center">С трудом</span>
+              <span style="flex:1; border:1px solid #2A3A4A; color:#A8C0DC; border-radius:9px; padding:14px 6px; font-size:13px; text-align:center">Легко</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ЭКРАН 5 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <h2 style="margin:0; font-size:19px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5">5 · Карточка — «Блиц»</h2>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop · 18 секунд</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:36px 56px 56px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <span style="font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#7E9CC4">Блиц</span>
+            <div style="display:flex; gap:34px; align-items:center">
+              <div style="display:flex; align-items:baseline; gap:9px"><span style="font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Счёт</span><span style="font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; color:#EDEDF1; font-variant-numeric:tabular-nums">1 240</span></div>
+              <div style="display:flex; align-items:baseline; gap:9px"><span style="font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Серия</span><span style="font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; color:#7E9CC4; font-variant-numeric:tabular-nums">×7</span></div>
+            </div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; justify-content:center">
+            <div style="position:relative; width:900px; height:460px">
+              <svg width="900" height="460" viewBox="0 0 900 460" style="position:absolute; inset:0">
+                <rect x="2" y="2" width="896" height="456" rx="16" fill="none" stroke="#18181D" stroke-width="3"></rect>
+                <rect x="2" y="2" width="896" height="456" rx="16" fill="none" stroke="#7E9CC4" stroke-width="3" stroke-linecap="round" stroke-dasharray="1420 1280" stroke-dashoffset="0"></rect>
+              </svg>
+              <div style="position:absolute; inset:0; background:#101013; border-radius:16px; margin:4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; padding:56px">
+                <span style="font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:#6E6E78">Определение</span>
+                <span style="font-size:38px; font-weight:500; line-height:1.28; letter-spacing:-0.02em; color:#F2F2F5; text-align:center; text-wrap:pretty">Ортогональное дополнение подпространства</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:500; color:#A8C0DC; font-variant-numeric:tabular-nums">0:18</span>
+                <span style="font-size:14px; color:#8B8B95">Проговори вслух — потом раскрой</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#C4726A">Desktop · осталось 5 секунд</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:36px 56px 56px">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between">
+            <span style="font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:#C4726A">Блиц</span>
+            <div style="display:flex; gap:34px; align-items:center">
+              <div style="display:flex; align-items:baseline; gap:9px"><span style="font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Счёт</span><span style="font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; color:#EDEDF1; font-variant-numeric:tabular-nums">1 240</span></div>
+              <div style="display:flex; align-items:baseline; gap:9px"><span style="font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Серия</span><span style="font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; color:#C4726A; font-variant-numeric:tabular-nums">×7</span></div>
+            </div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; justify-content:center">
+            <div style="position:relative; width:900px; height:460px">
+              <svg width="900" height="460" viewBox="0 0 900 460" style="position:absolute; inset:0">
+                <rect x="2" y="2" width="896" height="456" rx="16" fill="none" stroke="#18181D" stroke-width="3"></rect>
+                <rect x="2" y="2" width="896" height="456" rx="16" fill="none" stroke="#C4726A" stroke-width="4" stroke-linecap="round" stroke-dasharray="216 2484"></rect>
+              </svg>
+              <div style="position:absolute; inset:0; background:#12100F; border-radius:16px; margin:4px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; padding:56px; box-shadow:inset 0 0 90px rgba(196,114,106,.10)">
+                <span style="font-size:12.5px; letter-spacing:.24em; text-transform:uppercase; color:#8A6A66">Определение</span>
+                <span style="font-size:38px; font-weight:500; line-height:1.28; letter-spacing:-0.02em; color:#F2F2F5; text-align:center; text-wrap:pretty">Ортогональное дополнение подпространства</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:34px; font-weight:500; color:#E28A80; font-variant-numeric:tabular-nums; text-shadow:0 0 3px rgba(255,180,170,.40), 0 0 22px rgba(226,138,128,.35), 0 0 60px rgba(196,114,106,.22)">0:05</span>
+                <span style="font-size:14px; color:#A88680">Время заканчивается</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile · 18 секунд</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 30px; gap:20px">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span style="font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:#7E9CC4">Блиц</span>
+            <div style="display:flex; gap:18px">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#EDEDF1; font-variant-numeric:tabular-nums">1 240</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#7E9CC4; font-variant-numeric:tabular-nums">×7</span>
+            </div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; width:100%">
+            <div style="position:relative; width:100%; height:480px">
+              <svg viewBox="0 0 350 480" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%">
+                <rect x="2" y="2" width="346" height="476" rx="16" fill="none" stroke="#18181D" stroke-width="3"></rect>
+                <rect x="2" y="2" width="346" height="476" rx="16" fill="none" stroke="#7E9CC4" stroke-width="3" stroke-linecap="round" stroke-dasharray="840 800"></rect>
+              </svg>
+              <div style="position:absolute; inset:4px; background:#101013; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:28px">
+                <span style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#6E6E78">Определение</span>
+                <span style="font-size:24px; font-weight:500; line-height:1.3; color:#F2F2F5; text-align:center; text-wrap:pretty">Ортогональное дополнение подпространства</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:500; color:#A8C0DC; font-variant-numeric:tabular-nums">0:18</span>
+              </div>
+            </div>
+          </div>
+          <span style="background:#17171B; border:1px solid #26262C; color:#EDEDF1; border-radius:9px; padding:17px; font-size:15px; font-weight:500; text-align:center">Показать ответ</span>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#C4726A">Mobile · 5 секунд</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column; padding:26px 20px 30px; gap:20px">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <span style="font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:#C4726A">Блиц</span>
+            <div style="display:flex; gap:18px">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#EDEDF1; font-variant-numeric:tabular-nums">1 240</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:14px; color:#C4726A; font-variant-numeric:tabular-nums">×7</span>
+            </div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; width:100%">
+            <div style="position:relative; width:100%; height:480px">
+              <svg viewBox="0 0 350 480" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%">
+                <rect x="2" y="2" width="346" height="476" rx="16" fill="none" stroke="#18181D" stroke-width="3"></rect>
+                <rect x="2" y="2" width="346" height="476" rx="16" fill="none" stroke="#C4726A" stroke-width="4" stroke-linecap="round" stroke-dasharray="132 1508"></rect>
+              </svg>
+              <div style="position:absolute; inset:4px; background:#12100F; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:28px; box-shadow:inset 0 0 60px rgba(196,114,106,.10)">
+                <span style="font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#8A6A66">Определение</span>
+                <span style="font-size:24px; font-weight:500; line-height:1.3; color:#F2F2F5; text-align:center; text-wrap:pretty">Ортогональное дополнение подпространства</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:500; color:#E28A80; font-variant-numeric:tabular-nums; text-shadow:0 0 3px rgba(255,180,170,.40), 0 0 18px rgba(226,138,128,.35), 0 0 48px rgba(196,114,106,.20)">0:05</span>
+              </div>
+            </div>
+          </div>
+          <span style="background:#17171B; border:1px solid #2C2220; color:#EDEDF1; border-radius:9px; padding:17px; font-size:15px; font-weight:500; text-align:center">Показать ответ</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ЭКРАН 6 -->
+  <div style="display:flex; flex-direction:column; gap:18px">
+    <h2 style="margin:0; font-size:19px; font-weight:600; letter-spacing:-0.01em; color:#F2F2F5">6 · Статистика</h2>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start">
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Desktop 1440 × 900</span>
+        <div style="width:1440px; height:900px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex">
+          <div style="width:248px; flex:none; background:#0C0C0E; border-right:1px solid #1A1A1F; padding:34px 22px; display:flex; flex-direction:column; gap:34px">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-0.03em; color:#F2F2F5; padding-left:14px">lokked<span style="color:#7E9CC4">.</span></div>
+            <div style="display:flex; flex-direction:column; gap:4px">
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Таймеры</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Карточки</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Серия</div>
+              <div style="padding:11px 14px; border-radius:8px; color:#8B8B95; font-size:14.5px">Группы</div>
+              <div style="padding:11px 14px; border-radius:8px; background:#17171B; color:#F2F2F5; font-size:14.5px; font-weight:500">Статистика</div>
+            </div>
+          </div>
+          <div style="flex:1; padding:44px 56px; display:flex; flex-direction:column; gap:34px; min-width:0">
+            <div style="display:flex; gap:16px">
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:20px 24px; display:flex; flex-direction:column; gap:8px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">За 30 дней</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">86 ч 20 м</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:20px 24px; display:flex; flex-direction:column; gap:8px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Точность карточек</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">78 %</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:20px 24px; display:flex; flex-direction:column; gap:8px">
+                <span style="font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Streak</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:500; color:#F2F2F5; font-variant-numeric:tabular-nums">12 дней</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:16px">
+              <span style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Время по предметам · 30 дней</span>
+              <div style="display:flex; flex-direction:column; gap:12px">
+                <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="8">
+                  <div style="display:flex; align-items:center; gap:18px">
+                    <span style="width:210px; flex:none; font-size:14px; color:#C8C8D0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ s.name }}</span>
+                    <span style="flex:1; height:12px; background:#131317; border-radius:3px; overflow:hidden; display:flex">
+                      <span style="height:100%; border-radius:3px; width:{{ s.pct }}%; background:{{ s.color }}"></span>
+                    </span>
+                    <span style="width:76px; flex:none; text-align:right; font-family:'JetBrains Mono',monospace; font-size:13px; color:#8B8B95; font-variant-numeric:tabular-nums">{{ s.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:16px">
+              <span style="font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Активность · 20 недель</span>
+              <div style="display:grid; grid-template-rows:repeat(7,15px); grid-auto-flow:column; grid-auto-columns:15px; gap:5px">
+                <sc-for list="{{ heatCells }}" as="c" hint-placeholder-count="140">
+                  <span style="border-radius:3px; background:{{ c.bg }}"></span>
+                </sc-for>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#6E6E78">
+                <span>меньше</span>
+                <span style="width:14px; height:14px; border-radius:3px; background:#121216"></span>
+                <span style="width:14px; height:14px; border-radius:3px; background:#1B2730"></span>
+                <span style="width:14px; height:14px; border-radius:3px; background:#24384A"></span>
+                <span style="width:14px; height:14px; border-radius:3px; background:#2F4E66"></span>
+                <span style="width:14px; height:14px; border-radius:3px; background:#3E6B8C"></span>
+                <span>больше</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E78">Mobile 390 × 844</span>
+        <div style="width:390px; height:844px; background:#0A0A0B; border:1px solid #1A1A1F; overflow:hidden; display:flex; flex-direction:column">
+          <div style="padding:26px 20px 16px; display:flex; flex-direction:column; gap:16px">
+            <span style="font-size:18px; font-weight:600; color:#F2F2F5">Статистика</span>
+            <div style="display:flex; gap:10px">
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:9px; padding:12px; display:flex; flex-direction:column; gap:5px">
+                <span style="font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#6E6E78">30 дней</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2F2F5; font-variant-numeric:tabular-nums">86 ч</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:9px; padding:12px; display:flex; flex-direction:column; gap:5px">
+                <span style="font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#6E6E78">Точность</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2F2F5; font-variant-numeric:tabular-nums">78 %</span>
+              </div>
+              <div style="flex:1; background:#101013; border:1px solid #1D1D22; border-radius:9px; padding:12px; display:flex; flex-direction:column; gap:5px">
+                <span style="font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#6E6E78">Streak</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:16px; color:#F2F2F5; font-variant-numeric:tabular-nums">12</span>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1; padding:8px 20px 20px; display:flex; flex-direction:column; gap:26px; overflow:hidden">
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Время по предметам</span>
+              <sc-for list="{{ subjectsTop }}" as="s" hint-placeholder-count="5">
+                <div style="display:flex; flex-direction:column; gap:6px">
+                  <div style="display:flex; justify-content:space-between; gap:10px">
+                    <span style="font-size:13px; color:#C8C8D0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">{{ s.name }}</span>
+                    <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8B8B95; flex:none; font-variant-numeric:tabular-nums">{{ s.label }}</span>
+                  </div>
+                  <span style="height:10px; background:#131317; border-radius:3px; overflow:hidden; display:flex">
+                    <span style="height:100%; border-radius:3px; width:{{ s.pct }}%; background:{{ s.color }}"></span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <span style="font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E78">Активность</span>
+              <div style="display:grid; grid-template-rows:repeat(7,12px); grid-auto-flow:column; grid-auto-columns:12px; gap:4px; overflow:hidden">
+                <sc-for list="{{ heatCells }}" as="c" hint-placeholder-count="140">
+                  <span style="border-radius:2px; background:{{ c.bg }}"></span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #1A1A1F; background:#0C0C0E; padding:10px 14px 22px; display:flex; justify-content:space-between; align-items:flex-start">
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="12" cy="13" r="8"></circle><path d="M12 9.5V13l2.4 1.6"></path><path d="M9.5 2.6h5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Таймеры</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><rect x="3.2" y="7.6" width="14" height="12" rx="2.4"></rect><path d="M7 4.6h11a2.4 2.4 0 0 1 2.4 2.4v9"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Карточки</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><path d="M12 3.2c2.6 3.2 5.6 5 5.6 9a5.6 5.6 0 1 1-11.2 0c0-2 .9-3.4 2-4.6.3 1.4 1 2.2 2 2.5-.4-3 .6-5.2 1.6-6.9Z"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Серия</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5C5C66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style=""><circle cx="9" cy="8.6" r="3.3"></circle><path d="M3.4 19.4c.5-3 2.8-4.8 5.6-4.8s5.1 1.8 5.6 4.8"></path><path d="M16.2 6.2a3.1 3.1 0 0 1 0 5.9"></path><path d="M17.6 14.9c2 .6 3.3 2.2 3.6 4.5"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; color:#6E6E78">Группы</span>
+            </span>
+            <span style="flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; padding:2px 0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7E9CC4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 0 7px rgba(126,156,196,.45))"><path d="M4.4 19.6h15.2"></path><path d="M7.6 19.6v-6.4"></path><path d="M12 19.6V6.4"></path><path d="M16.4 19.6v-9.4"></path></svg>
+              <span style="font-size:10.5px; letter-spacing:.02em; font-weight:500; color:#E8E8EC">Статистика</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<section style="padding:24px 72px 96px; display:flex; flex-direction:column; gap:56px">
+
+  <div style="display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap">
+    <div style="border:1px solid #26262C; color:#8FA7C4; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; padding:6px 10px; border-radius:6px">1a</div>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:640px">
+      <h1 style="margin:0; font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#F2F2F5">Lokked — Zen-режим</h1>
+      <p style="margin:0; font-size:15px; line-height:1.55; color:#9A9AA4; text-wrap:pretty">Чистый #000000, время с начала сессии, предмет мелко под ним. Больше ничего. Активное состояние и приглушённое — через 5 секунд бездействия.</p>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start">
+
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:12px; align-items:baseline">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#E8E8EC">Desktop · активно</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#5C5C66">1440 × 900</span>
+      </div>
+      <div style="width:1440px; height:900px; background:radial-gradient(ellipse 46% 26% at 50% 47%, rgba(196,214,246,.14), rgba(160,185,230,.055) 45%, rgba(0,0,0,0) 72%) , #000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:44px; border:1px solid #1A1A1F; overflow:hidden">
+        <div style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:212px; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.60), 0 0 24px rgba(226,232,248,.45), 0 0 70px rgba(186,206,240,.30), 0 0 150px rgba(160,190,240,.20); animation:zenBreathe 9s ease-in-out infinite">{{ liveTime }}</div>
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:500; letter-spacing:.42em; text-transform:uppercase; color:#6E6E78">{{ subject }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:12px; align-items:baseline">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#E8E8EC">Desktop · приглушено</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#5C5C66">idle 5s</span>
+      </div>
+      <div style="width:1440px; height:900px; background:radial-gradient(ellipse 44% 24% at 50% 47%, rgba(176,186,208,.06), rgba(150,166,196,.024) 45%, rgba(0,0,0,0) 72%) , #000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:44px; border:1px solid #1A1A1F; overflow:hidden">
+        <div style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:212px; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; color:#8A8A8A; text-shadow:0 0 26px rgba(150,158,178,.20), 0 0 72px rgba(150,166,196,.10); animation:zenBreatheDim 11s ease-in-out infinite">{{ liveTime }}</div>
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:500; letter-spacing:.42em; text-transform:uppercase; color:#3C3C43">{{ subject }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:12px; align-items:baseline">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#E8E8EC">Mobile · активно</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#5C5C66">390 × 844</span>
+      </div>
+      <div style="width:390px; height:844px; background:radial-gradient(ellipse 46% 26% at 50% 47%, rgba(196,214,246,.14), rgba(160,185,230,.055) 45%, rgba(0,0,0,0) 72%) , #000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; border:1px solid #1A1A1F; overflow:hidden">
+        <div style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:80px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:#F4F4F7; text-shadow:0 0 3px rgba(255,255,255,.60), 0 0 17px rgba(226,232,248,.45), 0 0 50px rgba(186,206,240,.30), 0 0 108px rgba(160,190,240,.20); animation:zenBreathe 9s ease-in-out infinite">{{ liveTimeMobile }}</div>
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:500; letter-spacing:.36em; text-transform:uppercase; color:#6E6E78">{{ subject }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:12px; align-items:baseline">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#E8E8EC">Mobile · приглушено</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#5C5C66">idle 5s</span>
+      </div>
+      <div style="width:390px; height:844px; background:radial-gradient(ellipse 44% 24% at 50% 47%, rgba(176,186,208,.06), rgba(150,166,196,.024) 45%, rgba(0,0,0,0) 72%) , #000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:26px; border:1px solid #1A1A1F; overflow:hidden">
+        <div style="font-family:'JetBrains Mono',monospace; font-weight:500; font-size:80px; line-height:1; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; color:#8A8A8A; text-shadow:0 0 20px rgba(150,158,178,.20), 0 0 56px rgba(150,166,196,.10); animation:zenBreatheDim 11s ease-in-out infinite">{{ liveTimeMobile }}</div>
+        <div style="font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:500; letter-spacing:.36em; text-transform:uppercase; color:#3C3C43">{{ subject }}</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px">
+      <div style="display:flex; gap:12px; align-items:baseline">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:#E8E8EC">Живой прототип</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#5C5C66">двинь мышью — гаснет через 5s</span>
+      </div>
+      <div onMouseMove="{{ wake }}" onClick="{{ wake }}" style="width:1440px; height:900px; background:radial-gradient(ellipse 46% 26% at 50% 47%, rgba(196,214,246,.14), rgba(160,185,230,.055) 45%, rgba(0,0,0,0) 72%) , #000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:44px; border:1px solid #1A1A1F; overflow:hidden; cursor:none">
+        <div style="{{ demoDigitStyle }}">{{ liveTime }}</div>
+        <div style="{{ demoSubjectStyle }}">{{ subject }}</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; max-width:1440px">
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">glow · active</div>
+      <pre style="margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.75; color:#C8C8D0; white-space:pre-wrap">text-shadow:
+  0 0 3px  rgba(255,255,255,.60),
+  0 0 24px rgba(226,232,248,.45),
+  0 0 70px rgba(186,206,240,.30),
+  0 0 150px rgba(160,190,240,.20);
+color: #F4F4F7;</pre>
+    </div>
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">glow · dimmed</div>
+      <pre style="margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.75; color:#C8C8D0; white-space:pre-wrap">text-shadow:
+  0 0 26px rgba(150,158,178,.20),
+  0 0 72px rgba(150,166,196,.10);
+color: #8A8A8A;
+transition: 1600ms ease;</pre>
+    </div>
+    <div style="background:#101013; border:1px solid #1D1D22; border-radius:10px; padding:22px 24px; display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:#8FA7C4">type · zen</div>
+      <pre style="margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.75; color:#C8C8D0; white-space:pre-wrap">digits: JetBrains Mono 500
+  desktop 212px / -0.03em
+  mobile   76px / -0.02em
+  font-variant-numeric: tabular-nums
+subject: IBM Plex Sans 500
+  16 / 12px, .42em, uppercase
+breathe: 9s ease-in-out infinite</pre>
+    </div>
+  </div>
+
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;subject&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Математический анализ&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;glow&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Свечение&quot;},&quot;breathing&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Свечение&quot;}}">
+class Component extends DCLogic {
+  state = { t: 4324, dim: false };
+  componentDidMount() {
+    this.tick = setInterval(() => this.setState(s => ({ t: s.t + 1 })), 1000);
+    this.idle = setTimeout(() => this.setState({ dim: true }), 5000);
+  }
+  componentWillUnmount() { clearInterval(this.tick); clearTimeout(this.idle); }
+  fmt(t) {
+    const p = n => String(n).padStart(2, '0');
+    return p(Math.floor(t / 3600)) + ':' + p(Math.floor(t / 60) % 60) + ':' + p(t % 60);
+  }
+  renderVals() {
+    const g = this.props.glow ?? 1;
+    const a = (v) => Math.min(1, v * g).toFixed(3);
+    const activeShadow = `0 0 1px rgba(255,255,255,${a(0.60)}), 0 0 24px rgba(226,232,248,${a(0.45)}), 0 0 70px rgba(186,206,240,${a(0.30)}), 0 0 150px rgba(160,190,240,${a(0.20)})`;
+    const dimShadow = `0 0 18px rgba(150,158,178,${a(0.20)}), 0 0 72px rgba(150,166,196,${a(0.10)})`;
+    const breathe = (this.props.breathing ?? true) ? 'zenBreathe 9s ease-in-out infinite' : 'none';
+    const base = {
+      fontFamily: "'JetBrains Mono',monospace", fontWeight: 500, fontSize: '212px', lineHeight: 1,
+      letterSpacing: '-0.03em', fontVariantNumeric: 'tabular-nums',
+      transition: 'color 1600ms ease, text-shadow 1600ms ease', animation: breathe
+    };
+    const subjects = [
+      { name: 'Математический анализ', color: '#7E9CC4', today: '1:12', min: 72, pct: 100, label: '1 ч 12 м' },
+      { name: 'Линейная алгебра', color: '#8FA88C', today: '0:48', min: 48, pct: 67, label: '48 м' },
+      { name: 'Теория вероятностей', color: '#B08E76', today: '0:36', min: 36, pct: 50, label: '36 м' },
+      { name: 'Дискретная математика', color: '#9A8CB0', today: '0:27', min: 27, pct: 38, label: '27 м' },
+      { name: 'Физика', color: '#C4907E', today: '0:21', min: 21, pct: 29, label: '21 м' },
+      { name: 'Английский', color: '#7FA9A4', today: '0:18', min: 18, pct: 25, label: '18 м' },
+      { name: 'История', color: '#A8996E', today: '0:00', min: 9, pct: 13, label: '9 м' },
+      { name: 'Программирование', color: '#B2879B', today: '0:00', min: 6, pct: 8, label: '6 м' }
+    ];
+    const heatColors = ['#121216', '#1B2730', '#24384A', '#2F4E66', '#3E6B8C'];
+    const cells = [];
+    let seed = 7;
+    for (let i = 0; i < 140; i++) {
+      seed = (seed * 1103515245 + 12345) % 2147483648;
+      const r = (seed / 2147483648);
+      const lvl = i > 132 ? 0 : (r < 0.22 ? 0 : r < 0.42 ? 1 : r < 0.66 ? 2 : r < 0.87 ? 3 : 4);
+      cells.push({ bg: heatColors[lvl] });
+    }
+    // M18 календарь августа 2026 (1 авг = сб)
+    const calendar = [];
+    for (let d = 0; d < 5; d++) calendar.push({ label: '', state: 'empty' });
+    const frozen = [9, 22];
+    const missed = [3, 16];
+    for (let d = 1; d <= 31; d++) {
+      let state = 'done';
+      if (d > 24) state = 'future';
+      else if (frozen.includes(d)) state = 'frozen';
+      else if (missed.includes(d)) state = 'missed';
+      calendar.push({
+        label: String(d), state,
+        bg: state === 'done' ? '#22384A' : state === 'frozen' ? '#1B2A34' : state === 'missed' ? '#161619' : '#101013',
+        fg: state === 'done' ? '#BFD6EE' : state === 'frozen' ? '#8FA7C4' : state === 'missed' ? '#4A4A52' : '#3C3C43',
+        ring: d === 24 ? '1px solid #7E9CC4' : '1px solid transparent'
+      });
+    }
+    const milestones = [
+      { name: '7 дней', done: true, pct: 100, note: 'взято 30 июля', color: '#3E6B8C' },
+      { name: '30 дней', done: false, pct: 40, note: 'осталось 18 дней', color: '#7E9CC4' },
+      { name: '100 дней', done: false, pct: 12, note: 'осталось 88 дней', color: '#2F4E66' }
+    ];
+    const leaders = [
+      { pos: '1', name: 'Марина К.', time: '18 ч 40 м', pct: 100, me: false },
+      { pos: '2', name: 'Ты', time: '16 ч 05 м', pct: 86, me: true },
+      { pos: '3', name: 'Артём Д.', time: '14 ч 12 м', pct: 76, me: false },
+      { pos: '4', name: 'Соня П.', time: '11 ч 48 м', pct: 63, me: false },
+      { pos: '5', name: 'Илья В.', time: '9 ч 30 м', pct: 51, me: false },
+      { pos: '6', name: 'Гоша Р.', time: '6 ч 02 м', pct: 32, me: false }
+    ];
+    const duelRows = [
+      { q: 'Ортогональное дополнение', a: 'Знаю', b: 'Не помню', aOk: true, bOk: false },
+      { q: 'Критерий обратимости', a: 'Легко', b: 'Знаю', aOk: true, bOk: true },
+      { q: 'Теорема Кронекера — Капелли', a: 'Не помню', b: 'Знаю', aOk: false, bOk: true },
+      { q: 'Собственные числа', a: 'Знаю', b: 'С трудом', aOk: true, bOk: true },
+      { q: 'Жорданова форма', a: 'С трудом', b: 'Не помню', aOk: true, bOk: false }
+    ];
+    return {
+      calendar, milestones, leaders, duelRows,
+      subjects,
+      subjectsTop: subjects.slice(0, 5),
+      heatCells: cells,
+      liveTime: this.fmt(this.state.t),
+      liveTimeMobile: this.fmt(this.state.t).replace(/^0/, ''),
+      subject: this.props.subject ?? 'Математический анализ',
+      wake: () => {
+        clearTimeout(this.idle);
+        if (this.state.dim) this.setState({ dim: false });
+        this.idle = setTimeout(() => this.setState({ dim: true }), 5000);
+      },
+      demoDigitStyle: this.state.dim
+        ? { ...base, color: '#8A8A8A', textShadow: dimShadow }
+        : { ...base, color: '#F4F4F7', textShadow: activeShadow },
+      demoSubjectStyle: {
+        fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '16px', fontWeight: 500,
+        letterSpacing: '.42em', textTransform: 'uppercase',
+        transition: 'color 1600ms ease', color: this.state.dim ? '#3C3C43' : '#6E6E78'
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
