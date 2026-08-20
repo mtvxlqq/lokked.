@@ -1,0 +1,349 @@
+/* Дизайн-токены Lokked.
+ *
+ * Единственный источник правды — `docs/designs/tokens.md`. Здесь тот же набор,
+ * переложенный в тему Tailwind 4. Правило: в коде экранов нет ни одного
+ * произвольного значения (`text-[#0A0A0B]`, `p-[13px]`, `style={{ color: "#..." }}`),
+ * только утилиты, собранные отсюда. За этим следит правило `no-restricted-syntax`
+ * в `eslint.config.js`.
+ *
+ * Каждое пространство имён сначала сбрасывается в `initial`: палитра Tailwind
+ * по умолчанию (`bg-slate-500`, `text-xl`, `rounded-md`) не должна быть доступна,
+ * иначе в макете заведётся сорок слегка разных чёрных.
+ *
+ * Отступы остались на стандартной шкале Tailwind (`--spacing` = 0.25rem), она
+ * покрывает все значения из tokens.md дробными шагами: `p-1.5` = 6px,
+ * `p-3.25` = 13px, `gap-4.5` = 18px, `p-11` = 44px, `p-16` = 64px.
+ */
+
+@theme {
+  /* ---------------------------------------------------------------- цвета */
+  --color-*: initial;
+
+  /* Поверхности */
+  --color-bg: #0a0a0b;
+  --color-bg-zen: #000000;
+  --color-surface: #101013;
+  --color-surface-sunken: #0c0c0e;
+  --color-surface-inset: #0c0c0f;
+  --color-raised: #17171b;
+  --color-raised-2: #1b1b21;
+  --color-row: #131317;
+  --color-track: #0e0e11;
+  --color-danger-surface: #12100f;
+  --color-danger-surface-2: #141112;
+  --color-accent-surface: #131a21;
+  --color-light-surface: #f2f2f0;
+
+  /* Обводки */
+  --color-border: #1d1d22;
+  --color-border-soft: #1b1b20;
+  --color-hairline: #1a1a1f;
+  --color-hairline-2: #18181d;
+  --color-border-strong: #26262c;
+  --color-border-strong-2: #23232a;
+  --color-border-mute: #2a2a32;
+  --color-border-accent: #2a3a4a;
+  --color-border-danger: #2c2220;
+
+  /* Текст, от самого яркого к самому приглушённому */
+  --color-text: #f2f2f5;
+  --color-text-bright: #f4f4f7;
+  --color-text-1: #ededf1;
+  --color-text-2: #e8e8ec;
+  --color-text-3: #dcdce2;
+  --color-text-4: #c8c8d0;
+  --color-text-muted: #9a9aa4;
+  --color-text-muted-2: #8b8b95;
+  --color-text-dim: #7c7c86;
+  --color-text-dim-2: #6e6e78;
+  --color-text-faint: #5c5c66;
+  --color-text-disabled: #4a4a52;
+  --color-text-zen-dim: #8a8a8a;
+  --color-text-zen-dim-2: #3c3c43;
+
+  /* Акцент (Steel) */
+  --color-accent: #7e9cc4;
+  --color-accent-text: #a8c0dc;
+  --color-accent-text-2: #8fa7c4;
+  --color-accent-text-3: #bfd6ee;
+  --color-accent-on-light: #4e6e92;
+  --color-accent-alt-teal: #6fa3a0;
+  --color-accent-alt-lilac: #9a93c8;
+
+  /* Опасность и срочность */
+  --color-danger: #c4726a;
+  --color-danger-bright: #e28a80;
+  --color-danger-text: #a88680;
+  --color-danger-text-2: #8a6a66;
+
+  /* Палитра предметов. Восемь оттенков, доступны по индексу — предмет получает
+     цвет при создании и хранит его номер, а не hex. */
+  --color-subject-1: #7e9cc4;
+  --color-subject-2: #8fa88c;
+  --color-subject-3: #b08e76;
+  --color-subject-4: #9a8cb0;
+  --color-subject-5: #c4907e;
+  --color-subject-6: #7fa9a4;
+  --color-subject-7: #a8996e;
+  --color-subject-8: #b2879b;
+
+  /* Heatmap активности: пять ступеней, 0 — пусто */
+  --color-heat-0: #121216;
+  --color-heat-1: #1b2730;
+  --color-heat-2: #24384a;
+  --color-heat-3: #2f4e66;
+  --color-heat-4: #3e6b8c;
+
+  /* Календарь стрика. «Сегодня» — обводка --color-accent поверх любого фона. */
+  --color-streak-done: #22384a;
+  --color-streak-done-text: #bfd6ee;
+  --color-streak-frozen: #1b2a34;
+  --color-streak-frozen-text: #8fa7c4;
+  --color-streak-missed: #161619;
+  --color-streak-missed-text: #4a4a52;
+  --color-streak-future: #101013;
+  --color-streak-future-text: #3c3c43;
+
+  /* ------------------------------------------------------------- шрифты */
+  --font-*: initial;
+
+  /* Цифры, метки, логотип. */
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  /* Интерфейс. */
+  --font-sans:
+    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Только математика: формулы и курсивные переменные. */
+  --font-math: Georgia, "Times New Roman", serif;
+
+  /* Шкала размеров из tokens.md, один в один в пикселях. Роли (Zen-таймер 212,
+     Pomodoro 112, заголовок экрана 30 и т.д.) расписаны там же таблицей —
+     здесь только сама шкала, чтобы у неё было ровно одно определение. */
+  --text-*: initial;
+  --text-10\.5: 10.5px;
+  --text-11: 11px;
+  --text-11\.5: 11.5px;
+  --text-12: 12px;
+  --text-12\.5: 12.5px;
+  --text-13: 13px;
+  --text-13\.5: 13.5px;
+  --text-14: 14px;
+  --text-14\.5: 14.5px;
+  --text-15: 15px;
+  --text-15\.5: 15.5px;
+  --text-16: 16px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-19: 19px;
+  --text-20: 20px;
+  --text-21: 21px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-28: 28px;
+  --text-30: 30px;
+  --text-34: 34px;
+  --text-38: 38px;
+  --text-40: 40px;
+  --text-42: 42px;
+  --text-52: 52px;
+  --text-58: 58px;
+  --text-64: 64px;
+  --text-76: 76px;
+  --text-88: 88px;
+  --text-104: 104px;
+  --text-112: 112px;
+  --text-150: 150px;
+  --text-212: 212px;
+
+  /* Трекинг */
+  --tracking-*: initial;
+  --tracking-normal: 0em;
+  --tracking-timer: -0.03em; /* 212px и 104px */
+  --tracking-timer-2: -0.02em; /* 58-112px */
+  --tracking-title: -0.02em;
+  --tracking-tight: -0.01em;
+  --tracking-label: 0.14em;
+  --tracking-label-2: 0.16em;
+  --tracking-label-3: 0.18em;
+  --tracking-label-4: 0.2em;
+  --tracking-wide: 0.24em;
+  --tracking-wider: 0.28em;
+  --tracking-widest: 0.34em;
+  --tracking-zen-subject: 0.42em;
+  --tracking-zen-subject-sm: 0.36em;
+
+  /* Интерлиньяж */
+  --leading-*: initial;
+  --leading-none: 1; /* цифры */
+  --leading-title: 1.3;
+  --leading-text: 1.55;
+  --leading-relaxed: 1.6;
+  --leading-code: 1.75;
+
+  /* ------------------------------------------------------------- радиусы */
+  --radius-*: initial;
+  --radius-xs: 3px; /* ячейка heatmap, полоса прогресса, точка */
+  --radius-sm: 6px; /* свотч, чип, мобильная ячейка календаря */
+  --radius-md: 8px; /* пункт навигации, мелкая плашка */
+  --radius-lg: 10px; /* кнопки, строки списков */
+  --radius-xl: 12px; /* карточки-панели */
+  --radius-2xl: 16px; /* карточка вопроса, блиц-рамка */
+  --radius-icon: 24px; /* иконка приложения */
+
+  /* ------------------------------------------------------------- ширины */
+  /* Контент десктопа не растягивается шире макета — на широком мониторе
+     строки списков иначе превращаются в километровые полосы. */
+  --container-app: 1400px;
+
+  /* --------------------------------------------------------- box-shadow */
+  --shadow-*: initial;
+  --shadow-accent-btn: 0 0 28px rgb(126 156 196 / 0.22);
+  --shadow-accent-btn-sm: 0 0 24px rgb(126 156 196 / 0.2);
+  --inset-shadow-*: initial;
+  --inset-shadow-accent: inset 0 0 60px rgb(126 156 196 / 0.07);
+  --inset-shadow-accent-sm: inset 0 0 40px rgb(126 156 196 / 0.1);
+  --inset-shadow-danger: inset 0 0 90px rgb(196 114 106 / 0.1);
+
+  /* -------------------------------------------------------------- кривые */
+  --ease-*: initial;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* ------------------------------------------------------------ анимации */
+  --animate-*: initial;
+  --animate-breathe: zenBreathe 9s ease-in-out infinite;
+  --animate-breathe-dim: zenBreatheDim 11s ease-in-out infinite;
+
+  @keyframes zenBreathe {
+    0%,
+    100% {
+      opacity: 0.94;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes zenBreatheDim {
+    0%,
+    100% {
+      opacity: 0.82;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+}
+
+/* Значения, которым в теме Tailwind нет подходящего пространства имён:
+   параметры свечения и длительности сценариев. */
+:root {
+  /* Свечение главных цифр. Мобильные варианты — те же альфы, радиусы ×0.7. */
+  --glow-timer:
+    0 0 3px rgb(255 255 255 / 0.6), 0 0 24px rgb(226 232 248 / 0.45),
+    0 0 70px rgb(186 206 240 / 0.3), 0 0 150px rgb(160 190 240 / 0.2);
+  --glow-timer-sm:
+    0 0 3px rgb(255 255 255 / 0.6), 0 0 17px rgb(226 232 248 / 0.45),
+    0 0 50px rgb(186 206 240 / 0.3), 0 0 108px rgb(160 190 240 / 0.2);
+  --glow-timer-dim:
+    0 0 26px rgb(150 158 178 / 0.2), 0 0 72px rgb(150 166 196 / 0.1);
+  --glow-timer-dim-sm:
+    0 0 20px rgb(150 158 178 / 0.2), 0 0 56px rgb(150 166 196 / 0.1);
+
+  /* Свечение среднего уровня. */
+  --glow-streak:
+    0 0 3px rgb(255 255 255 / 0.5), 0 0 22px rgb(226 232 248 / 0.38),
+    0 0 64px rgb(186 206 240 / 0.22);
+  --glow-today:
+    0 0 2px rgb(255 255 255 / 0.3), 0 0 18px rgb(226 232 248 / 0.22),
+    0 0 56px rgb(186 206 240 / 0.12);
+  --glow-score:
+    0 0 2px rgb(255 255 255 / 0.35), 0 0 20px rgb(226 232 248 / 0.24);
+
+  /* Срочность: таймер блица на последних секундах. */
+  --glow-danger:
+    0 0 3px rgb(255 180 170 / 0.4), 0 0 22px rgb(226 138 128 / 0.35),
+    0 0 60px rgb(196 114 106 / 0.22);
+
+  /* Ореол на фоне — свет, который цифры отбрасывают на чёрное. */
+  --halo-zen: radial-gradient(
+    ellipse 46% 26% at 50% 47%,
+    rgb(196 214 246 / 0.14),
+    rgb(160 185 230 / 0.055) 45%,
+    rgb(0 0 0 / 0) 72%
+  );
+  --halo-zen-dim: radial-gradient(
+    ellipse 44% 24% at 50% 47%,
+    rgb(176 186 208 / 0.06),
+    rgb(150 166 196 / 0.024) 45%,
+    rgb(0 0 0 / 0) 72%
+  );
+
+  /* Длительности сценариев. */
+  --duration-zen-dim: 1600ms;
+  --duration-splash: 2600ms;
+  --timeout-idle: 5000ms;
+}
+
+/* Свечение оформлено утилитами, а не набором инлайновых теней: тень должна быть
+   ровно одна на всё приложение, иначе она разъедется по экранам.
+   Тень статичная — «дыхание» делается анимацией opacity (`animate-breathe`),
+   потому что покадровая анимация text-shadow на интегрированной графике
+   заметно тормозит, а таймер перерисовывается непрерывно. */
+
+@utility glow-timer {
+  color: var(--color-text-bright);
+  text-shadow: var(--glow-timer);
+}
+
+@utility glow-timer-sm {
+  color: var(--color-text-bright);
+  text-shadow: var(--glow-timer-sm);
+}
+
+/* Приглушённое состояние Zen после 5 секунд бездействия. Переход длинный —
+   гаснуть должно незаметно. */
+@utility glow-timer-dim {
+  color: var(--color-text-zen-dim);
+  text-shadow: var(--glow-timer-dim);
+}
+
+@utility glow-timer-dim-sm {
+  color: var(--color-text-zen-dim);
+  text-shadow: var(--glow-timer-dim-sm);
+}
+
+@utility glow-streak {
+  color: var(--color-text-bright);
+  text-shadow: var(--glow-streak);
+}
+
+@utility glow-today {
+  color: var(--color-text-bright);
+  text-shadow: var(--glow-today);
+}
+
+@utility glow-score {
+  color: var(--color-text-bright);
+  text-shadow: var(--glow-score);
+}
+
+@utility glow-danger {
+  color: var(--color-danger-bright);
+  text-shadow: var(--glow-danger);
+}
+
+/* Переход между активным и приглушённым Zen. Вешается вместе с glow-*. */
+@utility glow-fade {
+  transition:
+    color var(--duration-zen-dim) ease,
+    text-shadow var(--duration-zen-dim) ease;
+}
+
+@utility halo-zen {
+  background: var(--halo-zen), var(--color-bg-zen);
+}
+
+@utility halo-zen-dim {
+  background: var(--halo-zen-dim), var(--color-bg-zen);
+}

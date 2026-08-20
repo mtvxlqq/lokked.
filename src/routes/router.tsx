@@ -1,6 +1,23 @@
-import { createHashRouter } from "react-router";
+import { createHashRouter, type RouteObject } from "react-router";
 
 import { Home } from "@/routes/Home";
+
+/**
+ * Служебные страницы для сверки с макетом. `import.meta.env.DEV` подставляется
+ * сборщиком литералом, поэтому в релизе ветка мертва и динамический импорт
+ * выбрасывается вместе с самим модулем.
+ */
+const devRoutes: RouteObject[] = import.meta.env.DEV
+  ? [
+      {
+        path: "dev/tokens",
+        lazy: async () => {
+          const { Tokens } = await import("@/routes/dev/Tokens");
+          return { Component: Tokens };
+        },
+      },
+    ]
+  : [];
 
 /**
  * Hash routing, not browser routing: a production Tauri build serves the
@@ -12,4 +29,5 @@ export const router = createHashRouter([
     path: "/",
     element: <Home />,
   },
+  ...devRoutes,
 ]);
