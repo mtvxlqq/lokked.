@@ -1,8 +1,10 @@
-//! Tests for what tells the four modes apart: how many cards each deals,
+//! Tests for what tells the five modes apart: how many cards each deals,
 //! which cards «слабые» picks, and how blitz counts points.
 
 use lokked_lib::core::review::Grade;
-use lokked_lib::core::scheduler::{weakest, CardAccuracy, StudyMode, WEAK_LIMIT, WEAK_MIN_SHOWS};
+use lokked_lib::core::scheduler::{
+    weakest, CardAccuracy, StudyMode, CLASSIC_LIMIT, REEL_LIMIT, WEAK_LIMIT, WEAK_MIN_SHOWS,
+};
 use lokked_lib::core::stats::{blitz_score, ReviewOutcome, BLITZ_POINTS};
 
 fn seen(card: &str, shown: u32, correct: u32) -> CardAccuracy {
@@ -30,6 +32,7 @@ fn a_mode_survives_a_round_trip_through_its_slug() {
         StudyMode::Blitz,
         StudyMode::Marathon,
         StudyMode::Weak,
+        StudyMode::Reel,
     ] {
         assert_eq!(StudyMode::parse(mode.as_str()), Ok(mode));
     }
@@ -46,12 +49,26 @@ fn the_marathon_is_the_only_mode_that_takes_the_whole_deck() {
     assert!(StudyMode::Classic.limit().is_some());
     assert!(StudyMode::Blitz.limit().is_some());
     assert!(StudyMode::Weak.limit().is_some());
+    assert!(StudyMode::Reel.limit().is_some());
+}
+
+#[test]
+fn the_reel_deals_a_sitting_like_the_classic_run() {
+    // Барабан отличается тем, как приходит следующая карточка, а не тем,
+    // сколько их: это тот же заход, только вслепую.
+    assert_eq!(StudyMode::Reel.limit(), Some(REEL_LIMIT));
+    assert_eq!(REEL_LIMIT, CLASSIC_LIMIT);
 }
 
 #[test]
 fn only_blitz_runs_against_a_clock() {
     assert!(StudyMode::Blitz.is_timed());
-    for mode in [StudyMode::Classic, StudyMode::Marathon, StudyMode::Weak] {
+    for mode in [
+        StudyMode::Classic,
+        StudyMode::Marathon,
+        StudyMode::Weak,
+        StudyMode::Reel,
+    ] {
         assert!(!mode.is_timed());
     }
 }

@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Study } from "@/routes/Study";
 import type { Grade, StudyMode, StudySummary, StudyView } from "@/lib/tauri";
@@ -111,6 +111,11 @@ function backend(options: { total?: number; mode?: StudyMode } = {}) {
         return Promise.resolve({ ...view(), total: 1 });
       case "study_stop":
         return Promise.resolve(null);
+      case "list_cards":
+        // Барабану нужны лицевые стороны колоды для ленты прокрутки.
+        return Promise.resolve(
+          cards.map((card) => ({ ...card, deck_id: "d-1", back: card.back })),
+        );
       default:
         return Promise.reject(new Error(`неожиданная команда ${command}`));
     }
@@ -346,5 +351,113 @@ describe("прогон по колоде", () => {
 
     await screen.findByText("Прогон закончен");
     expect(screen.queryByText("Счёт")).not.toBeInTheDocument();
+  });
+});
+
+describe("барабан", () => {
+  /**
+   * Прокручивает барабан до остановки.
+   *
+   * Два шага, потому что их два и в жизни: сначала кадр, на котором лента
+   * трогается с места, и только потом — время самой прокрутки.
+   */
+  async function spin() {
+    // Крутить нечего, пока прогон не начался: сперва дожидаемся барабана.
+    await screen.findByRole("status");
+    await act(async () => {
+      vi.advanceTimersByTime(50);
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(1500);
+    });
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("сначала крутится, потом показывает выпавшую карточку", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+
+    expect(
+      await screen.findByRole("status", { name: "Барабан крутится" }),
+    ).toBeInTheDocument();
+
+    await spin();
+
+    expect(
+      screen.getByRole("status", { name: "Выпало: Первообразная" }),
+    ).toBeInTheDocument();
+  });
+
+  it("пока барабан крутится, ответ не раскрыть", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await screen.findByRole("status", { name: "Барабан крутится" });
+
+    await userEvent.keyboard(" ");
+
+    expect(invoke).not.toHaveBeenCalledWith("study_reveal");
+    // И кнопки, по которой можно было бы нажать, тоже нет.
+    expect(
+      screen.queryByRole("button", { name: "Показать ответ" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("когда барабан встал, пробел показывает ответ", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+
+    await userEvent.keyboard(" ");
+
+    expect(invoke).toHaveBeenCalledWith("study_reveal");
+    // Оборот первой карточки — формула, её рисует KaTeX; проверяем по тому,
+    // что рядом с ответом появились оценки.
+    expect(
+      await screen.findByText("Насколько уверенно ты ответил?"),
+    ).toBeInTheDocument();
+  });
+
+  it("оценка крутит барабан заново для следующей карточки", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+    await userEvent.keyboard(" ");
+    await screen.findByText("Насколько уверенно ты ответил?");
+
+    await userEvent.keyboard("3");
+
+    expect(
+      await screen.findByRole("status", { name: "Барабан крутится" }),
+    ).toBeInTheDocument();
+    await spin();
+    expect(
+      screen.getByRole("status", { name: "Выпало: Интеграл" }),
+    ).toBeInTheDocument();
+  });
+
+  it("в ленте нет оборотов карточек", async () => {
+    // Иначе барабан подсказывал бы ответ ещё до того, как остановится.
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+
+    expect(screen.queryByText("множество")).not.toBeInTheDocument();
+  });
+
+  it("выход по Esc возвращает на экран карточек", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+
+    await userEvent.keyboard("{Escape}");
+
+    expect(await screen.findByText("экран карточек")).toBeInTheDocument();
   });
 });

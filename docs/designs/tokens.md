@@ -221,6 +221,7 @@ background: radial-gradient(ellipse 44% 24% at 50% 47%,
 |---|---|
 | `ease-standard` | `cubic-bezier(.4, 0, .2, 1)` |
 | `ease-out-soft` | `cubic-bezier(.2, .7, .2, 1)` |
+| `ease-reel` | `cubic-bezier(.08, .82, .17, 1)` — барабан карточек |
 | `duration-zen-dim` | `1600ms` |
 | `duration-splash` | `2600ms` |
 | `breathe-active` | `zenBreathe 9s ease-in-out infinite` (opacity .94 ↔ 1) |

@@ -26,6 +26,10 @@ pub const BLITZ_LIMIT: usize = 20;
 /// How many of the weakest cards «слабые» deals.
 pub const WEAK_LIMIT: usize = 20;
 
+/// How many cards the reel deals. Same sitting as the classic run — the
+/// difference is in how the next card arrives, not in how many there are.
+pub const REEL_LIMIT: usize = 20;
+
 /// How many times a card has to have been seen before its accuracy means
 /// anything. Below this it is not a weak card, it is a new one.
 pub const WEAK_MIN_SHOWS: u32 = 3;
@@ -42,6 +46,8 @@ pub enum StudyMode {
     Marathon,
     /// Двадцать карточек с худшей точностью.
     Weak,
+    /// Барабан: карточка не показывается, а выпадает.
+    Reel,
 }
 
 /// A mode the study screen asked for that this module does not know.
@@ -64,6 +70,7 @@ impl StudyMode {
             Self::Blitz => "blitz",
             Self::Marathon => "marathon",
             Self::Weak => "weak",
+            Self::Reel => "reel",
         }
     }
 
@@ -73,6 +80,7 @@ impl StudyMode {
             "blitz" => Ok(Self::Blitz),
             "marathon" => Ok(Self::Marathon),
             "weak" => Ok(Self::Weak),
+            "reel" => Ok(Self::Reel),
             other => Err(UnknownMode(other.to_string())),
         }
     }
@@ -83,6 +91,7 @@ impl StudyMode {
             Self::Classic => Some(CLASSIC_LIMIT),
             Self::Blitz => Some(BLITZ_LIMIT),
             Self::Weak => Some(WEAK_LIMIT),
+            Self::Reel => Some(REEL_LIMIT),
             Self::Marathon => None,
         }
     }

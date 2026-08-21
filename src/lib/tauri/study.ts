@@ -5,8 +5,8 @@ import { invoke } from "@tauri-apps/api/core";
 
 export type Grade = "again" | "hard" | "good" | "easy";
 
-/** Режим прогона: обычный, на время, вся колода, только слабые. */
-export type StudyMode = "classic" | "blitz" | "marathon" | "weak";
+/** Режим прогона: обычный, на время, вся колода, только слабые, барабан. */
+export type StudyMode = "classic" | "blitz" | "marathon" | "weak" | "reel";
 
 export type StudyCard = {
   id: string;

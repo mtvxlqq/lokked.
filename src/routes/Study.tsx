@@ -3,12 +3,15 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import { CardText } from "@/components/cards/CardText";
 import { BlitzRing } from "@/components/study/BlitzRing";
+import { ReelStage } from "@/components/study/ReelStage";
 import { GradeBar } from "@/components/study/GradeBar";
 import { RunShell as Shell } from "@/components/study/RunShell";
 import { RunSummary } from "@/components/study/RunSummary";
 import { Button } from "@/components/ui";
+import { plainText } from "@/lib/markdown";
 import {
   errorMessage,
+  listCards,
   studyAnswer,
   studyCurrent,
   studyRepeatMistakes,
@@ -53,6 +56,25 @@ export function Study() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  /** Надписи колоды для барабана — только лицевые стороны, без ответов. */
+  const [labels, setLabels] = useState<string[]>([]);
+  /**
+   * Номер карточки, на которой барабан уже остановился.
+   *
+   * Состояние выражено так, а не флагом «крутится»: флаг пришлось бы
+   * поднимать в эффекте на каждую новую карточку, а это лишний каскад
+   * перерисовок. Здесь же «крутится» — вывод из того, что позиция сменилась,
+   * а барабан об остановке ещё не сообщил.
+   */
+  const [settledAt, setSettledAt] = useState<number | null>(null);
+
+  const position = view?.position ?? null;
+  const spinning =
+    mode === "reel" &&
+    view !== null &&
+    !view.revealed &&
+    position !== settledAt;
+
   // Прогон продолжается, а не начинается заново: вернуться на экран — не то же
   // самое, что взять колоду сначала.
   useEffect(() => {
@@ -73,6 +95,25 @@ export function Study() {
       })
       .catch((failure: unknown) => {
         if (!cancelled) setError(errorMessage(failure));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [deckId, mode]);
+
+  // Лента барабана: лицевые стороны той же колоды. Оборотов среди них нет —
+  // подсмотреть ответ в проносящихся мимо надписях нельзя.
+  useEffect(() => {
+    if (!deckId || mode !== "reel") return;
+    let cancelled = false;
+
+    listCards(deckId)
+      .then((cards) => {
+        if (!cancelled) setLabels(cards.map((card) => plainText(card.front)));
+      })
+      .catch(() => {
+        // Барабан переживёт: без ленты он покажет одну выпавшую надпись.
       });
 
     return () => {
@@ -103,12 +144,18 @@ export function Study() {
   }, [navigate]);
 
   const reveal = useCallback(() => {
+    // По крутящемуся барабану жать нечего: карточка ещё не выпала.
+    if (spinning) return;
+
     setBusy(true);
     studyReveal()
       .then(setView)
       .catch((failure: unknown) => setError(errorMessage(failure)))
       .finally(() => setBusy(false));
-  }, []);
+  }, [spinning]);
+
+  /** Барабан встал на этой карточке. Стабилен, пока карточка не сменится. */
+  const settle = useCallback(() => setSettledAt(position), [position]);
 
   const grade = useCallback((value: Grade) => {
     setBusy(true);
@@ -185,6 +232,22 @@ export function Study() {
           busy={busy}
         />
       </Shell>
+    );
+  }
+
+  if (mode === "reel" && view?.card) {
+    return (
+      <ReelStage
+        view={view}
+        labels={labels}
+        spinning={spinning}
+        busy={busy}
+        onSettled={settle}
+        onReveal={reveal}
+        onGrade={grade}
+        onLeave={leave}
+        error={error}
+      />
     );
   }
 
