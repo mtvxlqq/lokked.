@@ -112,3 +112,48 @@ pub fn review_summary(results: &[ReviewOutcome]) -> ReviewSummary {
             .collect(),
     }
 }
+
+/// Points a correct answer is worth before any multiplier.
+pub const BLITZ_POINTS: i64 = 10;
+
+/// Answers in a row that start paying one and a half.
+pub const BLITZ_STREAK_HALF: u32 = 5;
+
+/// Answers in a row that start paying double.
+pub const BLITZ_STREAK_DOUBLE: u32 = 10;
+
+/// What a blitz run scored.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
+pub struct BlitzScore {
+    pub points: i64,
+    /// The longest run of recalled cards in a row.
+    pub best_streak: u32,
+}
+
+/// Counts a blitz run.
+///
+/// Ten points a card, one and a half times that from the fifth in a row and
+/// double from the tenth — the multiplier applies to the answer that reaches
+/// the streak, not retroactively. A miss is worth nothing and puts the
+/// streak back to zero.
+pub fn blitz_score(results: &[ReviewOutcome]) -> BlitzScore {
+    let mut score = BlitzScore::default();
+    let mut streak = 0;
+
+    for result in results {
+        if !result.grade.is_correct() {
+            streak = 0;
+            continue;
+        }
+
+        streak += 1;
+        score.best_streak = score.best_streak.max(streak);
+        score.points += match streak {
+            s if s >= BLITZ_STREAK_DOUBLE => BLITZ_POINTS * 2,
+            s if s >= BLITZ_STREAK_HALF => BLITZ_POINTS * 3 / 2,
+            _ => BLITZ_POINTS,
+        };
+    }
+
+    score
+}

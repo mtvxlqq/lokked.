@@ -8,6 +8,7 @@ import { DeckList } from "@/components/cards/DeckList";
 import { ExportDialog } from "@/components/cards/ExportDialog";
 import { ImportDialog } from "@/components/cards/ImportDialog";
 import { CardsIcon } from "@/components/nav/icons";
+import { MODE_NAMES, STUDY_MODES } from "@/components/study/modes";
 import { Screen } from "@/components/Screen";
 import { Button, Card as Panel, EmptyState } from "@/components/ui";
 import { withNonBreakingMarkers } from "@/lib/format";
@@ -218,14 +219,19 @@ export function Cards() {
                   />
                 ))}
               <div className="flex flex-wrap gap-2.5">
-                <Button
-                  size="sm"
-                  variant="primary"
-                  disabled={deckCards.length === 0}
-                  onClick={() => void navigate(`/study/${selected.id}`)}
-                >
-                  Учить
-                </Button>
+                {STUDY_MODES.map((mode) => (
+                  <Button
+                    key={mode}
+                    size="sm"
+                    variant={mode === "classic" ? "primary" : "secondary"}
+                    disabled={deckCards.length === 0}
+                    onClick={() =>
+                      void navigate(`/study/${selected.id}?mode=${mode}`)
+                    }
+                  >
+                    {MODE_NAMES[mode]}
+                  </Button>
+                ))}
                 <Button
                   size="sm"
                   variant="secondary"

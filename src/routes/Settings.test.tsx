@@ -3,24 +3,27 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Settings } from "@/routes/Settings";
-import type { DaySettings, ZenSettings } from "@/lib/tauri";
+import type { BlitzSettings, DaySettings, ZenSettings } from "@/lib/tauri";
 
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
 
 const defaults: ZenSettings = { minutes_only: false, font_size: "normal" };
 const midnight: DaySettings = { start_offset_seconds: 0 };
+const twentySeconds: BlitzSettings = { seconds: 20 };
 
 /** Настройки, которые бэкенд помнит между вызовами. */
 function backend(
   options: {
     stored?: ZenSettings;
     storedDay?: DaySettings;
+    storedBlitz?: BlitzSettings;
     saveFails?: boolean;
   } = {},
 ) {
   let stored = options.stored ?? defaults;
   let storedDay = options.storedDay ?? midnight;
+  let storedBlitz = options.storedBlitz ?? twentySeconds;
 
   invoke.mockImplementation((command: string, args?: unknown) => {
     if (options.saveFails && command.startsWith("set_")) {
@@ -40,6 +43,13 @@ function backend(
       }
       case "day_settings":
         return Promise.resolve(storedDay);
+      case "blitz_settings":
+        return Promise.resolve(storedBlitz);
+      case "set_blitz_settings": {
+        const { seconds } = args as { seconds: number };
+        storedBlitz = { seconds };
+        return Promise.resolve(storedBlitz);
+      }
       case "set_day_settings": {
         const { startOffsetSeconds } = args as { startOffsetSeconds: number };
         storedDay = { start_offset_seconds: startOffsetSeconds };
@@ -154,5 +164,20 @@ describe("настройки", () => {
       "база недоступна",
     );
     expect(select).toHaveValue(String(4 * 60 * 60));
+  });
+
+  it("сохраняет время карточки в блице", async () => {
+    backend();
+    render(<Settings />);
+    const select = await screen.findByLabelText("Время на карточку");
+
+    await userEvent.selectOptions(select, "45");
+
+    await waitFor(() =>
+      expect(invoke).toHaveBeenCalledWith("set_blitz_settings", {
+        seconds: 45,
+      }),
+    );
+    expect(select).toHaveValue("45");
   });
 });

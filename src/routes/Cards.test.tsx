@@ -107,7 +107,7 @@ function renderCards() {
     { initialEntries: ["/cards"] },
   );
 
-  return render(<RouterProvider router={router} />);
+  return { ...render(<RouterProvider router={router} />), router };
 }
 
 beforeEach(() => {
@@ -311,14 +311,26 @@ describe("экран карточек", () => {
     ).toBeInTheDocument();
   });
 
-  it("«Учить» уводит на прогон по этой колоде", async () => {
+  it("каждый режим уводит на свой прогон по этой колоде", async () => {
     backend();
-    renderCards();
+    const { router } = renderCards();
     await screen.findByText("Первообразная функции");
 
-    await userEvent.click(screen.getByRole("button", { name: "Учить" }));
+    await userEvent.click(screen.getByRole("button", { name: "Классика" }));
+    expect(await screen.findByText("прогон по колоде")).toBeInTheDocument();
+    expect(router.state.location.search).toBe("?mode=classic");
+  });
+
+  it("блиц, марафон и слабые — отдельные кнопки", async () => {
+    backend();
+    const { router } = renderCards();
+    await screen.findByText("Первообразная функции");
+
+    await userEvent.click(screen.getByRole("button", { name: "Блиц" }));
 
     expect(await screen.findByText("прогон по колоде")).toBeInTheDocument();
+    expect(router.state.location.search).toBe("?mode=blitz");
+    expect(router.state.location.pathname).toBe("/study/d-1");
   });
 
   it("сообщает об отказе команды и даёт повторить", async () => {

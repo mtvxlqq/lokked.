@@ -38,3 +38,18 @@ export function saveZenSettings(settings: ZenSettings): Promise<ZenSettings> {
     fontSize: settings.font_size,
   });
 }
+
+// ------------------------------------------------------------------ блиц
+
+export type BlitzSettings = {
+  /** Сколько секунд даётся на карточку. */
+  seconds: number;
+};
+
+export function blitzSettings(): Promise<BlitzSettings> {
+  return invoke<BlitzSettings>("blitz_settings");
+}
+
+export function saveBlitzSettings(seconds: number): Promise<BlitzSettings> {
+  return invoke<BlitzSettings>("set_blitz_settings", { seconds });
+}

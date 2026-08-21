@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { Screen } from "@/components/Screen";
 import { Card, Select, Switch } from "@/components/ui";
 import {
+  blitzSettings,
   daySettings,
   errorMessage,
+  saveBlitzSettings,
   saveDaySettings,
   saveZenSettings,
   zenSettings,
+  type BlitzSettings,
   type DaySettings,
   type ZenFontSize,
   type ZenSettings,
@@ -19,6 +22,9 @@ const FONT_SIZES: { value: ZenFontSize; label: string }[] = [
   { value: "large", label: "Крупнее" },
 ];
 
+/** Сколько секунд даётся на карточку в блице. */
+const BLITZ_SECONDS = [10, 15, 20, 30, 45, 60];
+
 /** Начало учебного дня выбирается по часам: минуты здесь ничего не решают. */
 const DAY_START_HOURS = Array.from({ length: 24 }, (_, hour) => ({
   seconds: hour * 60 * 60,
@@ -26,7 +32,7 @@ const DAY_START_HOURS = Array.from({ length: 24 }, (_, hour) => ({
 }));
 
 /**
- * Раздел «Настройки»: чёрный экран и граница учебного дня.
+ * Раздел «Настройки»: граница учебного дня, блиц и чёрный экран.
  *
  * Пресеты таймера сюда не переезжают — они живут на экране «Таймеры», рядом
  * с предметами, которым принадлежат.
@@ -34,16 +40,18 @@ const DAY_START_HOURS = Array.from({ length: 24 }, (_, hour) => ({
 export function Settings() {
   const [zen, setZen] = useState<ZenSettings | null>(null);
   const [day, setDay] = useState<DaySettings | null>(null);
+  const [blitz, setBlitz] = useState<BlitzSettings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    Promise.all([zenSettings(), daySettings()])
-      .then(([loadedZen, loadedDay]) => {
+    Promise.all([zenSettings(), daySettings(), blitzSettings()])
+      .then(([loadedZen, loadedDay, loadedBlitz]) => {
         if (cancelled) return;
         setZen(loadedZen);
         setDay(loadedDay);
+        setBlitz(loadedBlitz);
       })
       .catch((failure: unknown) => {
         if (!cancelled) setError(errorMessage(failure));
@@ -85,6 +93,19 @@ export function Settings() {
       });
   }
 
+  function saveBlitz(seconds: number) {
+    const previous = blitz;
+    setBlitz({ seconds });
+    setError(null);
+
+    saveBlitzSettings(seconds)
+      .then(setBlitz)
+      .catch((failure: unknown) => {
+        setError(errorMessage(failure));
+        setBlitz(previous);
+      });
+  }
+
   return (
     <Screen title="Настройки">
       <Card title="Учебный день">
@@ -98,6 +119,27 @@ export function Settings() {
             {DAY_START_HOURS.map((hour) => (
               <option key={hour.seconds} value={hour.seconds}>
                 {hour.label}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <p className="text-14 text-text-dim">
+            {error ? "Настройки не прочитались" : "Загрузка…"}
+          </p>
+        )}
+      </Card>
+
+      <Card title="Блиц">
+        {blitz ? (
+          <Select
+            label="Время на карточку"
+            hint="Когда время выходит, карточка засчитывается как «не помню» — блиц про скорость припоминания, а не про раздумья."
+            value={String(blitz.seconds)}
+            onChange={(event) => saveBlitz(Number(event.target.value))}
+          >
+            {BLITZ_SECONDS.map((seconds) => (
+              <option key={seconds} value={seconds}>
+                {seconds} с
               </option>
             ))}
           </Select>

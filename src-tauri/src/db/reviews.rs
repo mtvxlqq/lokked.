@@ -127,4 +127,34 @@ impl<'a> ReviewRepo<'a> {
         rows.collect::<rusqlite::Result<Vec<_>>>()
             .map_err(DbError::from)
     }
+
+    /// How each card of one deck has been going since `since`.
+    ///
+    /// Returns `(card_id, shown, correct)` for every card that was answered
+    /// at least once in the window; cards nobody has touched are simply
+    /// absent, which is exactly what «слабые» needs — a card never seen has
+    /// no accuracy to be bad.
+    pub fn accuracy_by_card(
+        &self,
+        deck_id: &str,
+        since: DateTime<Utc>,
+    ) -> Result<Vec<(String, u32, u32)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT r.card_id, COUNT(*), SUM(r.correct)
+             FROM reviews r
+             JOIN cards c ON c.id = r.card_id
+             WHERE c.deck_id = ?1 AND c.deleted_at IS NULL AND r.reviewed_at >= ?2
+             GROUP BY r.card_id",
+        )?;
+        let rows = stmt.query_map(params![deck_id, since], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, i64>(1)? as u32,
+                row.get::<_, i64>(2)? as u32,
+            ))
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
 }

@@ -40,6 +40,27 @@ export function RunSummary({
         </div>
       </Card>
 
+      {summary.points !== null && (
+        <Card
+          title="Счёт"
+          aside={
+            summary.record_beaten
+              ? "новый рекорд колоды"
+              : summary.record !== null
+                ? `рекорд колоды — ${summary.record}`
+                : ""
+          }
+        >
+          <div className="grid grid-cols-2 gap-4">
+            <Figure label="Очки" value={String(summary.points)} />
+            <Figure
+              label="Лучшая серия"
+              value={String(summary.best_streak ?? 0)}
+            />
+          </div>
+        </Card>
+      )}
+
       {summary.mistake_cards.length > 0 && (
         <Card
           title="Ошибки"

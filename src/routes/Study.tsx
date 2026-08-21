@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import { CardText } from "@/components/cards/CardText";
+import { BlitzRing } from "@/components/study/BlitzRing";
 import { GradeBar } from "@/components/study/GradeBar";
+import { RunShell as Shell } from "@/components/study/RunShell";
 import { RunSummary } from "@/components/study/RunSummary";
 import { Button } from "@/components/ui";
 import {
@@ -14,7 +16,9 @@ import {
   studyStart,
   studyStop,
   studySummary,
+  studyTimeout,
   type Grade,
+  type StudyMode,
   type StudySummary,
   type StudyView,
 } from "@/lib/tauri";
@@ -39,7 +43,10 @@ const GRADE_KEYS: Record<string, Grade> = {
  */
 export function Study() {
   const { deckId } = useParams<{ deckId: string }>();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
+
+  const mode = (params.get("mode") ?? "classic") as StudyMode;
 
   const [view, setView] = useState<StudyView | null>(null);
   const [summary, setSummary] = useState<StudySummary | null>(null);
@@ -54,9 +61,12 @@ export function Study() {
 
     studyCurrent()
       .then((running) =>
-        running && running.deck_id === deckId && !running.finished
+        running &&
+        running.deck_id === deckId &&
+        running.mode === mode &&
+        !running.finished
           ? running
-          : studyStart(deckId),
+          : studyStart(deckId, mode),
       )
       .then((next) => {
         if (!cancelled) setView(next);
@@ -68,7 +78,7 @@ export function Study() {
     return () => {
       cancelled = true;
     };
-  }, [deckId]);
+  }, [deckId, mode]);
 
   // Прогон дошёл до конца — показываем итоги.
   useEffect(() => {
@@ -106,6 +116,14 @@ export function Study() {
       .then(setView)
       .catch((failure: unknown) => setError(errorMessage(failure)))
       .finally(() => setBusy(false));
+  }, []);
+
+  // Время карточки вышло. Решает всё равно бэкенд: он сверит отметку со своими
+  // часами и запишет «не помню».
+  const expire = useCallback(() => {
+    studyTimeout()
+      .then(setView)
+      .catch((failure: unknown) => setError(errorMessage(failure)));
   }, []);
 
   function repeat() {
@@ -159,7 +177,7 @@ export function Study() {
 
   if (summary) {
     return (
-      <Shell onLeave={leave} deckName={summary.deck_name}>
+      <Shell onLeave={leave} deckName={summary.deck_name} mode={summary.mode}>
         <RunSummary
           summary={summary}
           onRepeat={repeat}
@@ -184,7 +202,32 @@ export function Study() {
     <Shell
       onLeave={leave}
       deckName={view.deck_name}
+      mode={view.mode}
       progress={`${view.position} / ${view.total}`}
+      answered={view.answered}
+      total={view.total}
+      aside={
+        view.deadline && view.seconds_per_card ? (
+          <BlitzRing
+            key={view.deadline}
+            deadline={view.deadline}
+            seconds={view.seconds_per_card}
+            onExpire={expire}
+          />
+        ) : null
+      }
+      score={
+        view.points !== null ? (
+          <span className="font-mono text-15 tabular-nums text-text-1">
+            {view.points}
+            {view.streak !== null && view.streak >= 5 && (
+              <span className="ml-2 text-12.5 text-accent-text">
+                ×{view.streak >= 10 ? 2 : 1.5}
+              </span>
+            )}
+          </span>
+        ) : null
+      }
     >
       <div className="flex w-full flex-col gap-5">
         <button
@@ -242,46 +285,5 @@ export function Study() {
         )}
       </div>
     </Shell>
-  );
-}
-
-/** Рамка экрана: колода и счётчик сверху, содержимое по центру. */
-function Shell({
-  onLeave,
-  deckName,
-  progress,
-  children,
-}: {
-  onLeave: () => void;
-  deckName?: string;
-  progress?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    // Высота окна бывает меньше карточки: тогда экран должен прокручиваться,
-    // а не обрезать кнопку снизу. `m-auto` на содержимом центрирует его, пока
-    // место есть, и перестаёт, когда места нет.
-    <div className="flex h-dvh flex-col gap-5 px-4 py-4 sm:px-8 sm:py-6">
-      <header className="flex shrink-0 items-center justify-between gap-4">
-        <button
-          type="button"
-          onClick={onLeave}
-          className="min-h-11 text-13.5 text-text-dim focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        >
-          ← {deckName ? `${deckName} · Классика` : "К карточкам"}
-        </button>
-        {progress && (
-          <span className="font-mono text-13 tabular-nums text-text-dim-2">
-            {progress}
-          </span>
-        )}
-      </header>
-
-      <main className="flex flex-1 flex-col overflow-y-auto">
-        <div className="m-auto flex w-full max-w-2xl flex-col items-center py-2">
-          {children}
-        </div>
-      </main>
-    </div>
   );
 }

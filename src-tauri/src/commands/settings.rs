@@ -8,7 +8,7 @@
 use chrono::TimeDelta;
 use tauri::State;
 
-use crate::core::settings::{DaySettings, ZenFontSize, ZenSettings};
+use crate::core::settings::{BlitzSettings, DaySettings, ZenFontSize, ZenSettings};
 use crate::db::settings::SettingsRepo;
 use crate::db::Database;
 
@@ -89,6 +89,48 @@ pub fn set_zen_settings(
     font_size: String,
 ) -> Result<ZenSettings, CommandError> {
     write_zen(&db, minutes_only, &font_size)
+}
+
+/// How long a blitz card lasts, as it is stored.
+pub fn read_blitz(db: &Database) -> Result<BlitzSettings, CommandError> {
+    let stored = SettingsRepo::new(db).all()?;
+
+    Ok(BlitzSettings::from_pairs(
+        stored
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str())),
+    ))
+}
+
+/// Validates and stores the blitz card time.
+pub fn write_blitz(db: &Database, seconds: i64) -> Result<BlitzSettings, CommandError> {
+    let settings = BlitzSettings::new(seconds)?;
+
+    let repo = SettingsRepo::new(db);
+    for (key, value) in settings.to_pairs() {
+        repo.set(key, &value)?;
+    }
+
+    Ok(settings)
+}
+
+/// The blitz card time in seconds — what [`crate::commands::study`] arms the
+/// deadline with.
+pub fn blitz_seconds(db: &Database) -> Result<i64, CommandError> {
+    Ok(read_blitz(db)?.seconds)
+}
+
+#[tauri::command]
+pub fn blitz_settings(db: State<'_, Database>) -> Result<BlitzSettings, CommandError> {
+    read_blitz(&db)
+}
+
+#[tauri::command]
+pub fn set_blitz_settings(
+    db: State<'_, Database>,
+    seconds: i64,
+) -> Result<BlitzSettings, CommandError> {
+    write_blitz(&db, seconds)
 }
 
 #[tauri::command]

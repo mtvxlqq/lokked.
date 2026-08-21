@@ -24,12 +24,17 @@ pub const KEY_FONT_SIZE: &str = "zen.font_size";
 /// Where the study day starts, as a number of seconds after local midnight.
 pub const KEY_DAY_START: &str = "day.start_offset_seconds";
 
+/// How long one card lasts in a blitz, in seconds.
+pub const KEY_BLITZ_SECONDS: &str = "blitz.seconds";
+
 /// Why a setting from the UI was rejected.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SettingsError {
     UnknownFontSize(String),
     /// The day boundary was outside a day, or landed mid-minute.
     InvalidDayStart(i64),
+    /// A blitz card was given an unusable amount of time.
+    InvalidBlitzSeconds(i64),
 }
 
 impl fmt::Display for SettingsError {
@@ -39,6 +44,10 @@ impl fmt::Display for SettingsError {
             Self::InvalidDayStart(seconds) => write!(
                 f,
                 "начало учебного дня должно быть временем суток с точностью до минуты, а не {seconds} с"
+            ),
+            Self::InvalidBlitzSeconds(seconds) => write!(
+                f,
+                "на карточку в блице нужно от {MIN_BLITZ_SECONDS} до {MAX_BLITZ_SECONDS} секунд, а не {seconds}"
             ),
         }
     }
@@ -176,4 +185,69 @@ impl DaySettings {
     pub fn start_offset(&self) -> TimeDelta {
         TimeDelta::seconds(self.start_offset_seconds)
     }
+}
+
+/// Shortest and longest a blitz card may last.
+///
+/// Below five seconds there is no time to read the card, above two minutes
+/// it is not a blitz any more.
+pub const MIN_BLITZ_SECONDS: i64 = 5;
+pub const MAX_BLITZ_SECONDS: i64 = 120;
+
+/// The default: long enough to recall a formulation, short enough to hurry.
+pub const DEFAULT_BLITZ_SECONDS: i64 = 20;
+
+/// How long one card lasts in a blitz.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BlitzSettings {
+    pub seconds: i64,
+}
+
+impl Default for BlitzSettings {
+    fn default() -> Self {
+        Self {
+            seconds: DEFAULT_BLITZ_SECONDS,
+        }
+    }
+}
+
+impl BlitzSettings {
+    /// Validates a value from the settings screen.
+    pub fn new(seconds: i64) -> Result<Self, SettingsError> {
+        if !(MIN_BLITZ_SECONDS..=MAX_BLITZ_SECONDS).contains(&seconds) {
+            return Err(SettingsError::InvalidBlitzSeconds(seconds));
+        }
+
+        Ok(Self { seconds })
+    }
+
+    /// Reads the value out of the table, falling back to the default.
+    pub fn from_pairs<'a>(pairs: impl IntoIterator<Item = (&'a str, &'a str)>) -> Self {
+        let mut settings = Self::default();
+
+        for (key, value) in pairs {
+            if key == KEY_BLITZ_SECONDS {
+                settings = value
+                    .parse::<i64>()
+                    .ok()
+                    .and_then(|seconds| Self::new(seconds).ok())
+                    .unwrap_or_default();
+            }
+        }
+
+        settings
+    }
+
+    pub fn to_pairs(&self) -> [(&'static str, String); 1] {
+        [(KEY_BLITZ_SECONDS, self.seconds.to_string())]
+    }
+}
+
+/// Where a deck's blitz record is kept.
+///
+/// One key per deck rather than one row per record: a record is a single
+/// number, and the settings table is exactly the place for single numbers
+/// that have to survive a restart.
+pub fn blitz_record_key(deck_id: &str) -> String {
+    format!("blitz.best.{deck_id}")
 }

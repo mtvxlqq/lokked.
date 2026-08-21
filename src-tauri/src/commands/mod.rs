@@ -16,6 +16,7 @@ use crate::core::deck::DeckError;
 use crate::core::import::ImportError;
 use crate::core::preset::PresetError;
 use crate::core::review::UnknownGrade;
+use crate::core::scheduler::UnknownMode;
 use crate::core::settings::SettingsError;
 use crate::core::subject::SubjectError;
 use crate::db::DbError;
@@ -123,6 +124,15 @@ impl From<DeckError> for CommandError {
 
 impl From<UnknownGrade> for CommandError {
     fn from(err: UnknownGrade) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<UnknownMode> for CommandError {
+    fn from(err: UnknownMode) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),

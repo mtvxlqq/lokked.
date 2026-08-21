@@ -1,10 +1,10 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Study } from "@/routes/Study";
-import type { Grade, StudySummary, StudyView } from "@/lib/tauri";
+import type { Grade, StudyMode, StudySummary, StudyView } from "@/lib/tauri";
 
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
@@ -18,16 +18,20 @@ const cards = [
  * Бэкенд прогона: держит очередь, раскрытие и ответы — ровно как настоящий,
  * только в памяти теста.
  */
-function backend(options: { total?: number } = {}) {
+function backend(options: { total?: number; mode?: StudyMode } = {}) {
   const total = options.total ?? 2;
+  const mode = options.mode ?? "classic";
+  const timed = mode === "blitz";
   let position = 0;
   let revealed = false;
   const grades: Grade[] = [];
 
+  const points = () => grades.filter((grade) => grade !== "again").length * 10;
+
   const view = (): StudyView => ({
     deck_id: "d-1",
     deck_name: "Матанализ",
-    mode: "classic",
+    mode,
     total,
     position: Math.min(position + 1, total),
     answered: grades.length,
@@ -37,6 +41,14 @@ function backend(options: { total?: number } = {}) {
         ? { ...cards[position], back: revealed ? cards[position].back : null }
         : null,
     finished: position >= total,
+    // Дедлайн у блица всегда через 20 секунд от «сейчас» теста.
+    deadline:
+      timed && position < total
+        ? new Date(Date.now() + 20_000).toISOString()
+        : null,
+    seconds_per_card: timed ? 20 : null,
+    points: timed ? points() : null,
+    streak: timed ? 0 : null,
   });
 
   const summary = (): StudySummary => {
@@ -47,6 +59,7 @@ function backend(options: { total?: number } = {}) {
     return {
       deck_id: "d-1",
       deck_name: "Матанализ",
+      mode,
       answered: grades.length,
       correct: grades.length - mistakes.length,
       accuracy_percent: Math.round(
@@ -56,6 +69,10 @@ function backend(options: { total?: number } = {}) {
       average_ms: 6_000,
       mistakes: mistakes.map((answer) => cards[answer.index].id),
       mistake_cards: mistakes.map((answer) => cards[answer.index]),
+      points: timed ? points() : null,
+      best_streak: timed ? 1 : null,
+      record: timed ? 40 : null,
+      record_beaten: false,
     };
   };
 
@@ -80,6 +97,11 @@ function backend(options: { total?: number } = {}) {
         revealed = false;
         return Promise.resolve(view());
       }
+      case "study_timeout":
+        grades.push("again");
+        position += 1;
+        revealed = false;
+        return Promise.resolve(view());
       case "study_summary":
         return Promise.resolve(summary());
       case "study_repeat_mistakes":
@@ -95,13 +117,13 @@ function backend(options: { total?: number } = {}) {
   });
 }
 
-function renderStudy() {
+function renderStudy(mode?: StudyMode) {
   const router = createMemoryRouter(
     [
       { path: "/study/:deckId", element: <Study /> },
       { path: "/cards", element: <p>экран карточек</p> },
     ],
-    { initialEntries: ["/study/d-1"] },
+    { initialEntries: [mode ? `/study/d-1?mode=${mode}` : "/study/d-1"] },
   );
 
   render(<RouterProvider router={router} />);
@@ -251,5 +273,78 @@ describe("прогон по колоде", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "в колоде нет карточек",
     );
+  });
+
+  it("режим берётся из адреса и уходит в бэкенд", async () => {
+    backend({ mode: "marathon" });
+    renderStudy("marathon");
+    await screen.findByText("Первообразная");
+
+    expect(invoke).toHaveBeenCalledWith("study_start", {
+      deckId: "d-1",
+      mode: "marathon",
+    });
+    expect(screen.getByText(/Марафон/)).toBeInTheDocument();
+    // У марафона есть полоса прогресса.
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
+
+  it("блиц показывает обратный отсчёт и очки", async () => {
+    backend({ mode: "blitz" });
+    renderStudy("blitz");
+    await screen.findByText("Первообразная");
+
+    expect(screen.getByRole("timer")).toBeInTheDocument();
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+  });
+
+  it("когда время карточки вышло, ответ отправляется сам", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      backend({ mode: "blitz" });
+      renderStudy("blitz");
+      await screen.findByText("Первообразная");
+
+      await act(async () => {
+        vi.advanceTimersByTime(21_000);
+      });
+
+      expect(invoke).toHaveBeenCalledWith("study_timeout");
+      expect(await screen.findByText("Интеграл")).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("итоги блица показывают счёт и рекорд колоды", async () => {
+    backend({ mode: "blitz" });
+    renderStudy("blitz");
+    await screen.findByText("Первообразная");
+
+    await userEvent.keyboard(" ");
+    await userEvent.keyboard("3");
+    await screen.findByText("Интеграл");
+    await userEvent.keyboard(" ");
+    await userEvent.keyboard("3");
+
+    expect(await screen.findByText("Счёт")).toBeInTheDocument();
+    expect(screen.getByText("20")).toBeInTheDocument();
+    expect(screen.getByText("рекорд колоды — 40")).toBeInTheDocument();
+  });
+
+  it("у обычного прогона счёта нет", async () => {
+    backend();
+    renderStudy();
+    await screen.findByText("Первообразная");
+
+    await userEvent.keyboard(" ");
+    await userEvent.keyboard("3");
+    await screen.findByText("Интеграл");
+    await userEvent.keyboard(" ");
+    await userEvent.keyboard("3");
+
+    await screen.findByText("Прогон закончен");
+    expect(screen.queryByText("Счёт")).not.toBeInTheDocument();
   });
 });

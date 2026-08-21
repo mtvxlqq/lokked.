@@ -5,6 +5,9 @@ import { invoke } from "@tauri-apps/api/core";
 
 export type Grade = "again" | "hard" | "good" | "easy";
 
+/** Режим прогона: обычный, на время, вся колода, только слабые. */
+export type StudyMode = "classic" | "blitz" | "marathon" | "weak";
+
 export type StudyCard = {
   id: string;
   front: string;
@@ -17,7 +20,7 @@ export type StudyCard = {
 export type StudyView = {
   deck_id: string;
   deck_name: string;
-  mode: string;
+  mode: StudyMode;
   total: number;
   /** Номер карточки на экране, начиная с единицы. */
   position: number;
@@ -26,11 +29,19 @@ export type StudyView = {
   /** `null`, когда прогон закончен. */
   card: StudyCard | null;
   finished: boolean;
+  /** Когда истекает время карточки, ISO-8601. Только блиц. */
+  deadline: string | null;
+  /** Сколько всего секунд даётся на карточку. Только блиц. */
+  seconds_per_card: number | null;
+  /** Очки и текущая серия. Только блиц. */
+  points: number | null;
+  streak: number | null;
 };
 
 export type StudySummary = {
   deck_id: string;
   deck_name: string;
+  mode: StudyMode;
   answered: number;
   correct: number;
   accuracy_percent: number;
@@ -40,10 +51,18 @@ export type StudySummary = {
   mistakes: string[];
   /** Они же целиком, чтобы показать разбор. */
   mistake_cards: StudyCard[];
+  /** Очки прогона, лучшая серия и рекорд колоды. Только блиц. */
+  points: number | null;
+  best_streak: number | null;
+  record: number | null;
+  record_beaten: boolean;
 };
 
-export function studyStart(deckId: string): Promise<StudyView> {
-  return invoke<StudyView>("study_start", { deckId });
+export function studyStart(
+  deckId: string,
+  mode: StudyMode,
+): Promise<StudyView> {
+  return invoke<StudyView>("study_start", { deckId, mode });
 }
 
 export function studyCurrent(): Promise<StudyView | null> {
@@ -56,6 +75,11 @@ export function studyReveal(): Promise<StudyView> {
 
 export function studyAnswer(grade: Grade): Promise<StudyView> {
   return invoke<StudyView>("study_answer", { grade });
+}
+
+/** Время карточки вышло: то же, что ответить «не помню». */
+export function studyTimeout(): Promise<StudyView> {
+  return invoke<StudyView>("study_timeout");
 }
 
 export function studySummary(): Promise<StudySummary> {
