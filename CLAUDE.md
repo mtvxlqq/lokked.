@@ -54,8 +54,9 @@ Tauri 2 · Rust (бэкенд) · TypeScript + React + Vite + Tailwind (фрон
 ## Зависимости
 
 Новые библиотеки не добавлять без явного разрешения. Разрешены: стандартные библиотеки,
-Tauri и его официальные плагины, React, react-router, Tailwind, KaTeX (формулы), uuid,
-chrono, rusqlite/sqlx, serde. Графики рисуем сами обычным SVG — библиотеки для чартов
+Tauri и его официальные плагины (включая single-instance), React, react-router, Tailwind,
+KaTeX (формулы), uuid, chrono, rusqlite/sqlx, serde, zbus (D-Bus на Linux, только под
+`cfg(target_os = "linux")`). Графики рисуем сами обычным SVG — библиотеки для чартов
 не нужны.
 
 Инструменты разработки (Vite, TypeScript, ESLint, Prettier, Vitest, Testing Library,

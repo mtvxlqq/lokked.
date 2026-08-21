@@ -6,10 +6,6 @@ Target platforms, in order: **Linux** (Fedora 43 / GNOME / Wayland) → Windows 
 
 Stack: [Tauri 2](https://tauri.app) + Rust backend, TypeScript + React + Vite frontend, SQLite for data.
 
-> Current state: **skeleton only**. There is no business logic yet — no timers,
-> no database, no flashcards. What exists is the module layout, the tooling, and
-> a `ping()` command proving the Rust ↔ TypeScript bridge works.
-
 ## Prerequisites
 
 Rust via [rustup](https://rustup.rs) (not the distro package — `rustup target add`
@@ -33,9 +29,8 @@ npm install
 npm run tauri dev     # opens the app window
 ```
 
-The window should show **Lokked** and `ping() → pong`. If it shows an error
-instead, the Rust ↔ TypeScript bridge is broken — start at
-`src-tauri/src/commands.rs` and `src/lib/tauri.ts`.
+The window opens on the timers screen. Data lives in the per-user app data
+directory (`~/.local/share/com.lokked.app/lokked.sqlite3` on Linux).
 
 ## Commands
 
@@ -43,6 +38,7 @@ instead, the Rust ↔ TypeScript bridge is broken — start at
 | ---------------------------------------------- | -------------------------------------------------------------------------- |
 | `npm run tauri dev`                            | Run the desktop app with hot reload                                        |
 | `npm run tauri build`                          | Build a release bundle                                                     |
+| `npm run package:linux`                        | The same, with the AppImage workaround Fedora needs                        |
 | `npm run dev`                                  | Frontend only, in a browser at `localhost:1420` (Tauri commands will fail) |
 | `npm run build`                                | Type-check and build the frontend                                          |
 | `npm run lint` / `lint:fix`                    | ESLint + Prettier                                                          |
@@ -56,9 +52,10 @@ instead, the Rust ↔ TypeScript bridge is broken — start at
 src-tauri/src/
   main.rs         thin wrapper around lib.rs::run()
   lib.rs          Tauri builder, module declarations
-  commands.rs     thin #[tauri::command] layer — no domain logic
-  core/           pure Rust: clock, dayline, timer, scheduler, stats
-  db/             SQLite access + migrations
+  commands/       thin #[tauri::command] layer — no domain logic
+  core/           pure Rust: clock, dayline, timer, scheduler, stats, cli, backup
+  db/             SQLite access, migrations and the startup backup
+  desktop.rs      command line, suspend/resume, startup backup wiring
   platform/       PlatformServices trait; linux / windows / mobile / noop backends
 src/
   main.tsx        React entry point
@@ -74,6 +71,65 @@ Two conventions worth knowing before adding code:
   built-in `core` crate inside this crate.
 - **Hash routing, not browser routing.** A release build serves the frontend
   over Tauri's asset protocol, which has no SPA fallback.
+
+## Global hotkeys on Wayland
+
+Wayland does not let an application grab a global shortcut for itself, so
+Lokked is driven from the outside: a second launch hands its arguments to the
+copy that is already running.
+
+| Command           | What it does                                 |
+| ----------------- | -------------------------------------------- |
+| `lokked --toggle` | Pause a running session, resume a paused one |
+| `lokked --zen`    | Open the black screen                        |
+| `lokked --stop`   | Stop the session and write it down           |
+
+A launch with no arguments simply brings the window forward.
+
+Bind them in **Settings → Keyboard → View and Customize Shortcuts → Custom
+Shortcuts**. Use the absolute path to the binary — GNOME does not read your
+shell's `PATH`:
+
+| Name          | Command                    | Suggested key |
+| ------------- | -------------------------- | ------------- |
+| Lokked: пауза | `/usr/bin/lokked --toggle` | `Super+Alt+P` |
+| Lokked: zen   | `/usr/bin/lokked --zen`    | `Super+Alt+Z` |
+| Lokked: стоп  | `/usr/bin/lokked --stop`   | `Super+Alt+S` |
+
+Running a development build instead? Point the shortcut at
+`src-tauri/target/debug/lokked`.
+
+## Suspend and backups
+
+While a work phase runs, Lokked asks the desktop portal (falling back to
+`org.freedesktop.ScreenSaver`) not to blank the screen. It also listens for
+`PrepareForSleep` from `logind`: closing the lid pauses the session, and on
+waking the app offers to carry on — the time asleep is never counted as study.
+
+Every launch writes one copy of the database into `backups/` next to it,
+keeping the newest seven. The copies are made with `VACUUM INTO`, so each one
+is a complete database that opens on its own:
+
+```sh
+sqlite3 ~/.local/share/com.lokked.app/backups/lokked-20260821-034509.sqlite3
+```
+
+## Packaging
+
+```sh
+npm run package:linux
+```
+
+Produces an `.rpm`, an AppImage and a `.deb` under
+`src-tauri/target/release/bundle/`. The `.rpm` installs the binary as
+`/usr/bin/lokked`, which is the path the shortcuts above expect.
+
+The script is `tauri build` with `NO_STRIP=true`: the AppImage step runs
+`linuxdeploy`, whose bundled `strip` is older than the `.relr.dyn` sections
+in current Fedora libraries and fails on every one of them. Skipping the
+strip costs a few megabytes in an image that is ~100 MB of GTK and WebKit
+anyway. That step also downloads `linuxdeploy` on first use, so it needs
+network access; `npm run tauri build -- --bundles rpm` skips it entirely.
 
 ## Troubleshooting
 

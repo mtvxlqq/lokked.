@@ -14,6 +14,7 @@
 use std::sync::Mutex;
 
 pub mod actions;
+pub mod desktop;
 
 use chrono::{DateTime, Local, TimeDelta, Utc};
 use serde::Serialize;

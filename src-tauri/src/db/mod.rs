@@ -23,6 +23,7 @@ use std::sync::Mutex;
 use rusqlite::Connection;
 use tauri::Manager;
 
+pub mod backup;
 pub mod cards;
 pub mod decks;
 pub mod migrations;
@@ -40,6 +41,8 @@ pub enum DbError {
     Open(String),
     /// A migration failed to apply.
     Migration(String),
+    /// A backup could not be written or an old one could not be removed.
+    Backup(String),
     /// A query against an already-open, already-migrated database failed.
     Query(rusqlite::Error),
 }
@@ -49,6 +52,7 @@ impl fmt::Display for DbError {
         match self {
             Self::Open(msg) => write!(f, "could not open database: {msg}"),
             Self::Migration(msg) => write!(f, "migration failed: {msg}"),
+            Self::Backup(msg) => write!(f, "backup failed: {msg}"),
             Self::Query(err) => write!(f, "database query failed: {err}"),
         }
     }
@@ -104,6 +108,25 @@ impl Database {
         Ok(Database {
             conn: Mutex::new(conn),
         })
+    }
+
+    /// Writes a consistent copy of the database to `path`.
+    ///
+    /// `VACUUM INTO` rather than copying the file: the database runs in WAL
+    /// mode, where the newest transactions live in a sidecar file, and a
+    /// plain `cp` of the main file would quietly lose them. This goes
+    /// through SQLite, so the copy is a complete database as of now — and
+    /// compacted, which a backup may as well be.
+    pub fn backup_to(&self, path: &Path) -> Result<(), DbError> {
+        let target = path.to_str().ok_or_else(|| {
+            DbError::Backup(format!("путь к копии не в UTF-8: {}", path.display()))
+        })?;
+
+        self.connection()
+            .execute("VACUUM INTO ?1", rusqlite::params![target])
+            .map_err(|err| DbError::Backup(err.to_string()))?;
+
+        Ok(())
     }
 
     /// Locks and hands out the underlying connection. Every repository

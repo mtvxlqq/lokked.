@@ -8,6 +8,7 @@
 //! - [`db`]       — SQLite access and migrations.
 //! - [`platform`] — OS-specific services behind one trait.
 //! - [`commands`] — the thin `#[tauri::command]` layer bridging Rust and TypeScript.
+//! - [`desktop`] — the desktop wiring: command line, suspend, startup backup.
 //!
 //! Note: the `core` module shadows Rust's built-in `core` crate inside this
 //! crate. Always refer to it as `crate::core::…`, never as a bare `core::…`.
@@ -15,6 +16,7 @@
 pub mod commands;
 pub mod core;
 pub mod db;
+pub mod desktop;
 pub mod platform;
 
 use tauri::Manager;
@@ -22,6 +24,12 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Only one Lokked at a time: a second launch is how the global
+        // hotkey talks to the running app (`lokked --toggle`), so its argv
+        // is handed over instead of a second window opening.
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            desktop::handle_cli(app, &args);
+        }))
         // Phase changes are announced by the frontend through this plugin;
         // it is the one official cross-platform way to reach the OS
         // notification centre, on the desktop and on a phone alike.
@@ -34,10 +42,21 @@ pub fn run() {
             app.manage(commands::session::SessionState::default());
             app.manage(commands::study::StudyState::default());
             app.manage(platform::SharedPlatform::default());
+            app.manage(desktop::PendingZen::default());
+
+            // Одна копия базы за запуск, последние семь хранятся.
+            desktop::back_up_database(app.handle());
+            // Сон машины — не учёба: сессия встаёт на паузу до засыпания.
+            desktop::watch_sleep(app.handle());
+            // Аргументы собственного запуска: `lokked --zen` из ярлыка или
+            // горячей клавиши, когда приложение ещё не было запущено.
+            desktop::handle_startup_cli(app.handle());
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             commands::ping,
+            desktop::cli_pending_zen,
             commands::subjects::list_subjects,
             commands::subjects::create_subject,
             commands::subjects::update_subject,

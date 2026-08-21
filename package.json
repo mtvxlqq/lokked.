@@ -9,6 +9,7 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "preview": "vite preview",
     "tauri": "tauri",
+    "package:linux": "NO_STRIP=true tauri build",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier --write .",
     "test": "vitest run",

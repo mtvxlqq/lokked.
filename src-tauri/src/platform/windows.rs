@@ -5,6 +5,9 @@
 //!       `release_sleep` restores plain `ES_CONTINUOUS`. Note the flag is
 //!       per-thread, so it must be set from a thread we keep alive.
 //! TODO: `notify` — toast notifications via WinRT / the Tauri plugin.
+//! TODO: `watch_sleep` — `WM_POWERBROADCAST` with `PBT_APMSUSPEND` and
+//!       `PBT_APMRESUMEAUTOMATIC`, which needs a window procedure to hook
+//!       into (этап M14). Until then the default «cannot tell» applies.
 
 use super::{PlatformError, PlatformServices};
 

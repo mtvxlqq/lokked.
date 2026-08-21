@@ -8,7 +8,9 @@
 //! Referenced as `crate::core::…`; a bare `core::…` would resolve to Rust's
 //! built-in `core` crate instead.
 
+pub mod backup;
 pub mod card;
+pub mod cli;
 pub mod clock;
 pub mod dayline;
 pub mod deck;

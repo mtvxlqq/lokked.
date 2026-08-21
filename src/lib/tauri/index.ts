@@ -40,6 +40,7 @@ export function errorMessage(error: unknown): string {
 }
 
 export * from "@/lib/tauri/cards";
+export * from "@/lib/tauri/desktop";
 export * from "@/lib/tauri/presets";
 export * from "@/lib/tauri/session";
 export * from "@/lib/tauri/settings";

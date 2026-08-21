@@ -45,6 +45,22 @@ impl fmt::Display for PlatformError {
 
 impl Error for PlatformError {}
 
+/// What happened to the machine's power state.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SleepEvent {
+    /// The system is about to suspend. Whatever has to be written down has
+    /// to be written down now.
+    GoingToSleep,
+    /// The system came back. However long that took, it was not study time.
+    WokeUp,
+}
+
+/// What to run when the machine falls asleep or wakes up.
+///
+/// Called from a background thread owned by the backend, so it has to be
+/// `Send + Sync` and must not block for long.
+pub type SleepWatcher = Box<dyn Fn(SleepEvent) + Send + Sync + 'static>;
+
 /// Host services a study session needs.
 ///
 /// Implementations are expected to be cheap to construct and safe to share
@@ -63,6 +79,21 @@ pub trait PlatformServices: Send + Sync {
 
     /// Show a user-visible notification.
     fn notify(&self, title: &str, body: &str) -> Result<(), PlatformError>;
+
+    /// Watch for the machine suspending and resuming.
+    ///
+    /// A laptop lid closed mid-session must not count as an hour of study,
+    /// so the session is paused on the way down and the student is asked
+    /// about the gap on the way back up.
+    ///
+    /// The default is «this platform cannot tell»: on Android the app is
+    /// suspended rather than the machine, and the timer already survives
+    /// that by deriving elapsed time from timestamps.
+    fn watch_sleep(&mut self, on_event: SleepWatcher) -> Result<(), PlatformError> {
+        drop(on_event);
+
+        Err(PlatformError::Unsupported("sleep notifications"))
+    }
 }
 
 /// The app's single [`PlatformServices`] instance, ready to be handed to
@@ -76,6 +107,16 @@ pub struct SharedPlatform(std::sync::Mutex<Box<dyn PlatformServices>>);
 impl SharedPlatform {
     pub fn new(services: Box<dyn PlatformServices>) -> Self {
         Self(std::sync::Mutex::new(services))
+    }
+
+    /// Start watching for suspend and resume, if the platform can say.
+    ///
+    /// Like [`keep_awake`](Self::keep_awake), a refusal is swallowed: on a
+    /// desktop without `logind` the timer still works, it just cannot tell
+    /// a suspended hour from a studied one until the student says so.
+    pub fn watch_sleep(&self, on_event: SleepWatcher) {
+        let mut services = self.0.lock().expect("platform mutex poisoned");
+        let _ = services.watch_sleep(on_event);
     }
 
     /// Ask the OS not to blank the screen while a work phase is running, or
@@ -137,10 +178,12 @@ mod tests {
     #[test]
     fn platform_services_builds_for_the_host_target() {
         let mut services = platform_services();
-        // Stubs are no-ops today; this asserts the trait object is wired up,
-        // not that the OS actually did anything.
-        assert!(services.inhibit_sleep().is_ok());
-        assert!(services.release_sleep().is_ok());
+        // Whether the OS actually inhibits anything depends on the machine
+        // this runs on — a build server has no session bus and is expected
+        // to refuse. What is asserted here is that the trait object is wired
+        // up and that a refusal comes back as an error instead of a panic.
+        let _ = services.inhibit_sleep();
+        let _ = services.release_sleep();
         assert!(services.notify("Lokked", "skeleton").is_ok());
     }
 }
