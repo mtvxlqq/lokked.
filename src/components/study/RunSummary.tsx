@@ -24,7 +24,7 @@ export function RunSummary({
   busy,
 }: RunSummaryProps) {
   return (
-    <div className="flex w-full max-w-2xl flex-col gap-5">
+    <div className="flex w-full flex-col gap-5">
       <Card title="Прогон закончен" aside={summary.deck_name}>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <Figure label="Карточек" value={String(summary.answered)} />

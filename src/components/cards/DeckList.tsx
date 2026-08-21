@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/cn";
-import { plural } from "@/lib/format";
+import { plural, withNonBreakingMarkers } from "@/lib/format";
 import type { Deck, Subject } from "@/lib/tauri";
 
 type DeckListProps = {
@@ -44,7 +44,9 @@ export function DeckList({
                 selected ? "bg-raised text-text-1" : "text-text-2",
               )}
             >
-              <span className="text-14.5 font-medium">{deck.name}</span>
+              <span className="text-14.5 font-medium">
+                {withNonBreakingMarkers(deck.name)}
+              </span>
               <span className="text-12.5 text-text-dim-2">
                 {deck.card_count}{" "}
                 {plural(deck.card_count, ["карточка", "карточки", "карточек"])}

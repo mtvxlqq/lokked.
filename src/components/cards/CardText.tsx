@@ -55,7 +55,10 @@ function renderInline(parts: Inline[]): ReactNode {
         return <span key={index}>{part.value}</span>;
       case "bold":
         return (
-          <strong key={index} className="font-semibold text-text-1">
+          // Цвет не задаётся: жирный выделяется насыщенностью, а цвет
+          // берёт у текста вокруг — иначе в приглушённой строке списка он
+          // светился ярче самой строки.
+          <strong key={index} className="font-semibold">
             {renderInline(part.children)}
           </strong>
         );

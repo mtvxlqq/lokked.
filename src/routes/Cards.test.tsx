@@ -289,6 +289,28 @@ describe("экран карточек", () => {
     );
   });
 
+  it("список карточек сворачивается, название колоды остаётся", async () => {
+    backend();
+    renderCards();
+    await screen.findByText("Первообразная функции");
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Скрыть карточки" }),
+    );
+
+    expect(screen.queryByText("Первообразная функции")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Поиск")).not.toBeInTheDocument();
+    // Колода на месте — и в списке слева, и заголовком справа.
+    expect(screen.getAllByText(/Терсенов/).length).toBeGreaterThan(0);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Показать карточки" }),
+    );
+    expect(
+      await screen.findByText("Первообразная функции"),
+    ).toBeInTheDocument();
+  });
+
   it("«Учить» уводит на прогон по этой колоде", async () => {
     backend();
     renderCards();

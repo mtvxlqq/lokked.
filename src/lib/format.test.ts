@@ -5,6 +5,7 @@ import {
   formatClockMinutes,
   formatDuration,
   plural,
+  withNonBreakingMarkers,
 } from "@/lib/format";
 
 describe("formatDuration", () => {
@@ -79,5 +80,21 @@ describe("plural", () => {
 
   it("ноль — тоже «дней»", () => {
     expect(plural(0, days)).toBe("дней");
+  });
+});
+
+describe("withNonBreakingMarkers", () => {
+  it("не даёт оторвать § от номера", () => {
+    expect(withNonBreakingMarkers("Терсенов, § 25 — § 40")).toBe(
+      "Терсенов, §\u00A025 — §\u00A040",
+    );
+  });
+
+  it("работает и с номером", () => {
+    expect(withNonBreakingMarkers("№ 7")).toBe("№\u00A07");
+  });
+
+  it("знак без числа после него не трогает", () => {
+    expect(withNonBreakingMarkers("§ раздела")).toBe("§ раздела");
   });
 });

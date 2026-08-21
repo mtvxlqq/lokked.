@@ -65,3 +65,14 @@ export function plural(count: number, forms: [string, string, string]): string {
   if (last === 1) return forms[0];
   return forms[2];
 }
+
+/**
+ * Приклеивает знаки § и № к числу неразрывным пробелом.
+ *
+ * «§ 25» — это одно слово, и переносить его пополам нельзя: одинокая
+ * решётка в конце строки читается как опечатка. Замена делается при
+ * отображении, а не в данных: в базе лежит ровно то, что ввёл студент.
+ */
+export function withNonBreakingMarkers(text: string): string {
+  return text.replace(/([§№])\s+(?=[0-9])/g, "$1\u00A0");
+}

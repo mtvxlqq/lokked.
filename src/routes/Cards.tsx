@@ -10,6 +10,7 @@ import { ImportDialog } from "@/components/cards/ImportDialog";
 import { CardsIcon } from "@/components/nav/icons";
 import { Screen } from "@/components/Screen";
 import { Button, Card as Panel, EmptyState } from "@/components/ui";
+import { withNonBreakingMarkers } from "@/lib/format";
 import {
   errorMessage,
   listCards,
@@ -48,6 +49,9 @@ export function Cards() {
   }>({ open: false, card: null });
   const [importing, setImporting] = useState(false);
   const [exporting, setExporting] = useState(false);
+  /** Список карточек сворачивается: у колоды на сотню тем облако тегов и
+      таблица занимают весь экран, а нужны они не всегда. */
+  const [listOpen, setListOpen] = useState(true);
 
   const [reloads, setReloads] = useState(0);
   const reload = () => setReloads((count) => count + 1);
@@ -178,21 +182,41 @@ export function Cards() {
           </Panel>
 
           {selected && (
-            <Panel
-              title={selected.name}
-              aside={selected.description ?? ""}
-              className="lg:col-span-2"
-            >
-              {deckCards.length === 0 ? (
-                <p className="text-14 text-text-dim">
-                  В колоде пока нет карточек.
+            <Panel className="lg:col-span-2">
+              {/* Заголовок свой, а не через `title`/`aside`: описание колоды
+                  бывает в несколько строк и рядом с названием сплющивало его
+                  в столбик. */}
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+                <h2 className="text-14.5 font-medium text-text-1">
+                  {withNonBreakingMarkers(selected.name)}
+                </h2>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  aria-expanded={listOpen}
+                  onClick={() => setListOpen((open) => !open)}
+                >
+                  {listOpen ? "Скрыть карточки" : "Показать карточки"}
+                </Button>
+              </div>
+
+              {selected.description && (
+                <p className="text-12.5 leading-text text-text-dim-2">
+                  {selected.description}
                 </p>
-              ) : (
-                <CardTable
-                  cards={deckCards}
-                  onEdit={(card) => setCardDialog({ open: true, card })}
-                />
               )}
+
+              {listOpen &&
+                (deckCards.length === 0 ? (
+                  <p className="text-14 text-text-dim">
+                    В колоде пока нет карточек.
+                  </p>
+                ) : (
+                  <CardTable
+                    cards={deckCards}
+                    onEdit={(card) => setCardDialog({ open: true, card })}
+                  />
+                ))}
               <div className="flex flex-wrap gap-2.5">
                 <Button
                   size="sm"

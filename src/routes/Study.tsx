@@ -186,7 +186,7 @@ export function Study() {
       deckName={view.deck_name}
       progress={`${view.position} / ${view.total}`}
     >
-      <div className="flex w-full max-w-2xl flex-col gap-6">
+      <div className="flex w-full flex-col gap-5">
         <button
           type="button"
           onClick={() => !view.revealed && reveal()}
@@ -195,7 +195,7 @@ export function Study() {
               ? "Карточка с ответом"
               : "Карточка, нажми, чтобы увидеть ответ"
           }
-          className="flex min-h-64 w-full flex-col justify-center gap-5 rounded-2xl border border-border bg-surface px-5 py-8 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:px-10 sm:py-12"
+          className="flex min-h-40 w-full flex-col justify-center gap-4 rounded-2xl border border-border bg-surface px-5 py-7 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:min-h-56 sm:gap-5 sm:px-10 sm:py-10"
         >
           {card.tags.length > 0 && (
             <span className="text-11 tracking-label text-text-faint uppercase">
@@ -205,7 +205,7 @@ export function Study() {
 
           <CardText
             text={card.front}
-            className="text-center text-24 text-text sm:text-30"
+            className="text-center text-22 text-text sm:text-30"
           />
 
           {card.back && (
@@ -258,8 +258,11 @@ function Shell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col gap-6 px-4 py-5 sm:px-8 sm:py-7">
-      <header className="flex items-center justify-between gap-4">
+    // Высота окна бывает меньше карточки: тогда экран должен прокручиваться,
+    // а не обрезать кнопку снизу. `m-auto` на содержимом центрирует его, пока
+    // место есть, и перестаёт, когда места нет.
+    <div className="flex h-dvh flex-col gap-5 px-4 py-4 sm:px-8 sm:py-6">
+      <header className="flex shrink-0 items-center justify-between gap-4">
         <button
           type="button"
           onClick={onLeave}
@@ -274,8 +277,10 @@ function Shell({
         )}
       </header>
 
-      <main className="flex flex-1 flex-col items-center justify-center">
-        {children}
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <div className="m-auto flex w-full max-w-2xl flex-col items-center py-2">
+          {children}
+        </div>
       </main>
     </div>
   );
