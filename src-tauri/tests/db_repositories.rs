@@ -1,5 +1,5 @@
 //! CRUD tests for `SubjectRepo`, `PresetRepo`, `SessionRepo`, `SettingsRepo`,
-//! `DeckRepo` and `CardRepo`, plus the
+//! `DeckRepo`, `CardRepo` and `ReviewRepo`, plus the
 //! cross-cutting behaviours the schema promises: soft delete hides rows from
 //! `list` but not `get`, and foreign keys are actually enforced.
 //!
@@ -9,6 +9,7 @@ use chrono::{TimeDelta, Utc};
 use lokked_lib::db::cards::{CardRepo, NewCard};
 use lokked_lib::db::decks::DeckRepo;
 use lokked_lib::db::presets::{NewPreset, PresetRepo};
+use lokked_lib::db::reviews::{NewReview, ReviewRepo};
 use lokked_lib::db::sessions::{NewSession, SessionRepo};
 use lokked_lib::db::settings::SettingsRepo;
 use lokked_lib::db::subjects::SubjectRepo;
@@ -514,4 +515,93 @@ fn every_deck_is_counted_including_the_empty_ones() {
     expected.sort();
 
     assert_eq!(counts, expected);
+}
+
+// --- ReviewRepo ------------------------------------------------------------
+
+/// Карточка, к которой можно писать ответы.
+fn card_to_review(db: &Database) -> String {
+    let deck = DeckRepo::new(db).create(None, "Колода", None).unwrap();
+    CardRepo::new(db)
+        .create(NewCard {
+            deck_id: &deck.id,
+            front: "Лицо",
+            back: "Оборот",
+            hint: None,
+            tags: None,
+        })
+        .unwrap()
+        .id
+}
+
+fn review(db: &Database, card_id: &str, day: &str, result: &str, correct: bool) {
+    ReviewRepo::new(db)
+        .create(NewReview {
+            card_id,
+            reviewed_at: Utc::now(),
+            day_key: day,
+            result,
+            correct,
+            mode: "classic",
+            think_ms: Some(4_000),
+            total_ms: Some(9_000),
+            device_id: None,
+        })
+        .unwrap();
+}
+
+#[test]
+fn an_answer_comes_back_with_everything_it_was_given() {
+    let db = new_db();
+    let card = card_to_review(&db);
+
+    review(&db, &card, "2026-08-21", "hard", true);
+
+    let stored = ReviewRepo::new(&db).list_for_card(&card).unwrap();
+    assert_eq!(stored.len(), 1);
+    assert_eq!(stored[0].result, "hard");
+    assert!(stored[0].correct);
+    assert_eq!(stored[0].mode, "classic");
+    assert_eq!(stored[0].think_ms, Some(4_000));
+    assert_eq!(stored[0].total_ms, Some(9_000));
+}
+
+#[test]
+fn answers_are_listed_per_card_and_per_day() {
+    let db = new_db();
+    let one = card_to_review(&db);
+    let two = card_to_review(&db);
+
+    review(&db, &one, "2026-08-21", "good", true);
+    review(&db, &one, "2026-08-22", "again", false);
+    review(&db, &two, "2026-08-21", "easy", true);
+
+    assert_eq!(ReviewRepo::new(&db).list_for_card(&one).unwrap().len(), 2);
+    assert_eq!(
+        ReviewRepo::new(&db)
+            .list_for_day("2026-08-21")
+            .unwrap()
+            .len(),
+        2
+    );
+}
+
+#[test]
+fn an_answer_to_a_card_that_does_not_exist_is_refused_by_the_schema() {
+    // Внешние ключи включены, и это защищает историю от мусора.
+    let db = new_db();
+
+    assert!(ReviewRepo::new(&db)
+        .create(NewReview {
+            card_id: "нет такой карточки",
+            reviewed_at: Utc::now(),
+            day_key: "2026-08-21",
+            result: "good",
+            correct: true,
+            mode: "classic",
+            think_ms: None,
+            total_ms: None,
+            device_id: None,
+        })
+        .is_err());
 }

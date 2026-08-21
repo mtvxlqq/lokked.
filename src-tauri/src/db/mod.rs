@@ -3,9 +3,9 @@
 //! This module owns the connection, opens the database under the app's data
 //! directory, and applies [`migrations`] on startup. Everything above it
 //! (commands, [`crate::core`]) works with plain Rust types, never with rows —
-//! [`subjects`], [`presets`], [`sessions`], [`decks`], [`cards`] and
-//! [`settings`] each expose a repository with a typed CRUD surface instead of
-//! raw SQL.
+//! [`subjects`], [`presets`], [`sessions`], [`decks`], [`cards`],
+//! [`reviews`] and [`settings`] each expose a repository with a typed CRUD
+//! surface instead of raw SQL.
 //!
 //! A single [`rusqlite::Connection`] behind one [`std::sync::Mutex`] backs
 //! the whole app rather than a pool: Lokked is a single-user app whose
@@ -27,6 +27,7 @@ pub mod cards;
 pub mod decks;
 pub mod migrations;
 pub mod presets;
+pub mod reviews;
 pub mod sessions;
 pub mod settings;
 pub mod subjects;

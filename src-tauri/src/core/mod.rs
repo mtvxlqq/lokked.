@@ -14,6 +14,7 @@ pub mod dayline;
 pub mod deck;
 pub mod import;
 pub mod preset;
+pub mod review;
 pub mod scheduler;
 pub mod session;
 pub mod settings;

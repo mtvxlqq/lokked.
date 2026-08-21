@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 import { CardDialog } from "@/components/cards/CardDialog";
 import { CardTable } from "@/components/cards/CardTable";
@@ -28,6 +29,8 @@ type LoadState = "loading" | "ready" | "failed";
  * потом карточки той, что выбрана.
  */
 export function Cards() {
+  const navigate = useNavigate();
+
   const [decks, setDecks] = useState<Deck[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -190,7 +193,15 @@ export function Cards() {
                   onEdit={(card) => setCardDialog({ open: true, card })}
                 />
               )}
-              <div>
+              <div className="flex flex-wrap gap-2.5">
+                <Button
+                  size="sm"
+                  variant="primary"
+                  disabled={deckCards.length === 0}
+                  onClick={() => void navigate(`/study/${selected.id}`)}
+                >
+                  Учить
+                </Button>
                 <Button
                   size="sm"
                   variant="secondary"

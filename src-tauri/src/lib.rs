@@ -32,6 +32,7 @@ pub fn run() {
             // The active session and the OS services it needs live for as
             // long as the app does; commands reach them through `State`.
             app.manage(commands::session::SessionState::default());
+            app.manage(commands::study::StudyState::default());
             app.manage(platform::SharedPlatform::default());
             Ok(())
         })
@@ -62,6 +63,13 @@ pub fn run() {
             commands::import::preview_import,
             commands::import::import_cards,
             commands::import::export_deck,
+            commands::study::study_start,
+            commands::study::study_current,
+            commands::study::study_reveal,
+            commands::study::study_answer,
+            commands::study::study_summary,
+            commands::study::study_repeat_mistakes,
+            commands::study::study_stop,
             commands::session::actions::start_session,
             commands::session::actions::session_snapshot,
             commands::session::actions::pause_session,

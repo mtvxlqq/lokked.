@@ -6,7 +6,7 @@
 //! lives here, so it stays testable without a running Tauri app.
 //!
 //! Split by screen concern: [`subjects`], [`presets`], [`session`],
-//! [`today`], [`settings`], [`decks`], [`cards`] and [`import`].
+//! [`today`], [`settings`], [`decks`], [`cards`], [`import`] and [`study`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
@@ -15,6 +15,7 @@ use crate::core::card::CardError;
 use crate::core::deck::DeckError;
 use crate::core::import::ImportError;
 use crate::core::preset::PresetError;
+use crate::core::review::UnknownGrade;
 use crate::core::settings::SettingsError;
 use crate::core::subject::SubjectError;
 use crate::db::DbError;
@@ -25,6 +26,7 @@ pub mod import;
 pub mod presets;
 pub mod session;
 pub mod settings;
+pub mod study;
 pub mod subjects;
 pub mod today;
 
@@ -112,6 +114,15 @@ impl From<CardError> for CommandError {
 
 impl From<DeckError> for CommandError {
     fn from(err: DeckError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<UnknownGrade> for CommandError {
+    fn from(err: UnknownGrade) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),

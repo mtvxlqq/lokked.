@@ -3,12 +3,14 @@
 //! Pure reducers: rows in, numbers out. Nothing here reads the clock or the
 //! database — the caller passes both the records and which day «today» is.
 //!
-//! TODO: the per-subject breakdowns and review aggregations the statistics
-//! screen needs (M12).
+//! TODO: the per-subject breakdowns the statistics screen needs (M12).
 
 use std::collections::HashMap;
 
 use chrono::{NaiveDate, TimeDelta};
+use serde::Serialize;
+
+use super::review::Grade;
 
 /// How much has to be studied for a day to count toward the streak.
 ///
@@ -57,4 +59,56 @@ pub fn streak(days: &[(String, i64)], today: &str) -> u32 {
     }
 
     length
+}
+
+/// One answered card, as a finished run remembers it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ReviewOutcome {
+    pub card_id: String,
+    pub grade: Grade,
+    /// Time from the card appearing to the grade being given.
+    pub total_ms: i64,
+}
+
+/// What the screen after a run shows.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct ReviewSummary {
+    pub answered: usize,
+    pub correct: usize,
+    /// Rounded to the nearest per cent; zero for a run with no answers.
+    pub accuracy_percent: u32,
+    pub total_ms: i64,
+    /// Mean time per card, rounded; zero for a run with no answers.
+    pub average_ms: i64,
+    /// Cards answered «не помню», in the order they came up. Not deduplicated:
+    /// a card answered twice in one run really was missed twice.
+    pub mistakes: Vec<String>,
+}
+
+/// Turns the answers of one run into the numbers under it.
+pub fn review_summary(results: &[ReviewOutcome]) -> ReviewSummary {
+    let answered = results.len();
+    if answered == 0 {
+        return ReviewSummary::default();
+    }
+
+    let correct = results
+        .iter()
+        .filter(|result| result.grade.is_correct())
+        .count();
+    let total_ms: i64 = results.iter().map(|result| result.total_ms).sum();
+
+    ReviewSummary {
+        answered,
+        correct,
+        // Целочисленное округление к ближайшему: 2 из 3 — это 67%, а не 66%.
+        accuracy_percent: ((correct * 200 + answered) / (answered * 2)) as u32,
+        total_ms,
+        average_ms: (total_ms + answered as i64 / 2) / answered as i64,
+        mistakes: results
+            .iter()
+            .filter(|result| !result.grade.is_correct())
+            .map(|result| result.card_id.clone())
+            .collect(),
+    }
 }

@@ -1,0 +1,130 @@
+//! The `reviews` table: one row per answered card.
+//!
+//! Append-only, like `sessions`: a row is written when a card is graded and
+//! is never edited or deleted afterwards. Everything the statistics screen
+//! knows about how a card is going is derived from these rows, so losing or
+//! rewriting one would rewrite history.
+
+use chrono::{DateTime, Utc};
+use rusqlite::params;
+use uuid::Uuid;
+
+use super::{Database, DbError};
+
+/// An answer as stored in `reviews`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Review {
+    pub id: String,
+    pub card_id: String,
+    pub reviewed_at: DateTime<Utc>,
+    pub day_key: String,
+    /// `'again' | 'hard' | 'good' | 'easy'`.
+    pub result: String,
+    pub correct: bool,
+    /// `'classic' | 'blitz' | 'marathon' | 'weak'`.
+    pub mode: String,
+    /// Time to the answer being revealed, in milliseconds.
+    pub think_ms: Option<i64>,
+    /// Time to the grade being given, in milliseconds.
+    pub total_ms: Option<i64>,
+    pub device_id: Option<String>,
+    pub created_at: DateTime<Utc>,
+}
+
+/// An answer on its way into the table.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NewReview<'a> {
+    pub card_id: &'a str,
+    pub reviewed_at: DateTime<Utc>,
+    pub day_key: &'a str,
+    pub result: &'a str,
+    pub correct: bool,
+    pub mode: &'a str,
+    pub think_ms: Option<i64>,
+    pub total_ms: Option<i64>,
+    pub device_id: Option<&'a str>,
+}
+
+fn row_to_review(row: &rusqlite::Row<'_>) -> rusqlite::Result<Review> {
+    Ok(Review {
+        id: row.get("id")?,
+        card_id: row.get("card_id")?,
+        reviewed_at: row.get("reviewed_at")?,
+        day_key: row.get("day_key")?,
+        result: row.get("result")?,
+        correct: row.get::<_, i64>("correct")? != 0,
+        mode: row.get("mode")?,
+        think_ms: row.get("think_ms")?,
+        total_ms: row.get("total_ms")?,
+        device_id: row.get("device_id")?,
+        created_at: row.get("created_at")?,
+    })
+}
+
+const COLUMNS: &str = "id, card_id, reviewed_at, day_key, result, correct, mode, think_ms,
+                       total_ms, device_id, created_at";
+
+/// Writes and reads `reviews`. There is deliberately no update and no delete.
+pub struct ReviewRepo<'a> {
+    db: &'a Database,
+}
+
+impl<'a> ReviewRepo<'a> {
+    pub fn new(db: &'a Database) -> Self {
+        Self { db }
+    }
+
+    pub fn create(&self, new: NewReview<'_>) -> Result<Review, DbError> {
+        let id = Uuid::now_v7().to_string();
+
+        self.db.connection().execute(
+            "INSERT INTO reviews (id, card_id, reviewed_at, day_key, result, correct, mode,
+                                  think_ms, total_ms, device_id, created_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
+            params![
+                id,
+                new.card_id,
+                new.reviewed_at,
+                new.day_key,
+                new.result,
+                new.correct as i64,
+                new.mode,
+                new.think_ms,
+                new.total_ms,
+                new.device_id,
+                Utc::now(),
+            ],
+        )?;
+
+        self.db
+            .connection()
+            .query_row(
+                &format!("SELECT {COLUMNS} FROM reviews WHERE id = ?1"),
+                params![id],
+                row_to_review,
+            )
+            .map_err(DbError::from)
+    }
+
+    /// Every answer given to one card, oldest first.
+    pub fn list_for_card(&self, card_id: &str) -> Result<Vec<Review>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {COLUMNS} FROM reviews WHERE card_id = ?1 ORDER BY reviewed_at"
+        ))?;
+        let rows = stmt.query_map(params![card_id], row_to_review)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
+    /// Every answer given on one study day, oldest first.
+    pub fn list_for_day(&self, day_key: &str) -> Result<Vec<Review>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {COLUMNS} FROM reviews WHERE day_key = ?1 ORDER BY reviewed_at"
+        ))?;
+        let rows = stmt.query_map(params![day_key], row_to_review)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+}

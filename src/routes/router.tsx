@@ -61,5 +61,15 @@ export const router = createHashRouter([
   },
   // Чёрный экран живёт вне `AppShell`: ему нужен весь экран без навигации.
   { path: "zen", element: <Zen /> },
+  {
+    // Прогон по колоде — тоже без навигации: на экране должна быть карточка
+    // и ничего кроме. KaTeX здесь тот же, что и на экране карточек, поэтому
+    // кусок тоже отдельный.
+    path: "study/:deckId",
+    lazy: async () => {
+      const { Study } = await import("@/routes/Study");
+      return { Component: Study };
+    },
+  },
   ...devRoutes,
 ]);

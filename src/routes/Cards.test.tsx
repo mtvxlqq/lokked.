@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { createMemoryRouter, RouterProvider } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Cards } from "@/routes/Cards";
@@ -96,6 +97,19 @@ function backend(
   });
 }
 
+/** Экран живёт в роутере: с него уходят на прогон по колоде. */
+function renderCards() {
+  const router = createMemoryRouter(
+    [
+      { path: "/cards", element: <Cards /> },
+      { path: "/study/:deckId", element: <p>прогон по колоде</p> },
+    ],
+    { initialEntries: ["/cards"] },
+  );
+
+  return render(<RouterProvider router={router} />);
+}
+
 beforeEach(() => {
   invoke.mockReset();
 });
@@ -103,7 +117,7 @@ beforeEach(() => {
 describe("экран карточек", () => {
   it("предлагает импорт, когда колод ещё нет", async () => {
     backend({ decks: [] });
-    render(<Cards />);
+    renderCards();
 
     expect(await screen.findByText("Колод пока нет")).toBeInTheDocument();
     expect(
@@ -113,7 +127,7 @@ describe("экран карточек", () => {
 
   it("открывает первую колоду сам и показывает её карточки", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
 
     expect(
       await screen.findByText("Первообразная функции"),
@@ -126,7 +140,7 @@ describe("экран карточек", () => {
 
   it("в списке показывает формулы, а не их исходник", async () => {
     backend();
-    const { container } = render(<Cards />);
+    const { container } = renderCards();
     await screen.findByText("Первообразная функции");
 
     // У второй карточки формул нет, у первой — две в обороте.
@@ -147,7 +161,7 @@ describe("экран карточек", () => {
         },
       ],
     });
-    const { container } = render(<Cards />);
+    const { container } = renderCards();
     await screen.findByText("Непрерывное отображение");
 
     expect(container.querySelector("strong")).not.toBeNull();
@@ -167,7 +181,7 @@ describe("экран карточек", () => {
         },
       ],
     });
-    const { container } = render(<Cards />);
+    const { container } = renderCards();
     await screen.findByText("Теорема Кантора");
 
     // KaTeX оставляет исходник формулы в MathML для копирования и
@@ -179,7 +193,7 @@ describe("экран карточек", () => {
 
   it("переключает колоду по нажатию", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.click(screen.getByRole("button", { name: /^Разное/ }));
@@ -191,7 +205,7 @@ describe("экран карточек", () => {
 
   it("ищет по тексту карточки", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.type(screen.getByLabelText("Поиск"), "Даламбер");
@@ -203,7 +217,7 @@ describe("экран карточек", () => {
 
   it("фильтрует по тегу и снимает фильтр повторным нажатием", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     const tag = screen.getByRole("button", { name: /^определение/ });
@@ -216,7 +230,7 @@ describe("экран карточек", () => {
 
   it("импортирует разобранные карточки в выбранную колоду", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.click(screen.getByRole("button", { name: "Импорт" }));
@@ -252,7 +266,7 @@ describe("экран карточек", () => {
         problems: [{ block: 2, kind: "missing_back" }],
       },
     });
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.click(screen.getByRole("button", { name: "Импорт" }));
@@ -265,7 +279,7 @@ describe("экран карточек", () => {
 
   it("отдаёт колоду текстом на экспорт", async () => {
     backend();
-    render(<Cards />);
+    renderCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.click(screen.getByRole("button", { name: "Экспорт" }));
@@ -275,12 +289,22 @@ describe("экран карточек", () => {
     );
   });
 
+  it("«Учить» уводит на прогон по этой колоде", async () => {
+    backend();
+    renderCards();
+    await screen.findByText("Первообразная функции");
+
+    await userEvent.click(screen.getByRole("button", { name: "Учить" }));
+
+    expect(await screen.findByText("прогон по колоде")).toBeInTheDocument();
+  });
+
   it("сообщает об отказе команды и даёт повторить", async () => {
     invoke.mockRejectedValue({
       kind: "database",
       message: "database query failed: disk I/O error",
     });
-    render(<Cards />);
+    renderCards();
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "disk I/O error",
