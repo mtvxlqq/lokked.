@@ -114,3 +114,34 @@ export function CardText({
     </div>
   );
 }
+
+/**
+ * Одна строка карточки — для списка, где на карточку отведён ряд.
+ *
+ * Берётся первый блок текста: остальное всё равно не поместится, а разметка
+ * та же, что и в самой карточке. Формулы разбираются и здесь: строка
+ * «Пусть $f(x,y)$ непрерывна» без этого читается хуже, чем со сломанным
+ * шрифтом, — сырой LaTeX глазами не разбирают.
+ */
+export function CardLine({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
+  const parts = useMemo<Inline[]>(() => {
+    const [block] = parseMarkdown(text);
+
+    if (!block) return [];
+    if (block.kind === "paragraph") return block.inline;
+    if (block.kind === "math") return [{ kind: "math", value: block.value }];
+    return block.items[0] ?? [];
+  }, [text]);
+
+  return (
+    <span className={cn("block overflow-hidden", className)}>
+      {renderInline(parts)}
+    </span>
+  );
+}

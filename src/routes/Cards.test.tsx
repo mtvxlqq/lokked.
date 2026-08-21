@@ -124,6 +124,16 @@ describe("экран карточек", () => {
     ).toBeInTheDocument();
   });
 
+  it("в списке показывает формулы, а не их исходник", async () => {
+    backend();
+    const { container } = render(<Cards />);
+    await screen.findByText("Первообразная функции");
+
+    // У второй карточки формул нет, у первой — две в обороте.
+    expect(container.querySelectorAll(".katex").length).toBeGreaterThan(0);
+    expect(screen.queryByText(/\$F'\(x\)=f\(x\)\$/)).not.toBeInTheDocument();
+  });
+
   it("переключает колоду по нажатию", async () => {
     backend();
     render(<Cards />);

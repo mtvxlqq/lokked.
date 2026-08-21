@@ -148,3 +148,23 @@ export function parseMarkdown(text: string): Block[] {
   closeList();
   return blocks;
 }
+
+/**
+ * Текст без разметки: для доступного имени строки списка и подсказки при
+ * наведении.
+ *
+ * Формула превращается в свой исходник без долларов — прочитать вслух
+ * `\frac{1}{2}` всё же лучше, чем «доллар слэш фрак».
+ */
+export function plainText(text: string): string {
+  return parseMarkdown(text)
+    .flatMap((block) => {
+      if (block.kind === "math") return [block.value];
+      if (block.kind === "paragraph")
+        return block.inline.map((part) => part.value);
+      return block.items.flatMap((item) => item.map((part) => part.value));
+    })
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseInline, parseMarkdown } from "@/lib/markdown";
+import { parseInline, parseMarkdown, plainText } from "@/lib/markdown";
 
 describe("parseInline", () => {
   it("выделяет формулу в строке", () => {
@@ -106,5 +106,23 @@ describe("parseMarkdown", () => {
     expect(blocks).toEqual([
       { kind: "math", value: "\\begin{cases} a \\\\ b \\end{cases}" },
     ]);
+  });
+});
+
+describe("plainText", () => {
+  it("снимает разметку и оставляет формулу исходником", () => {
+    expect(plainText("Пусть $f(x,y)$ **непрерывна** на $\\Omega$")).toBe(
+      "Пусть f(x,y) непрерывна на \\Omega",
+    );
+  });
+
+  it("склеивает блоки в одну строку", () => {
+    expect(plainText("Получаем\n$$F'(x)=f(x)$$\nоткуда")).toBe(
+      "Получаем F'(x)=f(x) откуда",
+    );
+  });
+
+  it("пустой текст остаётся пустым", () => {
+    expect(plainText("   ")).toBe("");
   });
 });

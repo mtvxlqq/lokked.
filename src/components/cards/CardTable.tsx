@@ -1,18 +1,15 @@
 import { useMemo, useState } from "react";
 
+import { CardLine } from "@/components/cards/CardText";
 import { Input } from "@/components/ui";
 import { cn } from "@/lib/cn";
+import { plainText } from "@/lib/markdown";
 import type { Card } from "@/lib/tauri";
 
 type CardTableProps = {
   cards: Card[];
   onEdit: (card: Card) => void;
 };
-
-/** Первая строка текста — то, чем карточка узнаётся в списке. */
-function firstLine(text: string): string {
-  return text.split("\n").find((line) => line.trim() !== "") ?? "";
-}
 
 /**
  * Карточки колоды с поиском и фильтром по тегам.
@@ -96,17 +93,19 @@ export function CardTable({ cards, onEdit }: CardTableProps) {
             <button
               type="button"
               onClick={() => onEdit(card)}
+              // Имя строки задаётся явно: иначе оно собиралось бы из разметки
+              // формул, а вслух это не читается.
+              aria-label={`Карточка: ${plainText(card.front)}`}
               className={cn(
                 "flex min-h-11 w-full flex-col gap-1 py-3 text-left",
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
               )}
             >
-              <span className="text-14.5 text-text-1">
-                {firstLine(card.front)}
-              </span>
-              <span className="line-clamp-1 text-12.5 text-text-dim-2">
-                {firstLine(card.back)}
-              </span>
+              <CardLine text={card.front} className="text-14.5 text-text-1" />
+              <CardLine
+                text={card.back}
+                className="line-clamp-1 text-12.5 text-text-dim-2"
+              />
               {card.tags.length > 0 && (
                 <span className="text-11.5 text-text-faint">
                   {card.tags.join(" · ")}
