@@ -56,13 +56,13 @@ function renderInline(parts: Inline[]): ReactNode {
       case "bold":
         return (
           <strong key={index} className="font-semibold text-text-1">
-            {part.value}
+            {renderInline(part.children)}
           </strong>
         );
       case "italic":
         return (
           <em key={index} className="italic">
-            {part.value}
+            {renderInline(part.children)}
           </em>
         );
       case "math":
@@ -139,8 +139,11 @@ export function CardLine({
     return block.items[0] ?? [];
   }, [text]);
 
+  // Про `display` компонент не решает: строка списка обрезается через
+  // `line-clamp-*`, у которого свой `display`, а тег в чипе должен остаться
+  // строчным. Обе утилиты приходят из `className`.
   return (
-    <span className={cn("block overflow-hidden", className)}>
+    <span className={cn("overflow-hidden", className)}>
       {renderInline(parts)}
     </span>
   );

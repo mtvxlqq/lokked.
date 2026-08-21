@@ -38,8 +38,10 @@ describe("CardText", () => {
   it("выделяет жирный и курсив", () => {
     render(<CardText text="**первообразная** и *интеграл*" />);
 
-    expect(screen.getByText("первообразная").tagName).toBe("STRONG");
-    expect(screen.getByText("интеграл").tagName).toBe("EM");
+    // Текст лежит внутри выделения, а не является им: выделение вложенное,
+    // потому что внутри него может быть формула.
+    expect(screen.getByText("первообразная").closest("strong")).not.toBeNull();
+    expect(screen.getByText("интеграл").closest("em")).not.toBeNull();
   });
 
   it("собирает список", () => {

@@ -68,14 +68,17 @@ export function CardTable({ cards, onEdit }: CardTableProps) {
                 aria-pressed={active}
                 onClick={() => setTag(active ? null : value)}
                 className={cn(
-                  "min-h-11 rounded-full border px-3 py-1.5 text-12.5 sm:min-h-0 sm:py-1",
+                  "flex min-h-11 items-baseline rounded-full border px-3 py-1.5 text-12.5 sm:min-h-0 sm:py-1",
                   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
                   active
                     ? "border-border-accent bg-raised text-text-1"
                     : "border-border text-text-dim",
                 )}
+                // Имя задаётся явно: в теме лекции живёт формула, и без
+                // этого имя чипа собиралось бы из разметки KaTeX.
+                aria-label={`${plainText(value)}, карточек: ${count}`}
               >
-                {value}
+                <CardLine text={value} />
                 <span className="ml-1.5 text-text-faint">{count}</span>
               </button>
             );
@@ -101,14 +104,22 @@ export function CardTable({ cards, onEdit }: CardTableProps) {
                 "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
               )}
             >
-              <CardLine text={card.front} className="text-14.5 text-text-1" />
+              <CardLine
+                text={card.front}
+                className="line-clamp-1 text-14.5 text-text-1"
+              />
               <CardLine
                 text={card.back}
                 className="line-clamp-1 text-12.5 text-text-dim-2"
               />
               {card.tags.length > 0 && (
-                <span className="text-11.5 text-text-faint">
-                  {card.tags.join(" · ")}
+                <span className="flex flex-wrap gap-x-1.5 text-11.5 text-text-faint">
+                  {card.tags.map((value, index) => (
+                    <span key={value} className="flex gap-x-1.5">
+                      {index > 0 && <span aria-hidden="true">·</span>}
+                      <CardLine text={value} />
+                    </span>
+                  ))}
                 </span>
               )}
             </button>

@@ -134,6 +134,49 @@ describe("экран карточек", () => {
     expect(screen.queryByText(/\$F'\(x\)=f\(x\)\$/)).not.toBeInTheDocument();
   });
 
+  it("жирный, внутри которого формула, показывается жирным", async () => {
+    backend({
+      cards: [
+        {
+          id: "c-3",
+          deck_id: "d-1",
+          front: "Непрерывное отображение",
+          back: "Отображение называется **непрерывным в точке $x_0 \\in X$**, если",
+          hint: null,
+          tags: [],
+        },
+      ],
+    });
+    const { container } = render(<Cards />);
+    await screen.findByText("Непрерывное отображение");
+
+    expect(container.querySelector("strong")).not.toBeNull();
+    expect(screen.queryByText(/\*\*/)).not.toBeInTheDocument();
+  });
+
+  it("формулу в теге рисует формулой", async () => {
+    backend({
+      cards: [
+        {
+          id: "c-4",
+          deck_id: "d-1",
+          front: "Теорема Кантора",
+          back: "Оборот",
+          hint: null,
+          tags: ["Кривые и области в $\\mathbb{R}^m$"],
+        },
+      ],
+    });
+    const { container } = render(<Cards />);
+    await screen.findByText("Теорема Кантора");
+
+    // KaTeX оставляет исходник формулы в MathML для копирования и
+    // скринридеров, поэтому проверяем, что на экране нет долларов, —
+    // видимого исходника.
+    expect(container.querySelectorAll(".katex").length).toBeGreaterThan(0);
+    expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
+  });
+
   it("переключает колоду по нажатию", async () => {
     backend();
     render(<Cards />);

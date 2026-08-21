@@ -14,9 +14,12 @@
 
 export type Inline =
   | { kind: "text"; value: string }
-  | { kind: "bold"; value: string }
-  | { kind: "italic"; value: string }
-  | { kind: "math"; value: string };
+  | { kind: "math"; value: string }
+  // Выделение вложенное, а не плоское: «**непрерывным в точке $x_0 \in X$**»
+  // — это жирный, внутри которого формула, и разобрать его как три куска
+  // текста значит показать студенту звёздочки.
+  | { kind: "bold"; children: Inline[] }
+  | { kind: "italic"; children: Inline[] };
 
 export type Block =
   | { kind: "paragraph"; inline: Inline[] }
@@ -32,49 +35,62 @@ const ORDERED = /^\d+[.)]\s+(.*)$/;
 /**
  * Разбирает строку на формулы, жирный и курсив.
  *
- * Формулы выделяются первыми и дальше не трогаются: в `$a*b$` звёздочка —
- * это умножение, а не курсив, и разобрать её как разметку значило бы сломать
- * формулу.
+ * Один проход слева направо: что открылось раньше, то и разбирается первым.
+ * Поэтому в `$a*b$` звёздочка — умножение (формула началась раньше), а в
+ * `**текст $x$**` формула оказывается внутри жирного (жирный начался
+ * раньше). Незакрытый маркер остаётся обычным текстом: `5$` — это пять
+ * долларов, а не начало формулы.
  */
 export function parseInline(text: string): Inline[] {
   const parts: Inline[] = [];
-  let rest = text;
+  let plain = "";
+  let index = 0;
 
-  while (rest.length > 0) {
-    const start = rest.indexOf("$");
-    if (start === -1) break;
-
-    const end = rest.indexOf("$", start + 1);
-    if (end === -1) break;
-
-    parts.push(...parseEmphasis(rest.slice(0, start)));
-    parts.push({ kind: "math", value: rest.slice(start + 1, end) });
-    rest = rest.slice(end + 1);
+  function flush() {
+    if (plain.length > 0) {
+      parts.push({ kind: "text", value: plain });
+      plain = "";
+    }
   }
 
-  parts.push(...parseEmphasis(rest));
-  return parts.filter((part) => part.kind !== "text" || part.value.length > 0);
-}
+  while (index < text.length) {
+    if (text[index] === "$") {
+      const end = text.indexOf("$", index + 1);
+      if (end !== -1) {
+        flush();
+        parts.push({ kind: "math", value: text.slice(index + 1, end) });
+        index = end + 1;
+        continue;
+      }
+    } else if (text.startsWith("**", index)) {
+      const end = text.indexOf("**", index + 2);
+      if (end !== -1) {
+        flush();
+        parts.push({
+          kind: "bold",
+          children: parseInline(text.slice(index + 2, end)),
+        });
+        index = end + 2;
+        continue;
+      }
+    } else if (text[index] === "*") {
+      const end = text.indexOf("*", index + 1);
+      if (end !== -1) {
+        flush();
+        parts.push({
+          kind: "italic",
+          children: parseInline(text.slice(index + 1, end)),
+        });
+        index = end + 1;
+        continue;
+      }
+    }
 
-/** Жирный и курсив в куске текста, где формул заведомо нет. */
-function parseEmphasis(text: string): Inline[] {
-  const parts: Inline[] = [];
-  const pattern = /\*\*(.+?)\*\*|\*(.+?)\*/g;
-  let last = 0;
-
-  for (const match of text.matchAll(pattern)) {
-    const at = match.index;
-    if (at > last) parts.push({ kind: "text", value: text.slice(last, at) });
-
-    parts.push(
-      match[1] !== undefined
-        ? { kind: "bold", value: match[1] }
-        : { kind: "italic", value: match[2] },
-    );
-    last = at + match[0].length;
+    plain += text[index];
+    index += 1;
   }
 
-  if (last < text.length) parts.push({ kind: "text", value: text.slice(last) });
+  flush();
   return parts;
 }
 
@@ -157,12 +173,21 @@ export function parseMarkdown(text: string): Block[] {
  * `\frac{1}{2}` всё же лучше, чем «доллар слэш фрак».
  */
 export function plainText(text: string): string {
+  function flatten(parts: Inline[]): string {
+    return parts
+      .map((part) =>
+        part.kind === "bold" || part.kind === "italic"
+          ? flatten(part.children)
+          : part.value,
+      )
+      .join("");
+  }
+
   return parseMarkdown(text)
     .flatMap((block) => {
       if (block.kind === "math") return [block.value];
-      if (block.kind === "paragraph")
-        return block.inline.map((part) => part.value);
-      return block.items.flatMap((item) => item.map((part) => part.value));
+      if (block.kind === "paragraph") return [flatten(block.inline)];
+      return block.items.map(flatten);
     })
     .join(" ")
     .replace(/\s+/g, " ")

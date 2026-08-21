@@ -18,9 +18,30 @@ describe("parseInline", () => {
 
   it("разбирает жирный и курсив", () => {
     expect(parseInline("**первообразная** и *интеграл*")).toEqual([
-      { kind: "bold", value: "первообразная" },
+      { kind: "bold", children: [{ kind: "text", value: "первообразная" }] },
       { kind: "text", value: " и " },
-      { kind: "italic", value: "интеграл" },
+      { kind: "italic", children: [{ kind: "text", value: "интеграл" }] },
+    ]);
+  });
+
+  it("формула внутри жирного остаётся формулой, а звёздочки не всплывают", () => {
+    // Ровно тот случай, на котором разбор ломался: маркеры выделения стоят
+    // по разные стороны от формулы.
+    expect(parseInline("**непрерывным в точке $x_0 \\in X$**, если")).toEqual([
+      {
+        kind: "bold",
+        children: [
+          { kind: "text", value: "непрерывным в точке " },
+          { kind: "math", value: "x_0 \\in X" },
+        ],
+      },
+      { kind: "text", value: ", если" },
+    ]);
+  });
+
+  it("незакрытый маркер выделения остаётся текстом", () => {
+    expect(parseInline("две **звёздочки без пары")).toEqual([
+      { kind: "text", value: "две **звёздочки без пары" },
     ]);
   });
 
