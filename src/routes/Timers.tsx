@@ -6,6 +6,7 @@ import { PresetDialog } from "@/components/presets/PresetDialog";
 import { PresetList } from "@/components/presets/PresetList";
 import { SubjectDialog } from "@/components/subjects/SubjectDialog";
 import { SubjectList } from "@/components/subjects/SubjectList";
+import { TodaySummary } from "@/components/today/TodaySummary";
 import { Button, Card, EmptyState } from "@/components/ui";
 import { TimerIcon } from "@/components/nav/icons";
 import {
@@ -15,23 +16,28 @@ import {
   todayTotals,
   type Preset,
   type Subject,
+  type TodayTotals,
 } from "@/lib/tauri";
 
 /** Что показывает экран, пока команды не ответили или если они отказали. */
 type LoadState = "loading" | "ready" | "failed";
 
 /**
- * Раздел «Таймеры» — предметы, время за сегодня и пресеты таймера.
+ * Раздел «Таймеры» — сводка за учебный день, предметы и пресеты таймера.
  *
  * Данных экран не придумывает: и список, и суммы приходят из tauri-команд.
- * Кнопка «Старт» пока только уводит на экран сессии — сам таймер появится
- * в M6.
+ *
+ * Учебный день кончается не тогда, когда о нём вспомнят: экран сам заводит
+ * будильник на ближайшую границу и перечитывает сводку, когда она наступит.
+ * Ничего при этом не удаляется — меняется только день, по которому идёт
+ * фильтр.
  */
 export function Timers() {
   const navigate = useNavigate();
 
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [presets, setPresets] = useState<Preset[]>([]);
+  const [today, setToday] = useState<TodayTotals | null>(null);
   const [secondsToday, setSecondsToday] = useState(new Map<string, number>());
   const [state, setState] = useState<LoadState>("loading");
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +66,7 @@ export function Timers() {
 
         setSubjects(loadedSubjects);
         setPresets(loadedPresets);
+        setToday(totals);
         setSecondsToday(new Map(totals.seconds_by_subject));
         setError(null);
         setState("ready");
@@ -75,6 +82,31 @@ export function Timers() {
       cancelled = true;
     };
   }, [reloads]);
+
+  // Будильник на смену учебного дня. Момент границы считает бэкенд, поэтому
+  // здесь не надо знать ни про часовой пояс, ни про настройку — только про то,
+  // что после неё сводку надо спросить заново.
+  useEffect(() => {
+    if (!today) return;
+
+    const wait = new Date(today.next_boundary).getTime() - Date.now();
+    // Секунда сверху: спрашивать ровно в момент границы — значит рисковать
+    // получить ответ за старый день из-за расхождения часов на миллисекунды.
+    const id = setTimeout(reload, Math.max(0, wait) + 1000);
+
+    return () => clearTimeout(id);
+  }, [today]);
+
+  // Возвращение из фона: окно могло провисеть свёрнутым всю ночь, а таймеры
+  // в это время не срабатывали. Перечитываем, не дожидаясь границы.
+  useEffect(() => {
+    function onVisibility() {
+      if (!document.hidden) reload();
+    }
+
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
 
   return (
     <Screen
@@ -107,6 +139,10 @@ export function Timers() {
             </Button>
           </div>
         </Card>
+      )}
+
+      {state === "ready" && today && subjects.length > 0 && (
+        <TodaySummary totals={today} />
       )}
 
       {state === "ready" && subjects.length === 0 && (

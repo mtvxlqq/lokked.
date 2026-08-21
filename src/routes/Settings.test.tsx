@@ -3,34 +3,47 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Settings } from "@/routes/Settings";
-import type { ZenSettings } from "@/lib/tauri";
+import type { DaySettings, ZenSettings } from "@/lib/tauri";
 
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
 
 const defaults: ZenSettings = { minutes_only: false, font_size: "normal" };
+const midnight: DaySettings = { start_offset_seconds: 0 };
 
 /** Настройки, которые бэкенд помнит между вызовами. */
-function backend(options: { stored?: ZenSettings; saveFails?: boolean } = {}) {
+function backend(
+  options: {
+    stored?: ZenSettings;
+    storedDay?: DaySettings;
+    saveFails?: boolean;
+  } = {},
+) {
   let stored = options.stored ?? defaults;
+  let storedDay = options.storedDay ?? midnight;
 
   invoke.mockImplementation((command: string, args?: unknown) => {
+    if (options.saveFails && command.startsWith("set_")) {
+      return Promise.reject({ kind: "database", message: "база недоступна" });
+    }
+
     switch (command) {
       case "zen_settings":
         return Promise.resolve(stored);
       case "set_zen_settings": {
-        if (options.saveFails) {
-          return Promise.reject({
-            kind: "database",
-            message: "база недоступна",
-          });
-        }
         const { minutesOnly, fontSize } = args as {
           minutesOnly: boolean;
           fontSize: ZenSettings["font_size"];
         };
         stored = { minutes_only: minutesOnly, font_size: fontSize };
         return Promise.resolve(stored);
+      }
+      case "day_settings":
+        return Promise.resolve(storedDay);
+      case "set_day_settings": {
+        const { startOffsetSeconds } = args as { startOffsetSeconds: number };
+        storedDay = { start_offset_seconds: startOffsetSeconds };
+        return Promise.resolve(storedDay);
       }
       default:
         return Promise.reject(new Error(`неожиданная команда ${command}`));
@@ -101,5 +114,45 @@ describe("настройки", () => {
       "база недоступна",
     );
     expect(toggle).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("показывает сохранённую границу учебного дня", async () => {
+    backend({ storedDay: { start_offset_seconds: 4 * 60 * 60 } });
+    render(<Settings />);
+
+    expect(await screen.findByLabelText("Начало учебного дня")).toHaveValue(
+      String(4 * 60 * 60),
+    );
+  });
+
+  it("сохраняет выбранную границу учебного дня", async () => {
+    backend();
+    render(<Settings />);
+    const select = await screen.findByLabelText("Начало учебного дня");
+
+    await userEvent.selectOptions(select, String(5 * 60 * 60));
+
+    await waitFor(() =>
+      expect(invoke).toHaveBeenCalledWith("set_day_settings", {
+        startOffsetSeconds: 5 * 60 * 60,
+      }),
+    );
+    expect(select).toHaveValue(String(5 * 60 * 60));
+  });
+
+  it("если границу записать не удалось, возвращает прежнюю", async () => {
+    backend({
+      storedDay: { start_offset_seconds: 4 * 60 * 60 },
+      saveFails: true,
+    });
+    render(<Settings />);
+    const select = await screen.findByLabelText("Начало учебного дня");
+
+    await userEvent.selectOptions(select, String(9 * 60 * 60));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "база недоступна",
+    );
+    expect(select).toHaveValue(String(4 * 60 * 60));
   });
 });

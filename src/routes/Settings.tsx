@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { Screen } from "@/components/Screen";
 import { Card, Select, Switch } from "@/components/ui";
 import {
+  daySettings,
   errorMessage,
+  saveDaySettings,
   saveZenSettings,
   zenSettings,
+  type DaySettings,
   type ZenFontSize,
   type ZenSettings,
 } from "@/lib/tauri";
@@ -16,23 +19,31 @@ const FONT_SIZES: { value: ZenFontSize; label: string }[] = [
   { value: "large", label: "Крупнее" },
 ];
 
+/** Начало учебного дня выбирается по часам: минуты здесь ничего не решают. */
+const DAY_START_HOURS = Array.from({ length: 24 }, (_, hour) => ({
+  seconds: hour * 60 * 60,
+  label: `${String(hour).padStart(2, "0")}:00`,
+}));
+
 /**
- * Раздел «Настройки».
+ * Раздел «Настройки»: чёрный экран и граница учебного дня.
  *
- * Пока здесь только чёрный экран; граница учебного дня появится в M8, а
- * пресеты таймера живут на экране «Таймеры», рядом с предметами, которым они
- * принадлежат.
+ * Пресеты таймера сюда не переезжают — они живут на экране «Таймеры», рядом
+ * с предметами, которым принадлежат.
  */
 export function Settings() {
-  const [settings, setSettings] = useState<ZenSettings | null>(null);
+  const [zen, setZen] = useState<ZenSettings | null>(null);
+  const [day, setDay] = useState<DaySettings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    zenSettings()
-      .then((loaded) => {
-        if (!cancelled) setSettings(loaded);
+    Promise.all([zenSettings(), daySettings()])
+      .then(([loadedZen, loadedDay]) => {
+        if (cancelled) return;
+        setZen(loadedZen);
+        setDay(loadedDay);
       })
       .catch((failure: unknown) => {
         if (!cancelled) setError(errorMessage(failure));
@@ -48,35 +59,69 @@ export function Settings() {
    * который «залипает» до конца запроса, ощущается сломанным. Если запись
    * не удалась, экран возвращается к тому, что действительно лежит в базе.
    */
-  function save(next: ZenSettings) {
-    const previous = settings;
-    setSettings(next);
+  function saveZen(next: ZenSettings) {
+    const previous = zen;
+    setZen(next);
     setError(null);
 
     saveZenSettings(next)
-      .then(setSettings)
+      .then(setZen)
       .catch((failure: unknown) => {
         setError(errorMessage(failure));
-        setSettings(previous);
+        setZen(previous);
+      });
+  }
+
+  function saveDay(startOffsetSeconds: number) {
+    const previous = day;
+    setDay({ start_offset_seconds: startOffsetSeconds });
+    setError(null);
+
+    saveDaySettings(startOffsetSeconds)
+      .then(setDay)
+      .catch((failure: unknown) => {
+        setError(errorMessage(failure));
+        setDay(previous);
       });
   }
 
   return (
     <Screen title="Настройки">
+      <Card title="Учебный день">
+        {day ? (
+          <Select
+            label="Начало учебного дня"
+            hint="Время до этой границы засчитывается в предыдущий день — чтобы ночная сессия не разрывалась пополам. Записи при этом не удаляются никогда."
+            value={String(day.start_offset_seconds)}
+            onChange={(event) => saveDay(Number(event.target.value))}
+          >
+            {DAY_START_HOURS.map((hour) => (
+              <option key={hour.seconds} value={hour.seconds}>
+                {hour.label}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <p className="text-14 text-text-dim">
+            {error ? "Настройки не прочитались" : "Загрузка…"}
+          </p>
+        )}
+      </Card>
+
       <Card title="Чёрный экран">
-        {settings ? (
+        {zen ? (
           <>
             <Switch
               label="Показывать только минуты"
-              checked={settings.minutes_only}
-              onChange={(minutes_only) => save({ ...settings, minutes_only })}
+              checked={zen.minutes_only}
+              onChange={(minutes_only) => saveZen({ ...zen, minutes_only })}
             />
             <Select
               label="Размер цифр"
-              value={settings.font_size}
+              value={zen.font_size}
               onChange={(event) =>
-                save({
-                  ...settings,
+                saveZen({
+                  ...zen,
                   font_size: event.target.value as ZenFontSize,
                 })
               }
@@ -93,13 +138,13 @@ export function Settings() {
             {error ? "Настройки не прочитались" : "Загрузка…"}
           </p>
         )}
-
-        {error && (
-          <p className="text-13 text-danger-text" role="alert">
-            {error}
-          </p>
-        )}
       </Card>
+
+      {error && (
+        <p className="text-13 text-danger-text" role="alert">
+          {error}
+        </p>
+      )}
     </Screen>
   );
 }

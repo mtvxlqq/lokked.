@@ -6,10 +6,12 @@ use lokked_lib::commands::presets::{self, PresetInput};
 use lokked_lib::commands::session::actions::{
     current, discard_away, mark_interruption, pause, report_return, resume, skip_phase, start, stop,
 };
-use lokked_lib::commands::session::SessionState;
+use lokked_lib::commands::session::{work_in_progress, SessionState};
+use lokked_lib::commands::settings::write_day;
 use lokked_lib::commands::subjects::{self, SubjectInput};
 use lokked_lib::commands::ErrorKind;
 use lokked_lib::core::clock::{Clock, FakeClock};
+use lokked_lib::core::dayline::day_key;
 use lokked_lib::db::sessions::SessionRepo;
 use lokked_lib::db::Database;
 use lokked_lib::platform::noop::NoopPlatform;
@@ -624,4 +626,144 @@ fn paused_time_is_left_out_of_the_session_total() {
         .unwrap();
 
     assert_eq!(view.session_seconds, 15 * 60);
+}
+
+// --- граница учебного дня --------------------------------------------------
+
+#[test]
+fn a_late_session_belongs_to_the_previous_study_day_when_the_boundary_says_so() {
+    let env = env();
+    write_day(&env.db, 4 * 60 * 60).unwrap();
+    let algebra = subject(&env, "Алгебра");
+    // 01:30 — по календарю уже 22-е, по учебному дню ещё 21-е.
+    let local_half_past_one = chrono::Local
+        .with_ymd_and_hms(2026, 8, 22, 1, 30, 0)
+        .single()
+        .expect("01:30 22 августа однозначны в любом часовом поясе");
+    env.clock.set(local_half_past_one.with_timezone(&Utc));
+
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(20));
+    stop(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+
+    assert_eq!(rows(&env, "2026-08-21").len(), 1);
+    assert!(rows(&env, "2026-08-22").is_empty());
+}
+
+#[test]
+fn a_session_running_through_the_boundary_is_split_there_and_not_at_midnight() {
+    let env = env();
+    write_day(&env.db, 4 * 60 * 60).unwrap();
+    let algebra = subject(&env, "Алгебра");
+    let boundary = chrono::Local
+        .with_ymd_and_hms(2026, 8, 22, 4, 0, 0)
+        .single()
+        .expect("04:00 22 августа однозначны в любом часовом поясе");
+    env.clock
+        .set(boundary.with_timezone(&Utc) - TimeDelta::minutes(30));
+
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::hours(1));
+    stop(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+
+    let before = rows(&env, "2026-08-21");
+    let after = rows(&env, "2026-08-22");
+    assert_eq!(before.len(), 1);
+    assert_eq!(after.len(), 1);
+    assert_eq!(before[0].active_seconds, 30 * 60);
+    assert_eq!(after[0].active_seconds, 30 * 60);
+}
+
+// --- незаписанное время текущей фазы ---------------------------------------
+
+/// Учебный день часов при полуночной границе.
+fn day_of(env: &Env) -> String {
+    day_key(env.clock.now(), &chrono::Local, TimeDelta::zero())
+}
+
+#[test]
+fn without_a_session_nothing_is_in_progress() {
+    let env = env();
+
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), "2026-08-21"),
+        None
+    );
+}
+
+#[test]
+fn a_running_work_phase_reports_what_it_has_earned_so_far() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(18));
+
+    let day = day_of(&env);
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), &day),
+        Some((algebra, 18 * 60))
+    );
+}
+
+#[test]
+fn paused_time_is_not_earned() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(10));
+    pause(&env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(45));
+
+    let day = day_of(&env);
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), &day),
+        Some((algebra, 10 * 60))
+    );
+}
+
+#[test]
+fn a_break_earns_the_day_nothing() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    preset(
+        &env,
+        PresetInput {
+            is_default: true,
+            ..pomodoro("Классический")
+        },
+    );
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(25));
+    skip_phase(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(4));
+
+    let day = day_of(&env);
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), &day),
+        None
+    );
+}
+
+#[test]
+fn a_phase_that_crossed_the_boundary_earns_each_day_its_own_part() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    let local_midnight = chrono::Local
+        .with_ymd_and_hms(2026, 8, 22, 0, 0, 0)
+        .single()
+        .expect("полночь 22 августа однозначна в любом часовом поясе");
+    env.clock
+        .set(local_midnight.with_timezone(&Utc) - TimeDelta::minutes(40));
+
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::hours(1));
+
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), "2026-08-21"),
+        Some((algebra.clone(), 40 * 60))
+    );
+    assert_eq!(
+        work_in_progress(&env.state, &env.clock, TimeDelta::zero(), "2026-08-22"),
+        Some((algebra, 20 * 60))
+    );
 }

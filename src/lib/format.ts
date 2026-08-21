@@ -50,3 +50,18 @@ export function formatClockMinutes(seconds: number): string {
 
   return `${hours}:${String(minutes).padStart(2, "0")}`;
 }
+
+/**
+ * Русское склонение после числа: 1 день, 2 дня, 5 дней.
+ *
+ * `forms` — тройка «один / два / пять».
+ */
+export function plural(count: number, forms: [string, string, string]): string {
+  const n = Math.abs(count) % 100;
+  const last = n % 10;
+
+  if (n > 10 && n < 20) return forms[2];
+  if (last > 1 && last < 5) return forms[1];
+  if (last === 1) return forms[0];
+  return forms[2];
+}

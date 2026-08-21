@@ -116,6 +116,14 @@ export type TodayTotals = {
   day_key: string;
   /** `[id предмета, секунды]` — только для предметов с временем за сегодня. */
   seconds_by_subject: [string, number][];
+  /** Всё время учёбы за день, без перерывов. */
+  total_seconds: number;
+  /** Доведённые до конца рабочие фазы помодоро. */
+  pomodoros: number;
+  /** Дней подряд с достаточным временем учёбы. */
+  streak_days: number;
+  /** Когда сменится учебный день, ISO-8601 в UTC. */
+  next_boundary: string;
 };
 
 export function todayTotals(): Promise<TodayTotals> {
@@ -196,6 +204,23 @@ export function discardAway(since: Date): Promise<SessionSnapshot> {
   return invoke<SessionSnapshot>("session_discard_away", {
     since: since.toISOString(),
   });
+}
+
+// ------------------------------------------------------- начало учебного дня
+
+export type DaySettings = {
+  /** Смещение начала учебного дня от местной полуночи, в секундах. */
+  start_offset_seconds: number;
+};
+
+export function daySettings(): Promise<DaySettings> {
+  return invoke<DaySettings>("day_settings");
+}
+
+export function saveDaySettings(
+  startOffsetSeconds: number,
+): Promise<DaySettings> {
+  return invoke<DaySettings>("set_day_settings", { startOffsetSeconds });
 }
 
 // ------------------------------------------------------------- чёрный экран

@@ -25,11 +25,8 @@ use crate::db::sessions::{NewSession, SessionRepo};
 use crate::db::Database;
 use crate::platform::SharedPlatform;
 
+use super::settings::day_start;
 use super::{CommandError, ErrorKind};
-
-/// Where the study day starts. A настройка of its own in M8; until then every
-/// session is filed against a midnight-to-midnight day.
-const DAY_START: TimeDelta = TimeDelta::zero();
 
 /// The session the app is running right now.
 pub struct ActiveSession {
@@ -156,6 +153,7 @@ fn sync_wakelock(platform: &SharedPlatform, session: Option<&ActiveSession>) {
 ///
 /// Returns the studied seconds it wrote down, so the caller can add them to
 /// the session's running total.
+#[allow(clippy::too_many_arguments)]
 fn persist_phase(
     db: &Database,
     session: &ActiveSession,
@@ -164,6 +162,7 @@ fn persist_phase(
     completed: bool,
     planned_seconds: Option<i64>,
     interruptions: u32,
+    day_start: TimeDelta,
 ) -> Result<i64, CommandError> {
     let repo = SessionRepo::new(db);
     let mut active_seconds = 0;
@@ -173,7 +172,7 @@ fn persist_phase(
         ended_at,
         pauses,
         &Local,
-        DAY_START,
+        day_start,
     )
     .into_iter()
     .enumerate()
@@ -226,6 +225,7 @@ fn persist_current_phase(
         state.finished,
         planned,
         session.timer.interruptions(),
+        day_start(db)?,
     )?;
 
     // Breaks are not studied time and never count toward the session total.
@@ -241,4 +241,40 @@ fn conflict(message: &str) -> CommandError {
         kind: ErrorKind::Conflict,
         message: message.to_string(),
     }
+}
+
+/// How much of the study day `day` the current phase has already earned,
+/// before it is written down.
+///
+/// Rows appear in `sessions` only when a phase ends, so without this the
+/// subject list would show nothing for a session that has been running for
+/// half an hour. Returns `(subject_id, seconds)`, and nothing at all during a
+/// break — that is not study time — or when the phase has yet to earn a
+/// second of the day.
+pub fn work_in_progress(
+    state: &SessionState,
+    clock: &dyn Clock,
+    day_start: TimeDelta,
+    day: &str,
+) -> Option<(String, i64)> {
+    let active = state.lock();
+    let session = active.as_ref()?;
+
+    if session.timer.phase() != SessionPhase::Work {
+        return None;
+    }
+
+    let seconds: i64 = slice_phase(
+        session.timer.phase_started_at(),
+        clock.now(),
+        &session.timer.pauses_at(clock),
+        &Local,
+        day_start,
+    )
+    .into_iter()
+    .filter(|slice| slice.day_key == day)
+    .map(|slice| slice.active_seconds)
+    .sum();
+
+    (seconds > 0).then(|| (session.subject_id.clone(), seconds))
 }

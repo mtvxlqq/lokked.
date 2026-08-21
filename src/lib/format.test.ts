@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { formatClock, formatClockMinutes, formatDuration } from "@/lib/format";
+import {
+  formatClock,
+  formatClockMinutes,
+  formatDuration,
+  plural,
+} from "@/lib/format";
 
 describe("formatDuration", () => {
   it("показывает нулевое время, а не пустую строку", () => {
@@ -52,5 +57,27 @@ describe("formatClockMinutes", () => {
 
   it("отрицательное время показывает нулём", () => {
     expect(formatClockMinutes(-5)).toBe("0:00");
+  });
+});
+
+describe("plural", () => {
+  const days: [string, string, string] = ["день", "дня", "дней"];
+
+  it("выбирает форму по последней цифре", () => {
+    expect(plural(1, days)).toBe("день");
+    expect(plural(3, days)).toBe("дня");
+    expect(plural(7, days)).toBe("дней");
+    expect(plural(21, days)).toBe("день");
+    expect(plural(102, days)).toBe("дня");
+  });
+
+  it("для второго десятка всегда «дней»", () => {
+    expect(plural(11, days)).toBe("дней");
+    expect(plural(12, days)).toBe("дней");
+    expect(plural(114, days)).toBe("дней");
+  });
+
+  it("ноль — тоже «дней»", () => {
+    expect(plural(0, days)).toBe("дней");
   });
 });

@@ -48,6 +48,8 @@ pub fn run() {
             commands::today::today_totals,
             commands::settings::zen_settings,
             commands::settings::set_zen_settings,
+            commands::settings::day_settings,
+            commands::settings::set_day_settings,
             commands::session::actions::start_session,
             commands::session::actions::session_snapshot,
             commands::session::actions::pause_session,
