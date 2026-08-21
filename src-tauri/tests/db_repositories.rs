@@ -1,4 +1,5 @@
-//! CRUD tests for `SubjectRepo`, `PresetRepo` and `SessionRepo`, plus the
+//! CRUD tests for `SubjectRepo`, `PresetRepo`, `SessionRepo` and
+//! `SettingsRepo`, plus the
 //! cross-cutting behaviours the schema promises: soft delete hides rows from
 //! `list` but not `get`, and foreign keys are actually enforced.
 //!
@@ -7,6 +8,7 @@
 use chrono::{TimeDelta, Utc};
 use lokked_lib::db::presets::{NewPreset, PresetRepo};
 use lokked_lib::db::sessions::{NewSession, SessionRepo};
+use lokked_lib::db::settings::SettingsRepo;
 use lokked_lib::db::subjects::SubjectRepo;
 use lokked_lib::db::Database;
 
@@ -235,4 +237,42 @@ fn list_for_day_and_list_for_subject_return_recorded_sessions() {
     );
     assert_eq!(repo.list_for_day("2026-08-07").unwrap(), vec![]);
     assert_eq!(repo.list_for_subject(&subject.id).unwrap(), vec![session]);
+}
+
+// --- SettingsRepo ----------------------------------------------------------
+
+#[test]
+fn a_setting_that_was_never_written_reads_as_none() {
+    let db = new_db();
+
+    assert_eq!(SettingsRepo::new(&db).get("zen.font_size").unwrap(), None);
+}
+
+#[test]
+fn setting_the_same_key_twice_replaces_the_value_and_keeps_one_row() {
+    let db = new_db();
+    let repo = SettingsRepo::new(&db);
+
+    repo.set("zen.font_size", "large").unwrap();
+    repo.set("zen.font_size", "huge").unwrap();
+
+    assert_eq!(repo.get("zen.font_size").unwrap().as_deref(), Some("huge"));
+    assert_eq!(repo.all().unwrap().len(), 1);
+}
+
+#[test]
+fn all_returns_every_setting_sorted_by_key() {
+    let db = new_db();
+    let repo = SettingsRepo::new(&db);
+
+    repo.set("zen.minutes_only", "1").unwrap();
+    repo.set("day.start_offset_seconds", "14400").unwrap();
+
+    assert_eq!(
+        repo.all().unwrap(),
+        vec![
+            ("day.start_offset_seconds".to_string(), "14400".to_string()),
+            ("zen.minutes_only".to_string(), "1".to_string()),
+        ]
+    );
 }

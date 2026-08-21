@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatClock, formatDuration } from "@/lib/format";
+import { formatClock, formatClockMinutes, formatDuration } from "@/lib/format";
 
 describe("formatDuration", () => {
   it("показывает нулевое время, а не пустую строку", () => {
@@ -33,5 +33,24 @@ describe("formatClock", () => {
 
   it("от часа добавляет часы и дополняет минуты нулём", () => {
     expect(formatClock(3600 + 5 * 60)).toBe("1:05:00");
+  });
+});
+
+describe("formatClockMinutes", () => {
+  it("прячет секунды", () => {
+    expect(formatClockMinutes(72 * 60 + 24)).toBe("1:12");
+  });
+
+  it("минуты младше десяти пишет с ведущим нулём", () => {
+    expect(formatClockMinutes(7 * 60 + 59)).toBe("0:07");
+  });
+
+  it("округляет вниз: минута считается пройденной, когда прошла", () => {
+    expect(formatClockMinutes(59)).toBe("0:00");
+    expect(formatClockMinutes(60)).toBe("0:01");
+  });
+
+  it("отрицательное время показывает нулём", () => {
+    expect(formatClockMinutes(-5)).toBe("0:00");
   });
 });

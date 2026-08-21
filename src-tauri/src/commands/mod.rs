@@ -5,18 +5,20 @@
 //! the result into something serde can hand to the frontend. No domain logic
 //! lives here, so it stays testable without a running Tauri app.
 //!
-//! Split by screen concern: [`subjects`], [`presets`], [`session`] and
-//! [`today`].
+//! Split by screen concern: [`subjects`], [`presets`], [`session`],
+//! [`settings`] and [`today`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
 
 use crate::core::preset::PresetError;
+use crate::core::settings::SettingsError;
 use crate::core::subject::SubjectError;
 use crate::db::DbError;
 
 pub mod presets;
 pub mod session;
+pub mod settings;
 pub mod subjects;
 pub mod today;
 
@@ -77,6 +79,15 @@ impl From<SubjectError> for CommandError {
 
 impl From<PresetError> for CommandError {
     fn from(err: PresetError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<SettingsError> for CommandError {
+    fn from(err: SettingsError) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),

@@ -7,6 +7,11 @@
 //! TODO (Android): `inhibit_sleep` — `FLAG_KEEP_SCREEN_ON` or a
 //!       `PARTIAL_WAKE_LOCK` from a foreground service, reached through a
 //!       Tauri mobile plugin. `notify` — `NotificationManager` channel.
+//!       Immersive-режим для чёрного экрана —
+//!       `WindowInsetsController.hide(systemBars())`: на десктопе за это
+//!       отвечает `setFullscreen` окна Tauri, у которого на мобилке нет
+//!       эквивалента, так что там чёрный экран пока остаётся с системными
+//!       панелями (этап M15).
 //! TODO (iOS): `inhibit_sleep` — `UIApplication.isIdleTimerDisabled`.
 //!       `notify` — `UNUserNotificationCenter` local notifications.
 

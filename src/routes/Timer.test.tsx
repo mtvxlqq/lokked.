@@ -28,6 +28,7 @@ const running: SessionSnapshot = {
   cycle: 2,
   cycles_before_long: 4,
   elapsed_seconds: 5 * 60,
+  session_seconds: 30 * 60,
   remaining_seconds: 20 * 60,
   target_seconds: 25 * 60,
   phase_finished: false,
@@ -42,6 +43,7 @@ const stopwatch: SessionSnapshot = {
   cycle: 1,
   cycles_before_long: null,
   elapsed_seconds: 90,
+  session_seconds: 90,
   remaining_seconds: null,
   target_seconds: null,
 };

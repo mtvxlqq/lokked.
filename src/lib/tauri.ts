@@ -139,6 +139,8 @@ export type SessionSnapshot = {
   /** Сколько рабочих фаз в круге — для подписи «работа 2/4». */
   cycles_before_long: number | null;
   elapsed_seconds: number;
+  /** Время учёбы с начала сессии: все рабочие фазы без перерывов и пауз. */
+  session_seconds: number;
   /** `null` у секундомера: ему не к чему идти. */
   remaining_seconds: number | null;
   target_seconds: number | null;
@@ -193,5 +195,27 @@ export function reportReturn(lastSeen: Date): Promise<AwayReport> {
 export function discardAway(since: Date): Promise<SessionSnapshot> {
   return invoke<SessionSnapshot>("session_discard_away", {
     since: since.toISOString(),
+  });
+}
+
+// ------------------------------------------------------------- чёрный экран
+
+/** Шаг размера цифр на чёрном экране. */
+export type ZenFontSize = "small" | "normal" | "large";
+
+export type ZenSettings = {
+  /** Показывать «1:12» вместо «1:12:24». */
+  minutes_only: boolean;
+  font_size: ZenFontSize;
+};
+
+export function zenSettings(): Promise<ZenSettings> {
+  return invoke<ZenSettings>("zen_settings");
+}
+
+export function saveZenSettings(settings: ZenSettings): Promise<ZenSettings> {
+  return invoke<ZenSettings>("set_zen_settings", {
+    minutesOnly: settings.minutes_only,
+    fontSize: settings.font_size,
   });
 }

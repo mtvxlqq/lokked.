@@ -154,6 +154,7 @@
   --text-112: 112px;
   --text-150: 150px;
   --text-212: 212px;
+  --text-256: 256px;
 
   /* Трекинг */
   --tracking-*: initial;
@@ -345,6 +346,14 @@
   transition:
     color var(--duration-zen-dim) ease,
     text-shadow var(--duration-zen-dim) ease;
+}
+
+/* Цифры Zen задаются шагом из шкалы, но на узком экране шаг может не влезть:
+   восемь знаков «01:12:24» в JetBrains Mono — это 4.8 знакоместа по 0.6em.
+   Поэтому размер берётся меньшим из выбранного шага (унаследованный `1em`)
+   и доли ширины окна, и строка гарантированно помещается на 380px. */
+@utility zen-fit {
+  font-size: min(1em, 18svw);
 }
 
 @utility halo-zen {

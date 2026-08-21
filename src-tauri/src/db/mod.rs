@@ -3,8 +3,8 @@
 //! This module owns the connection, opens the database under the app's data
 //! directory, and applies [`migrations`] on startup. Everything above it
 //! (commands, [`crate::core`]) works with plain Rust types, never with rows —
-//! [`subjects`], [`presets`] and [`sessions`] each expose a repository with a
-//! typed CRUD surface instead of raw SQL.
+//! [`subjects`], [`presets`], [`sessions`] and [`settings`] each expose a
+//! repository with a typed CRUD surface instead of raw SQL.
 //!
 //! A single [`rusqlite::Connection`] behind one [`std::sync::Mutex`] backs
 //! the whole app rather than a pool: Lokked is a single-user app whose
@@ -25,6 +25,7 @@ use tauri::Manager;
 pub mod migrations;
 pub mod presets;
 pub mod sessions;
+pub mod settings;
 pub mod subjects;
 
 /// Something went wrong opening the database, migrating its schema, or

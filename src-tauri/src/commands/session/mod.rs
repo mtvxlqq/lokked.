@@ -42,6 +42,10 @@ pub struct ActiveSession {
     /// `'countup' | 'countdown' | 'pomodoro'`, as stored in `sessions.mode`.
     mode_label: &'static str,
     timer: Timer,
+    /// Studied time from the work phases that are already over, in seconds.
+    /// The current phase is not in here — it is still moving, and adding it
+    /// would mean accumulating time instead of deriving it.
+    pub studied_seconds: i64,
 }
 
 /// Managed state: the active session, or nothing.
@@ -71,6 +75,9 @@ pub struct SessionSnapshot {
     /// How many work phases make up a group, for the «работа 2/4» caption.
     pub cycles_before_long: Option<u32>,
     pub elapsed_seconds: i64,
+    /// Studied time since «Старт», across every work phase and excluding
+    /// breaks and pauses. This is what the black screen shows.
+    pub session_seconds: i64,
     /// `null` for a stopwatch, which has nothing to count down to.
     pub remaining_seconds: Option<i64>,
     pub target_seconds: Option<i64>,
@@ -102,6 +109,14 @@ fn snapshot(session: &ActiveSession, clock: &dyn Clock) -> SessionSnapshot {
     let state = session.timer.state_at(clock);
     let elapsed_seconds = state.elapsed.num_seconds();
     let remaining_seconds = state.remaining.map(|left| left.num_seconds());
+    // Only a work phase is study time; during a break the total stands still
+    // at what the finished phases add up to.
+    let session_seconds = session.studied_seconds
+        + if state.phase == SessionPhase::Work {
+            elapsed_seconds
+        } else {
+            0
+        };
 
     SessionSnapshot {
         subject_id: session.subject_id.clone(),
@@ -118,6 +133,7 @@ fn snapshot(session: &ActiveSession, clock: &dyn Clock) -> SessionSnapshot {
         cycle: state.cycle,
         cycles_before_long: cycles_before_long(session.timer.mode()),
         elapsed_seconds,
+        session_seconds,
         remaining_seconds,
         target_seconds: remaining_seconds.map(|left| elapsed_seconds + left),
         phase_finished: state.finished,
@@ -137,6 +153,9 @@ fn sync_wakelock(platform: &SharedPlatform, session: Option<&ActiveSession>) {
 /// Writes the phase that is ending: one `sessions` row per study day it
 /// touched. Called before the timer moves on, so a database failure leaves
 /// the session intact.
+///
+/// Returns the studied seconds it wrote down, so the caller can add them to
+/// the session's running total.
 fn persist_phase(
     db: &Database,
     session: &ActiveSession,
@@ -145,8 +164,9 @@ fn persist_phase(
     completed: bool,
     planned_seconds: Option<i64>,
     interruptions: u32,
-) -> Result<(), CommandError> {
+) -> Result<i64, CommandError> {
     let repo = SessionRepo::new(db);
+    let mut active_seconds = 0;
 
     for (index, slice) in slice_phase(
         session.timer.phase_started_at(),
@@ -178,9 +198,10 @@ fn persist_phase(
             interruptions: if index == 0 { interruptions.into() } else { 0 },
             device_id: None,
         })?;
+        active_seconds += slice.active_seconds;
     }
 
-    Ok(())
+    Ok(active_seconds)
 }
 
 /// Writes the phase that is ending, reading everything it needs from the
@@ -188,7 +209,7 @@ fn persist_phase(
 /// so both have to be captured before it runs.
 fn persist_current_phase(
     db: &Database,
-    session: &ActiveSession,
+    session: &mut ActiveSession,
     ended_at: DateTime<Utc>,
     clock: &dyn Clock,
 ) -> Result<(), CommandError> {
@@ -197,7 +218,7 @@ fn persist_current_phase(
         .remaining
         .map(|left| (state.elapsed + left).num_seconds());
 
-    persist_phase(
+    let studied = persist_phase(
         db,
         session,
         ended_at,
@@ -205,7 +226,14 @@ fn persist_current_phase(
         state.finished,
         planned,
         session.timer.interruptions(),
-    )
+    )?;
+
+    // Breaks are not studied time and never count toward the session total.
+    if session.timer.phase() == SessionPhase::Work {
+        session.studied_seconds += studied;
+    }
+
+    Ok(())
 }
 
 fn conflict(message: &str) -> CommandError {

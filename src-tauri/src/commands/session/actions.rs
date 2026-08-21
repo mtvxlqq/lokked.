@@ -102,6 +102,7 @@ pub fn start(
         preset_id,
         mode_label,
         timer: Timer::start(mode, clock),
+        studied_seconds: 0,
     };
 
     let view = snapshot(&session, clock);

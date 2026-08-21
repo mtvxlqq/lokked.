@@ -34,3 +34,19 @@ export function formatClock(seconds: number): string {
 
   return hours > 0 ? `${hours}:${mm}:${ss}` : `${mm}:${ss}`;
 }
+
+/**
+ * То же время без секунд: «1:12», «0:07».
+ *
+ * Для чёрного экрана с настройкой «показывать только минуты»: тикающая
+ * секунда — ровно то движение, ради избавления от которого этот экран и
+ * существует. Часы остаются даже нулевые: `0:07` читается как время с начала
+ * сессии, а «7» само по себе — нет.
+ */
+export function formatClockMinutes(seconds: number): string {
+  const total = Math.max(0, Math.floor(seconds / 60));
+  const hours = Math.floor(total / 60);
+  const minutes = total % 60;
+
+  return `${hours}:${String(minutes).padStart(2, "0")}`;
+}

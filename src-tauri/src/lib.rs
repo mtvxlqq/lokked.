@@ -46,6 +46,8 @@ pub fn run() {
             commands::presets::update_preset,
             commands::presets::delete_preset,
             commands::today::today_totals,
+            commands::settings::zen_settings,
+            commands::settings::set_zen_settings,
             commands::session::actions::start_session,
             commands::session::actions::session_snapshot,
             commands::session::actions::pause_session,

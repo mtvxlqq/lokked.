@@ -535,3 +535,93 @@ fn keeping_away_time_leaves_it_counted() {
 
     assert_eq!(view.elapsed_seconds, 3600);
 }
+
+// --- время с начала сессии -------------------------------------------------
+
+#[test]
+fn the_session_total_matches_the_phase_while_the_first_phase_runs() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(12));
+
+    let view = current(&env.db, &env.state, &env.platform, &env.clock)
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(view.session_seconds, view.elapsed_seconds);
+    assert_eq!(view.session_seconds, 12 * 60);
+}
+
+#[test]
+fn the_session_total_carries_over_from_one_work_phase_to_the_next() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    preset(
+        &env,
+        PresetInput {
+            auto_start_next: true,
+            is_default: true,
+            ..pomodoro("Автоматический")
+        },
+    );
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+
+    // Работа, перерыв, снова работа — на счётчике только работа.
+    env.clock.advance(TimeDelta::minutes(25));
+    current(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(5));
+    current(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(10));
+
+    let view = current(&env.db, &env.state, &env.platform, &env.clock)
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(view.phase, "work");
+    assert_eq!(view.elapsed_seconds, 10 * 60);
+    assert_eq!(view.session_seconds, 35 * 60);
+}
+
+#[test]
+fn a_break_does_not_add_to_the_session_total() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    preset(
+        &env,
+        PresetInput {
+            is_default: true,
+            ..pomodoro("Классический")
+        },
+    );
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(25));
+    skip_phase(&env.db, &env.state, &env.platform, &env.clock).unwrap();
+
+    env.clock.advance(TimeDelta::minutes(4));
+    let view = current(&env.db, &env.state, &env.platform, &env.clock)
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(view.phase, "break");
+    assert_eq!(view.elapsed_seconds, 4 * 60);
+    assert_eq!(view.session_seconds, 25 * 60);
+}
+
+#[test]
+fn paused_time_is_left_out_of_the_session_total() {
+    let env = env();
+    let algebra = subject(&env, "Алгебра");
+    start(&env.db, &env.state, &env.platform, &env.clock, &algebra).unwrap();
+    env.clock.advance(TimeDelta::minutes(10));
+    pause(&env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(30));
+    resume(&env.state, &env.platform, &env.clock).unwrap();
+    env.clock.advance(TimeDelta::minutes(5));
+
+    let view = current(&env.db, &env.state, &env.platform, &env.clock)
+        .unwrap()
+        .unwrap();
+
+    assert_eq!(view.session_seconds, 15 * 60);
+}
