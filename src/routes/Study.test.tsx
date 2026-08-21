@@ -9,6 +9,11 @@ import type { Grade, StudyMode, StudySummary, StudyView } from "@/lib/tauri";
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
 
+const setFullscreen = vi.hoisted(() => vi.fn());
+vi.mock("@tauri-apps/api/window", () => ({
+  getCurrentWindow: () => ({ setFullscreen }),
+}));
+
 const cards = [
   { id: "c-1", front: "Первообразная", back: "$F'=f$", hint: null, tags: [] },
   { id: "c-2", front: "Интеграл", back: "множество", hint: null, tags: [] },
@@ -137,6 +142,8 @@ function renderStudy(mode?: StudyMode) {
 
 beforeEach(() => {
   invoke.mockReset();
+  setFullscreen.mockReset();
+  setFullscreen.mockResolvedValue(undefined);
 });
 
 describe("прогон по колоде", () => {
@@ -449,6 +456,36 @@ describe("барабан", () => {
     await spin();
 
     expect(screen.queryByText("множество")).not.toBeInTheDocument();
+  });
+
+  it("выпавшая карточка стоит в середине ленты, а не в её конце", async () => {
+    // Под ней должны остаться варианты: барабан на карточке стоит, а не
+    // обрывается ею.
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+
+    const rows = Array.from(
+      screen.getByRole("status").querySelectorAll("span"),
+    );
+    const centre = rows.filter((row) => row.className.includes("text-20"));
+
+    expect(centre).toHaveLength(1);
+    expect(centre[0]).toHaveTextContent("Первообразная");
+    expect(rows.length - rows.indexOf(centre[0]) - 1).toBeGreaterThanOrEqual(2);
+  });
+
+  it("разворачивает окно на весь экран и возвращает его на выходе", async () => {
+    backend({ mode: "reel" });
+    renderStudy("reel");
+    await spin();
+
+    expect(setFullscreen).toHaveBeenCalledWith(true);
+
+    // Выход с экрана возвращает окно как было — иначе студент остался бы в
+    // развёрнутом окне на списке колод.
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(setFullscreen).toHaveBeenCalledWith(false));
   });
 
   it("выход по Esc возвращает на экран карточек", async () => {

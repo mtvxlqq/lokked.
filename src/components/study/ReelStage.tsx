@@ -1,7 +1,10 @@
+import { useEffect } from "react";
+
 import { CardText } from "@/components/cards/CardText";
 import { GradeBar } from "@/components/study/GradeBar";
 import { ReelSpinner } from "@/components/study/ReelSpinner";
 import { Button } from "@/components/ui";
+import { setFullscreen } from "@/lib/fullscreen";
 import { plainText } from "@/lib/markdown";
 import type { Grade, StudyView } from "@/lib/tauri";
 
@@ -41,6 +44,15 @@ export function ReelStage({
   onLeave,
   error,
 }: ReelStageProps) {
+  // Разворачиваем окно на вход и возвращаем как было на выход — как на
+  // чёрном экране: барабан живёт по тем же правилам, на экране только он.
+  useEffect(() => {
+    void setFullscreen(true);
+    return () => {
+      void setFullscreen(false);
+    };
+  }, []);
+
   const card = view.card;
   if (!card) return null;
 
