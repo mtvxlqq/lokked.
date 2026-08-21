@@ -65,6 +65,41 @@ pub trait PlatformServices: Send + Sync {
     fn notify(&self, title: &str, body: &str) -> Result<(), PlatformError>;
 }
 
+/// The app's single [`PlatformServices`] instance, ready to be handed to
+/// Tauri's managed state.
+///
+/// `inhibit_sleep` takes `&mut self`, so the trait object needs a lock; this
+/// wrapper is that lock, and it keeps `Mutex<Box<dyn …>>` out of every command
+/// signature. Poisoning is treated as fatal, same as [`crate::db::Database`].
+pub struct SharedPlatform(std::sync::Mutex<Box<dyn PlatformServices>>);
+
+impl SharedPlatform {
+    pub fn new(services: Box<dyn PlatformServices>) -> Self {
+        Self(std::sync::Mutex::new(services))
+    }
+
+    /// Ask the OS not to blank the screen while a work phase is running, or
+    /// let it again once one is not.
+    ///
+    /// Failures are swallowed on purpose: a desktop portal that refuses to
+    /// inhibit is a worse screensaver, not a broken timer, and there is
+    /// nothing useful to tell the student about it mid-session.
+    pub fn keep_awake(&self, awake: bool) {
+        let mut services = self.0.lock().expect("platform mutex poisoned");
+        let _ = if awake {
+            services.inhibit_sleep()
+        } else {
+            services.release_sleep()
+        };
+    }
+}
+
+impl Default for SharedPlatform {
+    fn default() -> Self {
+        Self::new(platform_services())
+    }
+}
+
 /// Build the [`PlatformServices`] implementation for the current target.
 ///
 /// Falls back to [`noop::NoopPlatform`] on targets we do not ship to, so the

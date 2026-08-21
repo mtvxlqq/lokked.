@@ -197,6 +197,24 @@ impl Timer {
         &self.pauses
     }
 
+    /// Every pause in the current phase as of `clock`'s time, including one
+    /// that is still open — closed at now, since that is how much of it has
+    /// happened so far.
+    ///
+    /// What [`Timer::pauses`] returns is the stored state; this is the view a
+    /// caller needs when persisting a phase that is being left while paused.
+    pub fn pauses_at(&self, clock: &dyn Clock) -> Vec<Pause> {
+        let mut pauses = self.pauses.clone();
+        if let RunState::Paused { since } = self.run {
+            let now = clock.now();
+            pauses.push(Pause {
+                started_at: since,
+                ended_at: now.max(since),
+            });
+        }
+        pauses
+    }
+
     /// How many interruptions have been marked during the current phase.
     pub fn interruptions(&self) -> u32 {
         self.interruptions
@@ -316,6 +334,75 @@ impl Timer {
         self.pauses.clear();
         self.interruptions = 0;
         self.run = RunState::Running;
+        Ok(())
+    }
+
+    /// Discard `[from, to)` as time that was not studied — the app was in
+    /// the background, or the machine was asleep, and the student said the
+    /// time should not count.
+    ///
+    /// The span is clamped to the current phase and to now, and any part of
+    /// it that is already covered by a pause is skipped, so calling this
+    /// twice with the same span discards the time once. An open pause stays
+    /// open: discarding time around it must not silently resume the timer.
+    ///
+    /// Fails only on a finished session, which is immutable.
+    pub fn discard_span(
+        &mut self,
+        from: DateTime<Utc>,
+        to: DateTime<Utc>,
+        clock: &dyn Clock,
+    ) -> Result<(), TimerError> {
+        if self.is_finished() {
+            return Err(TimerError::AlreadyFinished);
+        }
+
+        let from = from.max(self.phase_started_at);
+        let to = to.min(clock.now());
+        if to <= from {
+            return Ok(());
+        }
+
+        // Everything already excluded from study time: the closed pauses and,
+        // if the timer is paused right now, the open one.
+        let mut covered: Vec<(DateTime<Utc>, DateTime<Utc>)> = self
+            .pauses
+            .iter()
+            .map(|pause| (pause.started_at, pause.ended_at))
+            .collect();
+        if let RunState::Paused { since } = self.run {
+            covered.push((since, to.max(since)));
+        }
+        covered.sort_by_key(|(start, _)| *start);
+
+        // Walk the span, emitting the stretches no pause covers yet.
+        let mut cursor = from;
+        for (start, end) in covered {
+            if end <= cursor {
+                continue;
+            }
+            if start >= to {
+                break;
+            }
+            if start > cursor {
+                self.pauses.push(Pause {
+                    started_at: cursor,
+                    ended_at: start.min(to),
+                });
+            }
+            cursor = cursor.max(end);
+            if cursor >= to {
+                break;
+            }
+        }
+        if cursor < to {
+            self.pauses.push(Pause {
+                started_at: cursor,
+                ended_at: to,
+            });
+        }
+
+        self.pauses.sort_by_key(|pause| pause.started_at);
         Ok(())
     }
 

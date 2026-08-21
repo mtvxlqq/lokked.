@@ -12,6 +12,7 @@ pub mod clock;
 pub mod dayline;
 pub mod preset;
 pub mod scheduler;
+pub mod session;
 pub mod stats;
 pub mod subject;
 pub mod timer;

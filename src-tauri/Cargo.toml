@@ -25,6 +25,7 @@ serde_json = "1"
 chrono = { version = "0.4.45", features = ["serde"] }
 rusqlite = { version = "0.40.1", features = ["bundled", "chrono"] }
 uuid = { version = "1.20.0", features = ["v7", "serde"] }
+tauri-plugin-notification = "2.3.3"
 
 # NOTE: rusqlite's own `uuid` feature is deliberately not enabled — it stores
 # Uuid as a 16-byte BLOB, but CLAUDE.md requires UUIDv7 primary keys as TEXT.

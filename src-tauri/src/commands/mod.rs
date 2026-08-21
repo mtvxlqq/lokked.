@@ -5,7 +5,8 @@
 //! the result into something serde can hand to the frontend. No domain logic
 //! lives here, so it stays testable without a running Tauri app.
 //!
-//! Split by screen concern: [`subjects`], [`presets`] and [`today`].
+//! Split by screen concern: [`subjects`], [`presets`], [`session`] and
+//! [`today`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
@@ -15,6 +16,7 @@ use crate::core::subject::SubjectError;
 use crate::db::DbError;
 
 pub mod presets;
+pub mod session;
 pub mod subjects;
 pub mod today;
 

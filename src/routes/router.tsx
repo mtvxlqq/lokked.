@@ -4,7 +4,9 @@ import { AppShell } from "@/components/AppShell";
 import { Cards } from "@/routes/Cards";
 import { Settings } from "@/routes/Settings";
 import { Stats } from "@/routes/Stats";
+import { Timer } from "@/routes/Timer";
 import { Timers } from "@/routes/Timers";
+import { Zen } from "@/routes/Zen";
 
 /**
  * Служебные страницы для сверки с макетом. Живут вне `AppShell`: им нужна вся
@@ -43,10 +45,13 @@ export const router = createHashRouter([
     element: <AppShell />,
     children: [
       { index: true, element: <Timers /> },
+      { path: "timer/:subjectId", element: <Timer /> },
       { path: "cards", element: <Cards /> },
       { path: "stats", element: <Stats /> },
       { path: "settings", element: <Settings /> },
     ],
   },
+  // Чёрный экран живёт вне `AppShell`: ему нужен весь экран без навигации.
+  { path: "zen", element: <Zen /> },
   ...devRoutes,
 ]);

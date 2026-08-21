@@ -22,9 +22,17 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // Phase changes are announced by the frontend through this plugin;
+        // it is the one official cross-platform way to reach the OS
+        // notification centre, on the desktop and on a phone alike.
+        .plugin(tauri_plugin_notification::init())
         .setup(|app| {
             let database = db::Database::open(app.handle())?;
             app.manage(database);
+            // The active session and the OS services it needs live for as
+            // long as the app does; commands reach them through `State`.
+            app.manage(commands::session::SessionState::default());
+            app.manage(platform::SharedPlatform::default());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -38,6 +46,15 @@ pub fn run() {
             commands::presets::update_preset,
             commands::presets::delete_preset,
             commands::today::today_totals,
+            commands::session::actions::start_session,
+            commands::session::actions::session_snapshot,
+            commands::session::actions::pause_session,
+            commands::session::actions::resume_session,
+            commands::session::actions::session_mark_interruption,
+            commands::session::actions::session_skip_phase,
+            commands::session::actions::stop_session,
+            commands::session::actions::session_report_return,
+            commands::session::actions::session_discard_away,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
