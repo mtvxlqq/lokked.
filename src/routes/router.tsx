@@ -2,7 +2,6 @@ import { createHashRouter, type RouteObject } from "react-router";
 
 import { AppShell } from "@/components/AppShell";
 import { Settings } from "@/routes/Settings";
-import { Stats } from "@/routes/Stats";
 import { Timer } from "@/routes/Timer";
 import { Timers } from "@/routes/Timers";
 import { Zen } from "@/routes/Zen";
@@ -55,7 +54,15 @@ export const router = createHashRouter([
           return { Component: Cards };
         },
       },
-      { path: "stats", element: <Stats /> },
+      {
+        // Тоже отдельным куском: на вкладке «Карточка» разбор рисуется той
+        // же разметкой, что и на экране карточек, а значит тянет KaTeX.
+        path: "stats",
+        lazy: async () => {
+          const { Stats } = await import("@/routes/Stats");
+          return { Component: Stats };
+        },
+      },
       { path: "settings", element: <Settings /> },
     ],
   },

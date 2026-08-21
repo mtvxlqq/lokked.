@@ -76,3 +76,32 @@ export function plural(count: number, forms: [string, string, string]): string {
 export function withNonBreakingMarkers(text: string): string {
   return text.replace(/([§№])\s+(?=[0-9])/g, "$1\u00A0");
 }
+
+/**
+ * День словами: «21 августа».
+ *
+ * Год не показываем: подписи в статистике всегда внутри периода, который
+ * студент только что выбрал, и год в них — шум. `Intl` берёт на себя
+ * склонение месяца.
+ */
+export function formatDay(dayKey: string): string {
+  const date = new Date(`${dayKey}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return dayKey;
+
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+  }).format(date);
+}
+
+/**
+ * Время припоминания: «2,5 с».
+ *
+ * Секунды с десятыми, а не миллисекунды: разница между 2400 мс и 2500 мс
+ * ничего не значит, а «2,5 с» читается сразу.
+ */
+export function formatThinkTime(ms: number): string {
+  const seconds = Math.max(0, ms) / 1000;
+
+  return `${seconds.toFixed(1).replace(".", ",")} с`;
+}

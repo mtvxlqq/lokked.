@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   formatClock,
   formatClockMinutes,
+  formatDay,
   formatDuration,
+  formatThinkTime,
   plural,
   withNonBreakingMarkers,
 } from "@/lib/format";
@@ -96,5 +98,36 @@ describe("withNonBreakingMarkers", () => {
 
   it("знак без числа после него не трогает", () => {
     expect(withNonBreakingMarkers("§ раздела")).toBe("§ раздела");
+  });
+});
+
+describe("formatDay", () => {
+  it("склоняет месяц", () => {
+    expect(formatDay("2026-08-21")).toBe("21 августа");
+  });
+
+  it("день считается по ключу, а не по часовому поясу", () => {
+    // `new Date("2026-01-01")` — это полночь UTC, и к западу от Гринвича она
+    // приходится ещё на 31 декабря. Ключ дня уже местный, сдвигать его
+    // второй раз нельзя.
+    expect(formatDay("2026-01-01")).toBe("1 января");
+  });
+
+  it("непонятную дату показывает как есть", () => {
+    expect(formatDay("вчера")).toBe("вчера");
+  });
+});
+
+describe("formatThinkTime", () => {
+  it("миллисекунды превращает в секунды с десятыми", () => {
+    expect(formatThinkTime(4200)).toBe("4,2 с");
+  });
+
+  it("округляет до десятых", () => {
+    expect(formatThinkTime(2449)).toBe("2,4 с");
+  });
+
+  it("ноль — это ноль, а не пустота", () => {
+    expect(formatThinkTime(0)).toBe("0,0 с");
   });
 });

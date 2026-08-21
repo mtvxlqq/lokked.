@@ -128,6 +128,73 @@ impl<'a> ReviewRepo<'a> {
             .map_err(DbError::from)
     }
 
+    /// Answers per study day over `[from_day, to_day]`.
+    ///
+    /// `(day_key, answered, correct)`, oldest day first, and only for days
+    /// with answers — the caller fills the gaps, because a day with no
+    /// answers has to be drawn differently from a day answered wrong.
+    pub fn counts_by_day(
+        &self,
+        from_day: &str,
+        to_day: &str,
+    ) -> Result<Vec<(String, u32, u32)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT day_key, COUNT(*), SUM(correct)
+             FROM reviews
+             WHERE day_key BETWEEN ?1 AND ?2
+             GROUP BY day_key
+             ORDER BY day_key",
+        )?;
+        let rows = stmt.query_map(params![from_day, to_day], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, i64>(1)? as u32,
+                row.get::<_, i64>(2)? as u32,
+            ))
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
+    /// How every card has been going over `[from_day, to_day]`, across all
+    /// decks.
+    ///
+    /// `(card_id, shown, correct)`. Deleted cards are left out: they are not
+    /// worth going back to, whatever their accuracy was.
+    pub fn accuracy_by_card_in_days(
+        &self,
+        from_day: &str,
+        to_day: &str,
+    ) -> Result<Vec<(String, u32, u32)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT r.card_id, COUNT(*), SUM(r.correct)
+             FROM reviews r
+             JOIN cards c ON c.id = r.card_id
+             WHERE c.deleted_at IS NULL AND r.day_key BETWEEN ?1 AND ?2
+             GROUP BY r.card_id",
+        )?;
+        let rows = stmt.query_map(params![from_day, to_day], |row| {
+            Ok((
+                row.get::<_, String>(0)?,
+                row.get::<_, i64>(1)? as u32,
+                row.get::<_, i64>(2)? as u32,
+            ))
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
+    /// The earliest study day an answer was recorded on, or `None` for a
+    /// database nobody has answered anything in.
+    pub fn earliest_day(&self) -> Result<Option<String>, DbError> {
+        self.db
+            .connection()
+            .query_row("SELECT MIN(day_key) FROM reviews", [], |row| row.get(0))
+            .map_err(DbError::from)
+    }
+
     /// How each card of one deck has been going since `since`.
     ///
     /// Returns `(card_id, shown, correct)` for every card that was answered

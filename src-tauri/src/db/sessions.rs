@@ -211,6 +211,55 @@ impl<'a> SessionRepo<'a> {
             .map_err(DbError::from)
     }
 
+    /// Total work time per subject over `[from_day, to_day]`, in seconds.
+    ///
+    /// The same figures as [`active_seconds_by_subject`](Self::active_seconds_by_subject),
+    /// over a period instead of one day — what the bars on the statistics
+    /// screen are drawn from.
+    pub fn active_seconds_by_subject_range(
+        &self,
+        from_day: &str,
+        to_day: &str,
+    ) -> Result<Vec<(String, i64)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT subject_id, SUM(active_seconds) AS total
+             FROM sessions
+             WHERE phase = 'work' AND day_key BETWEEN ?1 AND ?2
+             GROUP BY subject_id",
+        )?;
+        let rows = stmt.query_map(params![from_day, to_day], |row| {
+            Ok((row.get(0)?, row.get(1)?))
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
+    /// How many Pomodoro work phases were carried to their end over
+    /// `[from_day, to_day]`.
+    pub fn completed_pomodoros_range(&self, from_day: &str, to_day: &str) -> Result<i64, DbError> {
+        self.db
+            .connection()
+            .query_row(
+                "SELECT COUNT(*) FROM sessions
+                 WHERE phase = 'work' AND mode = 'pomodoro' AND completed = 1
+                   AND day_key BETWEEN ?1 AND ?2",
+                params![from_day, to_day],
+                |row| row.get(0),
+            )
+            .map_err(DbError::from)
+    }
+
+    /// The earliest study day anything was recorded on, or `None` for a
+    /// database nobody has studied against yet. This is where «всё время»
+    /// starts.
+    pub fn earliest_day(&self) -> Result<Option<String>, DbError> {
+        self.db
+            .connection()
+            .query_row("SELECT MIN(day_key) FROM sessions", [], |row| row.get(0))
+            .map_err(DbError::from)
+    }
+
     /// All sessions recorded for one subject, oldest first.
     pub fn list_for_subject(&self, subject_id: &str) -> Result<Vec<Session>, DbError> {
         let conn = self.db.connection();

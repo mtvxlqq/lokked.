@@ -43,6 +43,7 @@ export * from "@/lib/tauri/cards";
 export * from "@/lib/tauri/presets";
 export * from "@/lib/tauri/session";
 export * from "@/lib/tauri/settings";
+export * from "@/lib/tauri/stats";
 export * from "@/lib/tauri/study";
 export * from "@/lib/tauri/subjects";
 export * from "@/lib/tauri/today";

@@ -140,6 +140,27 @@ impl<'a> CardRepo<'a> {
             .map_err(DbError::from)
     }
 
+    /// The cards with these ids, deleted ones included, in no particular
+    /// order.
+    ///
+    /// One query instead of a `get` per id: the statistics screen looks up
+    /// twenty cards at once, and twenty round trips through the connection
+    /// mutex for a list that is already on screen would be silly.
+    pub fn list_by_ids(&self, ids: &[String]) -> Result<Vec<Card>, DbError> {
+        if ids.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let placeholders = vec!["?"; ids.len()].join(", ");
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(&format!(
+            "SELECT {COLUMNS} FROM cards WHERE id IN ({placeholders})"
+        ))?;
+        let rows = stmt.query_map(rusqlite::params_from_iter(ids), row_to_card)?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
     pub fn update(
         &self,
         id: &str,

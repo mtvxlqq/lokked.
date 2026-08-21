@@ -18,17 +18,12 @@ use crate::commands::session::{work_in_progress, SessionState};
 use crate::commands::settings::day_start;
 use crate::core::clock::Clock;
 use crate::core::dayline::{day_key, next_boundary};
-use crate::core::stats::streak;
+use crate::core::stats::{streak, STREAK_WINDOW_DAYS};
 use crate::db::sessions::SessionRepo;
 use crate::db::Database;
 use crate::platform::clock::SystemClock;
 
 use super::CommandError;
-
-/// How far back the streak is counted. Long enough that no realistic streak
-/// is cut short, short enough that the query stays a scan of one small index
-/// rather than of the whole table's history.
-const STREAK_WINDOW_DAYS: i64 = 400;
 
 /// What the subject list shows above the subjects.
 #[derive(Debug, Clone, PartialEq, Serialize)]

@@ -6,7 +6,8 @@
 //! lives here, so it stays testable without a running Tauri app.
 //!
 //! Split by screen concern: [`subjects`], [`presets`], [`session`],
-//! [`today`], [`settings`], [`decks`], [`cards`], [`import`] and [`study`].
+//! [`today`], [`settings`], [`decks`], [`cards`], [`import`], [`study`] and
+//! [`stats`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
@@ -18,6 +19,7 @@ use crate::core::preset::PresetError;
 use crate::core::review::UnknownGrade;
 use crate::core::scheduler::UnknownMode;
 use crate::core::settings::SettingsError;
+use crate::core::stats::time::UnknownRange;
 use crate::core::subject::SubjectError;
 use crate::db::DbError;
 
@@ -27,6 +29,7 @@ pub mod import;
 pub mod presets;
 pub mod session;
 pub mod settings;
+pub mod stats;
 pub mod study;
 pub mod subjects;
 pub mod today;
@@ -133,6 +136,15 @@ impl From<UnknownGrade> for CommandError {
 
 impl From<UnknownMode> for CommandError {
     fn from(err: UnknownMode) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<UnknownRange> for CommandError {
+    fn from(err: UnknownRange) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),
