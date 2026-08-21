@@ -6,16 +6,22 @@
 //! lives here, so it stays testable without a running Tauri app.
 //!
 //! Split by screen concern: [`subjects`], [`presets`], [`session`],
-//! [`settings`] and [`today`].
+//! [`today`], [`settings`], [`decks`], [`cards`] and [`import`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
 
+use crate::core::card::CardError;
+use crate::core::deck::DeckError;
+use crate::core::import::ImportError;
 use crate::core::preset::PresetError;
 use crate::core::settings::SettingsError;
 use crate::core::subject::SubjectError;
 use crate::db::DbError;
 
+pub mod cards;
+pub mod decks;
+pub mod import;
 pub mod presets;
 pub mod session;
 pub mod settings;
@@ -88,6 +94,33 @@ impl From<PresetError> for CommandError {
 
 impl From<SettingsError> for CommandError {
     fn from(err: SettingsError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<CardError> for CommandError {
+    fn from(err: CardError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<DeckError> for CommandError {
+    fn from(err: DeckError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<ImportError> for CommandError {
+    fn from(err: ImportError) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),

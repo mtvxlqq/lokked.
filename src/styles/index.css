@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "./fonts.css";
 @import "./tokens.css";
+/* Стили KaTeX для формул на карточках. Шрифты KaTeX идут файлами рядом
+   с этим css — Vite подставляет их сам. */
+@import "katex/dist/katex.min.css";
 
 @layer base {
   html {

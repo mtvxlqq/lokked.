@@ -22,6 +22,7 @@
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",
     "@tauri-apps/plugin-notification": "^2.3.3",
+    "katex": "^0.18.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^8.3.0"

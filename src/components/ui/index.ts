@@ -9,3 +9,4 @@ export { EmptyState } from "@/components/ui/EmptyState";
 export { Input } from "@/components/ui/Input";
 export { Select } from "@/components/ui/Select";
 export { Switch } from "@/components/ui/Switch";
+export { Textarea } from "@/components/ui/Textarea";

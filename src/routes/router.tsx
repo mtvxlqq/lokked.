@@ -1,7 +1,6 @@
 import { createHashRouter, type RouteObject } from "react-router";
 
 import { AppShell } from "@/components/AppShell";
-import { Cards } from "@/routes/Cards";
 import { Settings } from "@/routes/Settings";
 import { Stats } from "@/routes/Stats";
 import { Timer } from "@/routes/Timer";
@@ -46,7 +45,16 @@ export const router = createHashRouter([
     children: [
       { index: true, element: <Timers /> },
       { path: "timer/:subjectId", element: <Timer /> },
-      { path: "cards", element: <Cards /> },
+      {
+        // Отдельным куском: KaTeX со своими шрифтами весит больше всего
+        // остального приложения, а нужен только здесь. До экрана карточек
+        // ещё надо дойти, а стартовать приложение должно быстро.
+        path: "cards",
+        lazy: async () => {
+          const { Cards } = await import("@/routes/Cards");
+          return { Component: Cards };
+        },
+      },
       { path: "stats", element: <Stats /> },
       { path: "settings", element: <Settings /> },
     ],

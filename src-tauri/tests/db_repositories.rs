@@ -1,11 +1,13 @@
-//! CRUD tests for `SubjectRepo`, `PresetRepo`, `SessionRepo` and
-//! `SettingsRepo`, plus the
+//! CRUD tests for `SubjectRepo`, `PresetRepo`, `SessionRepo`, `SettingsRepo`,
+//! `DeckRepo` and `CardRepo`, plus the
 //! cross-cutting behaviours the schema promises: soft delete hides rows from
 //! `list` but not `get`, and foreign keys are actually enforced.
 //!
 //! Schema-application tests live in `tests/db_migrations.rs`.
 
 use chrono::{TimeDelta, Utc};
+use lokked_lib::db::cards::{CardRepo, NewCard};
+use lokked_lib::db::decks::DeckRepo;
 use lokked_lib::db::presets::{NewPreset, PresetRepo};
 use lokked_lib::db::sessions::{NewSession, SessionRepo};
 use lokked_lib::db::settings::SettingsRepo;
@@ -275,4 +277,241 @@ fn all_returns_every_setting_sorted_by_key() {
             ("zen.minutes_only".to_string(), "1".to_string()),
         ]
     );
+}
+
+// --- DeckRepo и CardRepo ---------------------------------------------------
+
+/// Колода, привязанная к предмету, и предмет под неё.
+fn deck_with_subject(db: &Database) -> (String, String) {
+    let subject = SubjectRepo::new(db)
+        .create("Математический анализ", Some("subject-1"), None, 0)
+        .unwrap();
+    let deck = DeckRepo::new(db)
+        .create(Some(&subject.id), "Терсенов, § 25 — § 40", Some("лекции"))
+        .unwrap();
+
+    (subject.id, deck.id)
+}
+
+#[test]
+fn a_created_deck_comes_back_with_its_subject_and_description() {
+    let db = new_db();
+    let (subject_id, deck_id) = deck_with_subject(&db);
+
+    let deck = DeckRepo::new(&db).get(&deck_id).unwrap().unwrap();
+
+    assert_eq!(deck.subject_id.as_deref(), Some(subject_id.as_str()));
+    assert_eq!(deck.name, "Терсенов, § 25 — § 40");
+    assert_eq!(deck.description.as_deref(), Some("лекции"));
+    assert_eq!(deck.deleted_at, None);
+}
+
+#[test]
+fn a_deck_can_belong_to_no_subject_at_all() {
+    let db = new_db();
+
+    let deck = DeckRepo::new(&db).create(None, "Разное", None).unwrap();
+
+    assert_eq!(deck.subject_id, None);
+    assert_eq!(deck.description, None);
+}
+
+#[test]
+fn a_soft_deleted_deck_leaves_the_list_but_stays_findable() {
+    let db = new_db();
+    let repo = DeckRepo::new(&db);
+    let deck = repo.create(None, "Разное", None).unwrap();
+
+    repo.soft_delete(&deck.id).unwrap();
+
+    assert!(repo.list().unwrap().is_empty());
+    assert!(repo.get(&deck.id).unwrap().unwrap().deleted_at.is_some());
+}
+
+#[test]
+fn cards_are_listed_for_their_own_deck_in_the_order_they_arrived() {
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let other = DeckRepo::new(&db).create(None, "Другая", None).unwrap();
+    let repo = CardRepo::new(&db);
+
+    repo.create(NewCard {
+        deck_id: &deck_id,
+        front: "Первообразная",
+        back: "$F'=f$",
+        hint: None,
+        tags: Some("определение"),
+    })
+    .unwrap();
+    repo.create(NewCard {
+        deck_id: &deck_id,
+        front: "Интеграл",
+        back: "множество первообразных",
+        hint: Some("подсказка"),
+        tags: None,
+    })
+    .unwrap();
+    repo.create(NewCard {
+        deck_id: &other.id,
+        front: "Чужая",
+        back: "карточка",
+        hint: None,
+        tags: None,
+    })
+    .unwrap();
+
+    let cards = repo.list_for_deck(&deck_id).unwrap();
+
+    assert_eq!(cards.len(), 2);
+    assert_eq!(cards[0].front, "Первообразная");
+    assert_eq!(cards[0].tags.as_deref(), Some("определение"));
+    assert_eq!(cards[1].hint.as_deref(), Some("подсказка"));
+}
+
+#[test]
+fn an_import_writes_every_card_at_once() {
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let cards: Vec<NewCard<'_>> = (0..143)
+        .map(|_| NewCard {
+            deck_id: &deck_id,
+            front: "Лицо",
+            back: "Оборот",
+            hint: None,
+            tags: None,
+        })
+        .collect();
+
+    let written = CardRepo::new(&db).create_many(&cards).unwrap();
+
+    assert_eq!(written, 143);
+    assert_eq!(
+        CardRepo::new(&db).list_for_deck(&deck_id).unwrap().len(),
+        143
+    );
+}
+
+#[test]
+fn a_failed_import_leaves_the_deck_as_it_was() {
+    // Половина импорта хуже, чем ничего: понять, какая именно половина
+    // доехала, потом уже нельзя.
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let repo = CardRepo::new(&db);
+    let cards = vec![
+        NewCard {
+            deck_id: &deck_id,
+            front: "Хорошая",
+            back: "карточка",
+            hint: None,
+            tags: None,
+        },
+        NewCard {
+            deck_id: "колоды с таким id нет",
+            front: "Плохая",
+            back: "карточка",
+            hint: None,
+            tags: None,
+        },
+    ];
+
+    assert!(repo.create_many(&cards).is_err());
+    assert!(repo.list_for_deck(&deck_id).unwrap().is_empty());
+}
+
+#[test]
+fn editing_a_card_replaces_its_sides_hint_and_tags() {
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let repo = CardRepo::new(&db);
+    let card = repo
+        .create(NewCard {
+            deck_id: &deck_id,
+            front: "Было",
+            back: "старое",
+            hint: Some("подсказка"),
+            tags: Some("тег"),
+        })
+        .unwrap();
+
+    repo.update(&card.id, "Стало", "новое", None, Some("тег,ещё"))
+        .unwrap();
+
+    let updated = repo.get(&card.id).unwrap().unwrap();
+    assert_eq!(updated.front, "Стало");
+    assert_eq!(updated.back, "новое");
+    assert_eq!(updated.hint, None);
+    assert_eq!(updated.tags.as_deref(), Some("тег,ещё"));
+    assert!(updated.updated_at >= updated.created_at);
+}
+
+#[test]
+fn a_card_can_be_moved_to_another_deck() {
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let other = DeckRepo::new(&db).create(None, "Другая", None).unwrap();
+    let repo = CardRepo::new(&db);
+    let card = repo
+        .create(NewCard {
+            deck_id: &deck_id,
+            front: "Карточка",
+            back: "оборот",
+            hint: None,
+            tags: None,
+        })
+        .unwrap();
+
+    repo.move_to_deck(&card.id, &other.id).unwrap();
+
+    assert!(repo.list_for_deck(&deck_id).unwrap().is_empty());
+    assert_eq!(repo.list_for_deck(&other.id).unwrap().len(), 1);
+}
+
+#[test]
+fn a_soft_deleted_card_stops_being_listed_and_stops_being_counted() {
+    let db = new_db();
+    let (_, deck_id) = deck_with_subject(&db);
+    let repo = CardRepo::new(&db);
+    let card = repo
+        .create(NewCard {
+            deck_id: &deck_id,
+            front: "Карточка",
+            back: "оборот",
+            hint: None,
+            tags: None,
+        })
+        .unwrap();
+
+    repo.soft_delete(&card.id).unwrap();
+
+    assert!(repo.list_for_deck(&deck_id).unwrap().is_empty());
+    assert!(repo.get(&card.id).unwrap().unwrap().deleted_at.is_some());
+    assert_eq!(
+        DeckRepo::new(&db).card_counts().unwrap(),
+        vec![(deck_id, 0)]
+    );
+}
+
+#[test]
+fn every_deck_is_counted_including_the_empty_ones() {
+    let db = new_db();
+    let repo = DeckRepo::new(&db);
+    let full = repo.create(None, "С карточками", None).unwrap();
+    let empty = repo.create(None, "Пустая", None).unwrap();
+    CardRepo::new(&db)
+        .create(NewCard {
+            deck_id: &full.id,
+            front: "Лицо",
+            back: "Оборот",
+            hint: None,
+            tags: None,
+        })
+        .unwrap();
+
+    let mut counts = repo.card_counts().unwrap();
+    counts.sort();
+    let mut expected = vec![(full.id, 1), (empty.id, 0)];
+    expected.sort();
+
+    assert_eq!(counts, expected);
 }
