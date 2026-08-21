@@ -151,6 +151,25 @@ impl<'a> SessionRepo<'a> {
     }
 
     /// All sessions recorded for one subject, oldest first.
+    /// Total work time per subject for one study day, in seconds.
+    ///
+    /// Breaks are excluded: «два часа за сегодня» means two hours studied,
+    /// not two hours with the app open. Subjects with nothing recorded that
+    /// day are absent from the result rather than present with a zero — the
+    /// caller already has the subject list and fills the gaps itself.
+    pub fn active_seconds_by_subject(&self, day_key: &str) -> Result<Vec<(String, i64)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT subject_id, SUM(active_seconds) AS total
+             FROM sessions
+             WHERE day_key = ?1 AND phase = 'work'
+             GROUP BY subject_id",
+        )?;
+        let rows = stmt.query_map(params![day_key], |row| Ok((row.get(0)?, row.get(1)?)))?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
     pub fn list_for_subject(&self, subject_id: &str) -> Result<Vec<Session>, DbError> {
         let conn = self.db.connection();
         let mut stmt = conn.prepare(

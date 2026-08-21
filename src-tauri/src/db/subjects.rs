@@ -97,6 +97,23 @@ impl<'a> SubjectRepo<'a> {
             .map_err(DbError::from)
     }
 
+    /// One past the largest position ever used, counting soft-deleted rows.
+    ///
+    /// Deliberately not «number of live subjects»: reusing the position of a
+    /// deleted subject would make two rows sort identically the moment
+    /// deletion ever becomes undoable, and the number is only ever used to
+    /// append.
+    pub fn next_position(&self) -> Result<i64, DbError> {
+        self.db
+            .connection()
+            .query_row(
+                "SELECT COALESCE(MAX(position), -1) + 1 FROM subjects",
+                [],
+                |row| row.get(0),
+            )
+            .map_err(DbError::from)
+    }
+
     pub fn update(
         &self,
         id: &str,

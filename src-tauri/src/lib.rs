@@ -27,7 +27,18 @@ pub fn run() {
             app.manage(database);
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![commands::ping])
+        .invoke_handler(tauri::generate_handler![
+            commands::ping,
+            commands::subjects::list_subjects,
+            commands::subjects::create_subject,
+            commands::subjects::update_subject,
+            commands::subjects::delete_subject,
+            commands::presets::list_presets,
+            commands::presets::create_preset,
+            commands::presets::update_preset,
+            commands::presets::delete_preset,
+            commands::today::today_totals,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

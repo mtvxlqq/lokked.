@@ -165,6 +165,28 @@ impl<'a> PresetRepo<'a> {
         Ok(())
     }
 
+    /// Clears `is_default` on every live preset in one scope, optionally
+    /// sparing `except_id`.
+    ///
+    /// «Scope» is the `subject_id`: a subject's presets and the global ones
+    /// (`subject_id IS NULL`) each have their own default, so the comparison
+    /// uses `IS` rather than `=` — `subject_id = NULL` is never true in SQL,
+    /// and would silently clear nothing for global presets.
+    pub fn clear_default(
+        &self,
+        subject_id: Option<&str>,
+        except_id: Option<&str>,
+    ) -> Result<usize, DbError> {
+        let changed = self.db.connection().execute(
+            "UPDATE timer_presets SET is_default = 0, updated_at = ?3
+             WHERE deleted_at IS NULL AND is_default = 1
+               AND subject_id IS ?1
+               AND (?2 IS NULL OR id <> ?2)",
+            params![subject_id, except_id, Utc::now()],
+        )?;
+        Ok(changed)
+    }
+
     pub fn soft_delete(&self, id: &str) -> Result<(), DbError> {
         let now = Utc::now();
         self.db.connection().execute(
