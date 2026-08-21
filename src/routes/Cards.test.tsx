@@ -110,6 +110,16 @@ function renderCards() {
   return { ...render(<RouterProvider router={router} />), router };
 }
 
+/** Ждёт, пока экран загрузился: список карточек при открытии свёрнут. */
+async function ready() {
+  return screen.findByRole("button", { name: "Показать карточки" });
+}
+
+/** Разворачивает список карточек. */
+async function openCards() {
+  await userEvent.click(await ready());
+}
+
 beforeEach(() => {
   invoke.mockReset();
 });
@@ -125,22 +135,28 @@ describe("экран карточек", () => {
     ).toBeInTheDocument();
   });
 
-  it("открывает первую колоду сам и показывает её карточки", async () => {
+  it("открывает первую колоду сам, но список карточек держит свёрнутым", async () => {
     backend();
     renderCards();
+
+    // Колода выбрана, карточек на экране пока нет: сюда заходят учить.
+    expect(
+      await screen.findByText("2 карточки · Математический анализ"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Первообразная функции")).not.toBeInTheDocument();
+
+    await openCards();
 
     expect(
       await screen.findByText("Первообразная функции"),
     ).toBeInTheDocument();
     expect(screen.getByText("Признак Даламбера")).toBeInTheDocument();
-    expect(
-      screen.getByText("2 карточки · Математический анализ"),
-    ).toBeInTheDocument();
   });
 
   it("в списке показывает формулы, а не их исходник", async () => {
     backend();
     const { container } = renderCards();
+    await openCards();
     await screen.findByText("Первообразная функции");
 
     // У второй карточки формул нет, у первой — две в обороте.
@@ -162,6 +178,7 @@ describe("экран карточек", () => {
       ],
     });
     const { container } = renderCards();
+    await openCards();
     await screen.findByText("Непрерывное отображение");
 
     expect(container.querySelector("strong")).not.toBeNull();
@@ -182,6 +199,7 @@ describe("экран карточек", () => {
       ],
     });
     const { container } = renderCards();
+    await openCards();
     await screen.findByText("Теорема Кантора");
 
     // KaTeX оставляет исходник формулы в MathML для копирования и
@@ -194,10 +212,12 @@ describe("экран карточек", () => {
   it("переключает колоду по нажатию", async () => {
     backend();
     renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: /^Разное/ }));
+    await openCards();
 
+    // Вторая колода пуста, и это видно, когда список развёрнут.
     expect(
       await screen.findByText("В колоде пока нет карточек."),
     ).toBeInTheDocument();
@@ -206,6 +226,7 @@ describe("экран карточек", () => {
   it("ищет по тексту карточки", async () => {
     backend();
     renderCards();
+    await openCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.type(screen.getByLabelText("Поиск"), "Даламбер");
@@ -218,6 +239,7 @@ describe("экран карточек", () => {
   it("фильтрует по тегу и снимает фильтр повторным нажатием", async () => {
     backend();
     renderCards();
+    await openCards();
     await screen.findByText("Первообразная функции");
 
     const tag = screen.getByRole("button", { name: /^определение/ });
@@ -231,7 +253,7 @@ describe("экран карточек", () => {
   it("импортирует разобранные карточки в выбранную колоду", async () => {
     backend();
     renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: "Импорт" }));
     await userEvent.type(
@@ -267,7 +289,7 @@ describe("экран карточек", () => {
       },
     });
     renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: "Импорт" }));
     await userEvent.click(screen.getByRole("button", { name: "Разобрать" }));
@@ -280,7 +302,7 @@ describe("экран карточек", () => {
   it("отдаёт колоду текстом на экспорт", async () => {
     backend();
     renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: "Экспорт" }));
 
@@ -289,9 +311,10 @@ describe("экран карточек", () => {
     );
   });
 
-  it("список карточек сворачивается, название колоды остаётся", async () => {
+  it("список карточек разворачивается и сворачивается обратно", async () => {
     backend();
     renderCards();
+    await openCards();
     await screen.findByText("Первообразная функции");
 
     await userEvent.click(
@@ -314,7 +337,7 @@ describe("экран карточек", () => {
   it("каждый режим уводит на свой прогон по этой колоде", async () => {
     backend();
     const { router } = renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: "Классика" }));
     expect(await screen.findByText("прогон по колоде")).toBeInTheDocument();
@@ -324,7 +347,7 @@ describe("экран карточек", () => {
   it("блиц, марафон и слабые — отдельные кнопки", async () => {
     backend();
     const { router } = renderCards();
-    await screen.findByText("Первообразная функции");
+    await ready();
 
     await userEvent.click(screen.getByRole("button", { name: "Блиц" }));
 
@@ -347,8 +370,6 @@ describe("экран карточек", () => {
     backend();
     await userEvent.click(screen.getByRole("button", { name: "Повторить" }));
 
-    expect(
-      await screen.findByText("Первообразная функции"),
-    ).toBeInTheDocument();
+    expect(await ready()).toBeInTheDocument();
   });
 });

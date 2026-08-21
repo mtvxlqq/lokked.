@@ -1,19 +1,22 @@
 import { Button } from "@/components/ui";
+import { cn } from "@/lib/cn";
 import type { Grade } from "@/lib/tauri";
 
 /**
- * Четыре оценки в порядке уверенности. «Знаю» — главная: это ответ, который
- * даётся чаще всех, и попадать в него надо не глядя.
+ * Четыре оценки в порядке уверенности. «Знаю» — та, что нажимается чаще
+ * всех: она выделена рамкой и цветом текста, но не заливкой — акцентная
+ * кнопка среди четырёх одинаковых по смыслу тянет руку к себе сильнее, чем
+ * того заслуживает оценка.
  */
 const GRADES: {
   grade: Grade;
   label: string;
   key: string;
-  primary?: boolean;
+  main?: boolean;
 }[] = [
   { grade: "again", label: "Не помню", key: "1" },
   { grade: "hard", label: "С трудом", key: "2" },
-  { grade: "good", label: "Знаю", key: "3", primary: true },
+  { grade: "good", label: "Знаю", key: "3", main: true },
   { grade: "easy", label: "Легко", key: "4" },
 ];
 
@@ -39,10 +42,12 @@ export function GradeBar({ onGrade, disabled }: GradeBarProps) {
         {GRADES.map((option) => (
           <Button
             key={option.grade}
-            variant={option.primary ? "primary" : "secondary"}
             disabled={disabled}
             onClick={() => onGrade(option.grade)}
-            className="flex-col gap-0.5 py-3"
+            className={cn(
+              "flex-col gap-0.5 py-3",
+              option.main && "border-border-strong text-text-1",
+            )}
           >
             <span>{option.label}</span>
             <span className="text-11 text-text-faint">{option.key}</span>

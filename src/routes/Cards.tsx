@@ -50,9 +50,10 @@ export function Cards() {
   }>({ open: false, card: null });
   const [importing, setImporting] = useState(false);
   const [exporting, setExporting] = useState(false);
-  /** Список карточек сворачивается: у колоды на сотню тем облако тегов и
-      таблица занимают весь экран, а нужны они не всегда. */
-  const [listOpen, setListOpen] = useState(true);
+  /** Список карточек по умолчанию свёрнут: экран открывают, чтобы начать
+      прогон, а не листать сотню карточек — облако тегов и таблица разворачиваются
+      по кнопке. */
+  const [listOpen, setListOpen] = useState(false);
 
   const [reloads, setReloads] = useState(0);
   const reload = () => setReloads((count) => count + 1);
@@ -207,6 +208,21 @@ export function Cards() {
                 </p>
               )}
 
+              <div className="flex flex-wrap gap-2.5">
+                {STUDY_MODES.map((mode) => (
+                  <Button
+                    key={mode}
+                    size="sm"
+                    disabled={deckCards.length === 0}
+                    onClick={() =>
+                      void navigate(`/study/${selected.id}?mode=${mode}`)
+                    }
+                  >
+                    {MODE_NAMES[mode]}
+                  </Button>
+                ))}
+              </div>
+
               {listOpen &&
                 (deckCards.length === 0 ? (
                   <p className="text-14 text-text-dim">
@@ -218,26 +234,15 @@ export function Cards() {
                     onEdit={(card) => setCardDialog({ open: true, card })}
                   />
                 ))}
-              <div className="flex flex-wrap gap-2.5">
-                {STUDY_MODES.map((mode) => (
-                  <Button
-                    key={mode}
-                    size="sm"
-                    variant={mode === "classic" ? "primary" : "secondary"}
-                    disabled={deckCards.length === 0}
-                    onClick={() =>
-                      void navigate(`/study/${selected.id}?mode=${mode}`)
-                    }
-                  >
-                    {MODE_NAMES[mode]}
-                  </Button>
-                ))}
+              {/* Правка колоды — отдельно от прогонов и последней: сюда
+                  заходят учить, а не пополнять. */}
+              <div className="flex border-t border-border pt-3.5">
                 <Button
                   size="sm"
-                  variant="secondary"
+                  variant="ghost"
                   onClick={() => setCardDialog({ open: true, card: null })}
                 >
-                  Новая карточка
+                  + Новая карточка
                 </Button>
               </div>
             </Panel>
