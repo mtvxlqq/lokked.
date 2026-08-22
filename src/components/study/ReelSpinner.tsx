@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { CardLine } from "@/components/cards/CardText";
 import { cn } from "@/lib/cn";
+import { plainText } from "@/lib/markdown";
 
 /** Сколько строк видно в окне барабана. Центральная — та, что выпала. */
 const VISIBLE = 5;
@@ -9,7 +11,7 @@ const VISIBLE = 5;
 const CENTER = Math.floor(VISIBLE / 2);
 
 /** Высота строки в rem — она же шаг прокрутки. */
-const ROW_REM = 3;
+const ROW_REM = 5;
 
 /** Сколько строк проносится мимо до остановки. */
 const RUN_UP = 24;
@@ -21,9 +23,13 @@ const TARGET_INDEX = RUN_UP;
 export const SPIN_MS = 1300;
 
 type ReelSpinnerProps = {
-  /** Надписи для прокрутки: чем их больше, тем меньше повторов мелькает. */
+  /**
+   * Надписи для прокрутки: чем их больше, тем меньше повторов мелькает.
+   * Размеченный текст лицевых сторон — формулы в ленте рисуются, а не
+   * показываются исходником.
+   */
   labels: string[];
-  /** Надпись, на которой барабан остановится. */
+  /** Надпись, на которой барабан остановится. Тоже размеченная. */
   target: string;
   /** Меняется — барабан крутится заново. */
   spinKey: string;
@@ -98,7 +104,7 @@ export function ReelSpinner({
       style={{ height: `${VISIBLE * ROW_REM}rem` }}
       role="status"
       aria-live="polite"
-      aria-label={settled ? `Выпало: ${target}` : "Барабан крутится"}
+      aria-label={settled ? `Выпало: ${plainText(target)}` : "Барабан крутится"}
     >
       <div
         className={cn(
@@ -119,14 +125,25 @@ export function ReelSpinner({
               key={`${index}-${label}`}
               aria-hidden={distance === 0 ? undefined : "true"}
               className={cn(
-                "flex h-12 shrink-0 items-center justify-center truncate px-4 text-center",
+                // Строка фиксированной высоты и с обрезкой: высокая формула
+                // не должна наезжать на соседей и сбивать шаг прокрутки.
+                "flex shrink-0 items-center justify-center overflow-hidden px-4 text-center",
                 "transition-colors duration-300 ease-standard",
-                distance === 0 && "text-20 font-medium text-text sm:text-24",
-                distance === 1 && "text-15 text-text-zen-dim",
-                distance > 1 && "text-13 text-text-zen-dim-2",
+                distance === 0 && "font-semibold text-text",
+                distance === 1 && "text-text-zen-dim",
+                distance > 1 && "text-text-zen-dim-2",
               )}
+              style={{ height: `${ROW_REM}rem` }}
             >
-              {label}
+              <CardLine
+                text={label}
+                className={cn(
+                  "block max-w-full truncate leading-tight",
+                  distance === 0 && "text-34 sm:text-52",
+                  distance === 1 && "text-22 sm:text-30",
+                  distance > 1 && "text-18 sm:text-24",
+                )}
+              />
             </span>
           );
         })}

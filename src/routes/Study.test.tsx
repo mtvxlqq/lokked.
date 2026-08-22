@@ -365,18 +365,25 @@ describe("барабан", () => {
   /**
    * Прокручивает барабан до остановки.
    *
-   * Два шага, потому что их два и в жизни: сначала кадр, на котором лента
-   * трогается с места, и только потом — время самой прокрутки.
+   * Время идёт кусками, а не одним прыжком: лента трогается с места кадром
+   * позже, и на медленной перерисовке (в ленте формулы, их рисует KaTeX)
+   * этот кадр приходит не на первом же тике. Ждём не такт, а результат —
+   * барабан сам говорит, что выпало.
    */
   async function spin() {
     // Крутить нечего, пока прогон не начался: сперва дожидаемся барабана.
     await screen.findByRole("status");
-    await act(async () => {
-      vi.advanceTimersByTime(50);
-    });
-    await act(async () => {
-      vi.advanceTimersByTime(1500);
-    });
+
+    for (let step = 0; step < 20; step += 1) {
+      const label = screen.getByRole("status").getAttribute("aria-label");
+      if (label?.startsWith("Выпало")) return;
+
+      await act(async () => {
+        vi.advanceTimersByTime(200);
+      });
+    }
+
+    throw new Error("барабан так и не остановился");
   }
 
   beforeEach(() => {
@@ -468,7 +475,7 @@ describe("барабан", () => {
     const rows = Array.from(
       screen.getByRole("status").querySelectorAll("span"),
     );
-    const centre = rows.filter((row) => row.className.includes("text-20"));
+    const centre = rows.filter((row) => row.className.includes("text-34"));
 
     expect(centre).toHaveLength(1);
     expect(centre[0]).toHaveTextContent("Первообразная");

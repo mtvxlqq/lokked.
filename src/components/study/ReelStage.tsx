@@ -5,12 +5,11 @@ import { GradeBar } from "@/components/study/GradeBar";
 import { ReelSpinner } from "@/components/study/ReelSpinner";
 import { Button } from "@/components/ui";
 import { setFullscreen } from "@/lib/fullscreen";
-import { plainText } from "@/lib/markdown";
 import type { Grade, StudyView } from "@/lib/tauri";
 
 type ReelStageProps = {
   view: StudyView;
-  /** Надписи колоды для прокрутки — уже без разметки. */
+  /** Надписи колоды для прокрутки — размеченные, как в самой карточке. */
   labels: string[];
   /** Барабан ещё крутится: раскрывать нечего. */
   spinning: boolean;
@@ -72,35 +71,41 @@ export function ReelStage({
         </span>
       </header>
 
-      <main className="flex flex-1 flex-col items-center justify-center gap-8">
-        {view.revealed ? (
-          <div className="flex w-full max-w-2xl flex-col gap-6">
-            <CardText
-              text={card.front}
-              className="text-center text-22 text-text sm:text-30"
-            />
-            <span className="h-px w-full bg-border-soft" aria-hidden="true" />
-            <CardText
-              text={card.back ?? ""}
-              className="text-center text-16 text-text-4"
-            />
-          </div>
-        ) : (
-          <>
-            <ReelSpinner
-              labels={labels}
-              target={plainText(card.front)}
-              spinKey={String(view.position)}
-              onSettled={onSettled}
-            />
+      {/* Оборот бывает выше окна: тогда прокручивается содержимое, а не вся
+          страница — иначе из-под неё вылезает светлый фон приложения.
+          `m-auto` центрирует барабан, пока место есть, и перестаёт, когда
+          места нет. */}
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        <div className="m-auto flex w-full flex-col items-center gap-8 py-2">
+          {view.revealed ? (
+            <div className="flex w-full max-w-2xl flex-col gap-6">
+              <CardText
+                text={card.front}
+                className="text-center text-22 text-text sm:text-30"
+              />
+              <span className="h-px w-full bg-border-soft" aria-hidden="true" />
+              <CardText
+                text={card.back ?? ""}
+                className="text-center text-16 text-text-4"
+              />
+            </div>
+          ) : (
+            <>
+              <ReelSpinner
+                labels={labels}
+                target={card.front}
+                spinKey={String(view.position)}
+                onSettled={onSettled}
+              />
 
-            {card.hint && !spinning && (
-              <span className="text-center text-13 text-text-zen-dim-2">
-                {card.hint}
-              </span>
-            )}
-          </>
-        )}
+              {card.hint && !spinning && (
+                <span className="text-center text-13 text-text-zen-dim-2">
+                  {card.hint}
+                </span>
+              )}
+            </>
+          )}
+        </div>
       </main>
 
       <footer className="flex shrink-0 flex-col items-center gap-3 pb-2">

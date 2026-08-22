@@ -8,7 +8,6 @@ import { GradeBar } from "@/components/study/GradeBar";
 import { RunShell as Shell } from "@/components/study/RunShell";
 import { RunSummary } from "@/components/study/RunSummary";
 import { Button } from "@/components/ui";
-import { plainText } from "@/lib/markdown";
 import {
   errorMessage,
   listCards,
@@ -56,7 +55,10 @@ export function Study() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  /** Надписи колоды для барабана — только лицевые стороны, без ответов. */
+  /**
+   * Надписи колоды для барабана — только лицевые стороны, без ответов.
+   * Разметка сохраняется: формулы в ленте рисует KaTeX.
+   */
   const [labels, setLabels] = useState<string[]>([]);
   /**
    * Номер карточки, на которой барабан уже остановился.
@@ -110,7 +112,7 @@ export function Study() {
 
     listCards(deckId)
       .then((cards) => {
-        if (!cancelled) setLabels(cards.map((card) => plainText(card.front)));
+        if (!cancelled) setLabels(cards.map((card) => card.front));
       })
       .catch(() => {
         // Барабан переживёт: без ленты он покажет одну выпавшую надпись.
