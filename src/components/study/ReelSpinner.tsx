@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CardLine } from "@/components/cards/CardText";
 import { cn } from "@/lib/cn";
 import { plainText } from "@/lib/markdown";
+import { playSpin } from "@/lib/reelSound";
 
 /** Сколько строк видно в окне барабана. Центральная — та, что выпала. */
 const VISIBLE = 5;
@@ -84,6 +85,11 @@ export function ReelSpinner({
   const [settledKey, setSettledKey] = useState<string | null>(null);
   const settled = settledKey === spinKey;
 
+  // Лента сдвигается так, чтобы выпавшая карточка встала в середину окна, а
+  // не в его низ: под ней должны остаться соседи, иначе барабан выглядит
+  // оборвавшимся.
+  const stop = Math.max(TARGET_INDEX - CENTER, 0);
+
   // Кадром позже, чем лента встала в исходное положение: иначе браузеру
   // нечего анимировать — он сразу увидит конечное состояние.
   useEffect(() => {
@@ -94,18 +100,20 @@ export function ReelSpinner({
   useEffect(() => {
     if (!running) return;
 
+    // Звук расписывается там же, где стартует анимация, и теми же числами:
+    // щелчки должны совпасть со строками, а не идти рядом с ними.
+    const silence = playSpin(stop, SPIN_MS);
+
     const id = setTimeout(() => {
       setSettledKey(spinKey);
       onSettled();
     }, SPIN_MS);
 
-    return () => clearTimeout(id);
-  }, [running, spinKey, onSettled]);
-
-  // Лента сдвигается так, чтобы выпавшая карточка встала в середину окна, а
-  // не в его низ: под ней должны остаться соседи, иначе барабан выглядит
-  // оборвавшимся.
-  const stop = Math.max(TARGET_INDEX - CENTER, 0);
+    return () => {
+      clearTimeout(id);
+      silence();
+    };
+  }, [running, spinKey, onSettled, stop]);
 
   return (
     <div
