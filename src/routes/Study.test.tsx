@@ -475,7 +475,7 @@ describe("барабан", () => {
     const rows = Array.from(
       screen.getByRole("status").querySelectorAll("span"),
     );
-    const centre = rows.filter((row) => row.className.includes("text-34"));
+    const centre = rows.filter((row) => row.className.includes("text-30"));
 
     expect(centre).toHaveLength(1);
     expect(centre[0]).toHaveTextContent("Первообразная");

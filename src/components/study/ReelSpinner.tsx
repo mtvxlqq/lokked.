@@ -10,8 +10,18 @@ const VISIBLE = 5;
 /** Индекс центральной строки в окне. */
 const CENTER = Math.floor(VISIBLE / 2);
 
-/** Высота строки в rem — она же шаг прокрутки. */
-const ROW_REM = 5;
+/**
+ * Высота строки — она же шаг прокрутки.
+ *
+ * Живёт в CSS-переменной, а не в числе: на узком экране строка ниже, чем на
+ * широком, и переменная держит высоту строки, высоту окна и сдвиг ленты в
+ * согласии — сдвинуть ленту на «полторы строки» невозможно по построению.
+ *
+ * Высоты хватает на две строки текста самой крупной, центральной надписи:
+ * длинная формулировка переносится по словам, а не обрывается на первом же
+ * слове.
+ */
+const ROW = "var(--reel-row)";
 
 /** Сколько строк проносится мимо до остановки. */
 const RUN_UP = 24;
@@ -100,8 +110,8 @@ export function ReelSpinner({
   return (
     <div
       // Маска сверху и снизу: строки не обрываются, а растворяются в чёрном.
-      className="w-full overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_28%,black_72%,transparent)]"
-      style={{ height: `${VISIBLE * ROW_REM}rem` }}
+      className="w-full overflow-hidden [--reel-row:5.5rem] [mask-image:linear-gradient(to_bottom,transparent,black_28%,black_72%,transparent)] sm:[--reel-row:7rem]"
+      style={{ height: `calc(${ROW} * ${VISIBLE})` }}
       role="status"
       aria-live="polite"
       aria-label={settled ? `Выпало: ${plainText(target)}` : "Барабан крутится"}
@@ -112,7 +122,7 @@ export function ReelSpinner({
           running && "transition-transform duration-1300 ease-reel",
         )}
         style={{
-          transform: `translateY(-${(running ? stop : 0) * ROW_REM}rem)`,
+          transform: `translateY(calc(${ROW} * -${running ? stop : 0}))`,
         }}
       >
         {strip.map((label, index) => {
@@ -127,21 +137,24 @@ export function ReelSpinner({
               className={cn(
                 // Строка фиксированной высоты и с обрезкой: высокая формула
                 // не должна наезжать на соседей и сбивать шаг прокрутки.
-                "flex shrink-0 items-center justify-center overflow-hidden px-4 text-center",
+                "flex shrink-0 items-center justify-center overflow-hidden px-4 text-center sm:px-8",
                 "transition-colors duration-300 ease-standard",
                 distance === 0 && "font-semibold text-text",
                 distance === 1 && "text-text-zen-dim",
                 distance > 1 && "text-text-zen-dim-2",
               )}
-              style={{ height: `${ROW_REM}rem` }}
+              style={{ height: ROW }}
             >
               <CardLine
                 text={label}
                 className={cn(
-                  "block max-w-full truncate leading-tight",
-                  distance === 0 && "text-34 sm:text-52",
-                  distance === 1 && "text-22 sm:text-30",
-                  distance > 1 && "text-18 sm:text-24",
+                  // Две строки, дальше многоточие: надпись переносится по
+                  // словам, но в свою строку барабана обязана уместиться —
+                  // иначе она поехала бы на соседей.
+                  "w-full break-words line-clamp-2 leading-title",
+                  distance === 0 && "text-30 sm:text-40",
+                  distance === 1 && "text-20 sm:text-26",
+                  distance > 1 && "text-16 sm:text-21",
                 )}
               />
             </span>
