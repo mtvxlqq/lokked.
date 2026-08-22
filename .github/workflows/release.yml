@@ -60,5 +60,8 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
             || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
           gh release upload "$GITHUB_REF_NAME" ${{ matrix.artifacts }} --clobber
+          # Удаление тега превращает релиз в черновик, а черновик не виден
+          # никому, кроме владельца: публикуем на всякий случай ещё раз.
+          gh release edit "$GITHUB_REF_NAME" --draft=false
         env:
           GH_TOKEN: ${{ github.token }}
