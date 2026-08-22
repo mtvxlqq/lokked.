@@ -210,7 +210,10 @@ fn a_broken_image_is_refused_rather_than_written() {
     let error = save_image(directory.clone(), "data:image/png;base64,????", TODAY).unwrap_err();
 
     assert_eq!(error.kind, ErrorKind::Validation);
-    assert!(!directory.exists(), "испорченная картинка не создаёт каталог");
+    assert!(
+        !directory.exists(),
+        "испорченная картинка не создаёт каталог"
+    );
 }
 
 #[test]

@@ -72,6 +72,29 @@ Two conventions worth knowing before adding code:
 - **Hash routing, not browser routing.** A release build serves the frontend
   over Tauri's asset protocol, which has no SPA fallback.
 
+## Duels
+
+A duel is a blitz two to four people take turns at on one device — **Карточки
+→ Дуэль**. The deck is either picked by hand or left to the reel, the way an
+arena gets picked before a fight; the cards inside the duel always fall out of
+the reel, one spin per card.
+
+Everyone answers **the same cards in the same order**. The sequence is dealt
+once at the start and replayed for each player, because otherwise the scores
+compare luck rather than people. Between turns the device is handed over on a
+screen that shows nothing but whose turn it is: the previous player's score
+stays hidden until the last turn is over.
+
+The card's clock starts when the reel stops, not when the card is dealt — a
+spin should not eat time off a timed card. Scoring is the blitz scoring, and
+the summary names the winner and breaks the duel down card by card.
+
+Duels are stored in `duels`, `duel_players` and `duel_answers`, apart from
+`sessions` and `reviews`. **A guest's answers never reach the owner's
+history**: they are not that student's study record and must not move their
+card weights. The owner's own answers are written to `reviews` too, under the
+mode `duel`.
+
 ## The streak
 
 A day counts towards the streak once it has enough study time on it — ten

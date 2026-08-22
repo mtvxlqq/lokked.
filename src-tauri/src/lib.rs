@@ -41,6 +41,7 @@ pub fn run() {
             // long as the app does; commands reach them through `State`.
             app.manage(commands::session::SessionState::default());
             app.manage(commands::study::StudyState::default());
+            app.manage(commands::duel::DuelState::default());
             app.manage(platform::SharedPlatform::default());
             app.manage(desktop::PendingZen::default());
 
@@ -74,6 +75,16 @@ pub fn run() {
             commands::settings::set_blitz_settings,
             commands::settings::adaptive_settings,
             commands::settings::set_adaptive_settings,
+            commands::duel::api::duel_pick_deck,
+            commands::duel::api::duel_start,
+            commands::duel::api::duel_current,
+            commands::duel::api::duel_begin_turn,
+            commands::duel::api::duel_settled,
+            commands::duel::api::duel_reveal,
+            commands::duel::api::duel_answer,
+            commands::duel::api::duel_timeout,
+            commands::duel::api::duel_summary,
+            commands::duel::api::duel_stop,
             commands::streak::streak_view,
             commands::streak::streak_save_image,
             commands::streak::streak_settings,

@@ -221,6 +221,17 @@ export function Cards() {
                     {MODE_NAMES[mode]}
                   </Button>
                 ))}
+
+                {/* Дуэль стоит отдельно от режимов: это не способ пройти
+                    колоду, а игра на двоих — и колоду в ней выбирают
+                    заново, хоть барабаном. */}
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => void navigate("/duel")}
+                >
+                  Дуэль
+                </Button>
               </div>
 
               {listOpen &&

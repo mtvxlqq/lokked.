@@ -4,8 +4,8 @@
 //! directory, and applies [`migrations`] on startup. Everything above it
 //! (commands, [`crate::core`]) works with plain Rust types, never with rows —
 //! [`subjects`], [`presets`], [`sessions`], [`decks`], [`cards`],
-//! [`reviews`] and [`settings`] each expose a repository with a typed CRUD
-//! surface instead of raw SQL.
+//! [`reviews`], [`duels`] and [`settings`] each expose a repository with a
+//! typed CRUD surface instead of raw SQL.
 //!
 //! A single [`rusqlite::Connection`] behind one [`std::sync::Mutex`] backs
 //! the whole app rather than a pool: Lokked is a single-user app whose
@@ -26,6 +26,7 @@ use tauri::Manager;
 pub mod backup;
 pub mod cards;
 pub mod decks;
+pub mod duels;
 pub mod migrations;
 pub mod presets;
 pub mod reviews;

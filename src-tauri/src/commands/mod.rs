@@ -7,13 +7,14 @@
 //!
 //! Split by screen concern: [`subjects`], [`presets`], [`session`],
 //! [`today`], [`settings`], [`decks`], [`cards`], [`import`], [`study`],
-//! [`stats`] and [`streak`].
+//! [`duel`], [`stats`] and [`streak`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
 
 use crate::core::card::CardError;
 use crate::core::deck::DeckError;
+use crate::core::duel::DuelError;
 use crate::core::import::ImportError;
 use crate::core::preset::PresetError;
 use crate::core::review::UnknownGrade;
@@ -25,6 +26,7 @@ use crate::db::DbError;
 
 pub mod cards;
 pub mod decks;
+pub mod duel;
 pub mod import;
 pub mod presets;
 pub mod session;
@@ -92,6 +94,15 @@ impl From<SubjectError> for CommandError {
 
 impl From<PresetError> for CommandError {
     fn from(err: PresetError) -> Self {
+        Self {
+            kind: ErrorKind::Validation,
+            message: err.to_string(),
+        }
+    }
+}
+
+impl From<DuelError> for CommandError {
+    fn from(err: DuelError) -> Self {
         Self {
             kind: ErrorKind::Validation,
             message: err.to_string(),

@@ -24,11 +24,18 @@ pub struct Migration {
 /// binary needs no `.sql` files on disk. Ordered by version; `apply` relies
 /// on that order.
 pub fn all() -> &'static [Migration] {
-    &[Migration {
-        version: 1,
-        name: "init",
-        sql: include_str!("../../migrations/0001_init.sql"),
-    }]
+    &[
+        Migration {
+            version: 1,
+            name: "init",
+            sql: include_str!("../../migrations/0001_init.sql"),
+        },
+        Migration {
+            version: 2,
+            name: "duels",
+            sql: include_str!("../../migrations/0002_duels.sql"),
+        },
+    ]
 }
 
 /// Brings `conn` up to the newest known schema version.

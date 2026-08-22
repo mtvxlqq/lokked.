@@ -15,6 +15,7 @@ pub mod cli;
 pub mod clock;
 pub mod dayline;
 pub mod deck;
+pub mod duel;
 pub mod import;
 pub mod preset;
 pub mod review;
