@@ -61,6 +61,16 @@ export function StatsIcon({ className }: IconProps) {
   );
 }
 
+export function StreakIcon({ className }: IconProps) {
+  return (
+    <Icon className={className}>
+      <path d="M12 3.2c2.6 3 4 5.4 4 7.2a4 4 0 0 1-8 0c0-1.8 1.4-4.2 4-7.2Z" />
+      <path d="M12 20.8c-3.4 0-5.6-2-5.6-4.8 0-1.2.5-2.4 1.4-3.4" />
+      <path d="M16.2 12.6c.9 1 1.4 2.2 1.4 3.4 0 2.8-2.2 4.8-5.6 4.8" />
+    </Icon>
+  );
+}
+
 export function SettingsIcon({ className }: IconProps) {
   return (
     <Icon className={className}>

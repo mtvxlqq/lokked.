@@ -10,11 +10,14 @@ import {
   saveAdaptiveSettings,
   saveBlitzSettings,
   saveDaySettings,
+  saveStreakSettings,
   saveZenSettings,
+  streakSettings,
   zenSettings,
   type AdaptiveSettings,
   type BlitzSettings,
   type DaySettings,
+  type StreakSettings,
   type ZenFontSize,
   type ZenSettings,
 } from "@/lib/tauri";
@@ -27,6 +30,9 @@ const FONT_SIZES: { value: ZenFontSize; label: string }[] = [
 
 /** Сколько секунд даётся на карточку в блице. */
 const BLITZ_SECONDS = [10, 15, 20, 30, 45, 60];
+
+/** Дневной минимум серии, в минутах. */
+const STREAK_MINUTES = [5, 10, 15, 20, 30, 45, 60, 90, 120];
 
 /**
  * Словами — то, что ползунок делает с подбором. Проценты сами по себе ничего
@@ -57,6 +63,7 @@ export function Settings() {
   const [day, setDay] = useState<DaySettings | null>(null);
   const [blitz, setBlitz] = useState<BlitzSettings | null>(null);
   const [adaptive, setAdaptive] = useState<AdaptiveSettings | null>(null);
+  const [streak, setStreak] = useState<StreakSettings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,14 +74,18 @@ export function Settings() {
       daySettings(),
       blitzSettings(),
       adaptiveSettings(),
+      streakSettings(),
     ])
-      .then(([loadedZen, loadedDay, loadedBlitz, loadedAdaptive]) => {
-        if (cancelled) return;
-        setZen(loadedZen);
-        setDay(loadedDay);
-        setBlitz(loadedBlitz);
-        setAdaptive(loadedAdaptive);
-      })
+      .then(
+        ([loadedZen, loadedDay, loadedBlitz, loadedAdaptive, loadedStreak]) => {
+          if (cancelled) return;
+          setZen(loadedZen);
+          setDay(loadedDay);
+          setBlitz(loadedBlitz);
+          setAdaptive(loadedAdaptive);
+          setStreak(loadedStreak);
+        },
+      )
       .catch((failure: unknown) => {
         if (!cancelled) setError(errorMessage(failure));
       });
@@ -141,6 +152,19 @@ export function Settings() {
       });
   }
 
+  function saveStreak(minSeconds: number) {
+    const previous = streak;
+    setStreak({ min_seconds: minSeconds });
+    setError(null);
+
+    saveStreakSettings(minSeconds)
+      .then(setStreak)
+      .catch((failure: unknown) => {
+        setError(errorMessage(failure));
+        setStreak(previous);
+      });
+  }
+
   return (
     <Screen title="Настройки">
       <Card title="Учебный день">
@@ -154,6 +178,27 @@ export function Settings() {
             {DAY_START_HOURS.map((hour) => (
               <option key={hour.seconds} value={hour.seconds}>
                 {hour.label}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <p className="text-14 text-text-dim">
+            {error ? "Настройки не прочитались" : "Загрузка…"}
+          </p>
+        )}
+      </Card>
+
+      <Card title="Серия">
+        {streak ? (
+          <Select
+            label="Минимум за день"
+            hint="Сколько нужно позаниматься, чтобы день попал в серию. Границу дня серия берёт ту же, что и всё остальное, — из настройки выше."
+            value={String(streak.min_seconds)}
+            onChange={(event) => saveStreak(Number(event.target.value))}
+          >
+            {STREAK_MINUTES.map((minutes) => (
+              <option key={minutes} value={minutes * 60}>
+                {minutes} мин
               </option>
             ))}
           </Select>

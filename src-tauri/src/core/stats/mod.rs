@@ -20,7 +20,11 @@ pub use run::{
     blitz_score, review_summary, BlitzScore, ReviewOutcome, ReviewSummary, BLITZ_POINTS,
     BLITZ_STREAK_DOUBLE, BLITZ_STREAK_HALF,
 };
-pub use streak::{streak, STREAK_MIN_SECONDS, STREAK_WINDOW_DAYS};
+pub use streak::{
+    milestones, month_days, streak, streak_state, DayMark, DayState, Milestone, StreakRules,
+    StreakState, FREEZE_EVERY_DAYS, MAX_FREEZES, MILESTONES, STREAK_MIN_SECONDS,
+    STREAK_WINDOW_DAYS,
+};
 
 /// `part` of `whole` as a percentage, rounded to the nearest.
 ///

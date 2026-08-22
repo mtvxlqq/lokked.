@@ -318,11 +318,15 @@ describe("прогон по колоде", () => {
       renderStudy("blitz");
       await screen.findByText("Первообразная");
 
+      // Дождаться именно кольца, а не карточки: часы карточки заводит оно,
+      // и до его появления двигать стрелки не в чем.
+      await screen.findByRole("timer");
+
       await act(async () => {
         vi.advanceTimersByTime(21_000);
       });
 
-      expect(invoke).toHaveBeenCalledWith("study_timeout");
+      await waitFor(() => expect(invoke).toHaveBeenCalledWith("study_timeout"));
       expect(await screen.findByText("Интеграл")).toBeInTheDocument();
     } finally {
       vi.useRealTimers();

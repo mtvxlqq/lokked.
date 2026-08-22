@@ -72,6 +72,29 @@ Two conventions worth knowing before adding code:
 - **Hash routing, not browser routing.** A release build serves the frontend
   over Tauri's asset protocol, which has no SPA fallback.
 
+## The streak
+
+A day counts towards the streak once it has enough study time on it — ten
+minutes by default, changed under **Settings → Серия**. The day boundary is
+the student's own, so a session that runs past midnight lands on the day it
+belonged to.
+
+The streak is never reset at midnight: a day that has only just begun is not
+a miss, it is a day that has not happened yet, so the number stays up until
+the day is actually over.
+
+**Freezes** are what a missed day costs instead of the whole streak. One is
+earned per ten days in a row, at most three in hand, and a missed day spends
+one automatically. A frozen day keeps the streak alive but does not lengthen
+it — eleven studied days across twelve calendar ones still reads as eleven.
+Once there is nothing left to spend, the streak ends and the freezes go with
+it.
+
+The page itself is at **Серия**: the current run, the record with the days it
+ran between, the freezes in hand, a calendar of the month and the milestones
+at 7, 30 and 100 days. «Поделиться серией» draws a 1080×1350 image in the
+black screen's own colours and saves it to the pictures directory.
+
 ## How cards are picked
 
 Cards are not shuffled evenly. Every card in a deck carries a weight computed

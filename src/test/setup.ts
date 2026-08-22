@@ -1,7 +1,14 @@
 import "@testing-library/jest-dom/vitest";
 
-import { cleanup } from "@testing-library/react";
+import { cleanup, configure } from "@testing-library/react";
 import { afterEach } from "vitest";
+
+// Ожиданию `findBy*` по умолчанию отводится секунда. Тестам с поддельными
+// таймерами (`shouldAdvanceTime`) её не хватает, когда файлы идут
+// параллельно и каждому воркеру достаётся доля ядра: секунда истекает
+// раньше, чем React успевает перерисоваться. Пять секунд ничего не
+// замедляют — ожидание всё равно заканчивается на первом совпадении.
+configure({ asyncUtilTimeout: 5000 });
 
 // React Testing Library does not auto-clean when `globals` is on in some
 // configurations; doing it explicitly keeps tests independent.

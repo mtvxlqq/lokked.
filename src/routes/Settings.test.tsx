@@ -7,6 +7,7 @@ import type {
   AdaptiveSettings,
   BlitzSettings,
   DaySettings,
+  StreakSettings,
   ZenSettings,
 } from "@/lib/tauri";
 
@@ -21,6 +22,7 @@ const defaults: ZenSettings = {
 const midnight: DaySettings = { start_offset_seconds: 0 };
 const twentySeconds: BlitzSettings = { seconds: 20 };
 const middleOfTheSlider: AdaptiveSettings = { aggressiveness: 50 };
+const tenMinutes: StreakSettings = { min_seconds: 600 };
 
 /** Настройки, которые бэкенд помнит между вызовами. */
 function backend(
@@ -29,6 +31,7 @@ function backend(
     storedDay?: DaySettings;
     storedBlitz?: BlitzSettings;
     storedAdaptive?: AdaptiveSettings;
+    storedStreak?: StreakSettings;
     saveFails?: boolean;
   } = {},
 ) {
@@ -36,6 +39,7 @@ function backend(
   let storedDay = options.storedDay ?? midnight;
   let storedBlitz = options.storedBlitz ?? twentySeconds;
   let storedAdaptive = options.storedAdaptive ?? middleOfTheSlider;
+  let storedStreak = options.storedStreak ?? tenMinutes;
 
   invoke.mockImplementation((command: string, args?: unknown) => {
     if (options.saveFails && command.startsWith("set_")) {
@@ -66,6 +70,13 @@ function backend(
         const { seconds } = args as { seconds: number };
         storedBlitz = { seconds };
         return Promise.resolve(storedBlitz);
+      }
+      case "streak_settings":
+        return Promise.resolve(storedStreak);
+      case "set_streak_settings": {
+        const { minSeconds } = args as { minSeconds: number };
+        storedStreak = { min_seconds: minSeconds };
+        return Promise.resolve(storedStreak);
       }
       case "adaptive_settings":
         return Promise.resolve(storedAdaptive);
@@ -257,6 +268,22 @@ describe("настройки", () => {
       "база недоступна",
     );
     expect(slider).toHaveValue("50");
+  });
+
+  it("сохраняет дневной минимум серии", async () => {
+    backend();
+    render(<Settings />);
+    const select = await screen.findByLabelText("Минимум за день");
+
+    expect(select).toHaveValue("600");
+    await userEvent.selectOptions(select, String(30 * 60));
+
+    await waitFor(() =>
+      expect(invoke).toHaveBeenCalledWith("set_streak_settings", {
+        minSeconds: 1800,
+      }),
+    );
+    expect(select).toHaveValue("1800");
   });
 
   it("сохраняет время карточки в блице", async () => {

@@ -6,8 +6,8 @@
 //! lives here, so it stays testable without a running Tauri app.
 //!
 //! Split by screen concern: [`subjects`], [`presets`], [`session`],
-//! [`today`], [`settings`], [`decks`], [`cards`], [`import`], [`study`] and
-//! [`stats`].
+//! [`today`], [`settings`], [`decks`], [`cards`], [`import`], [`study`],
+//! [`stats`] and [`streak`].
 //! Anything shared — the error type the frontend sees — lives here.
 
 use serde::Serialize;
@@ -30,6 +30,7 @@ pub mod presets;
 pub mod session;
 pub mod settings;
 pub mod stats;
+pub mod streak;
 pub mod study;
 pub mod subjects;
 pub mod today;

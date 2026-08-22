@@ -44,6 +44,7 @@ export * from "@/lib/tauri/desktop";
 export * from "@/lib/tauri/presets";
 export * from "@/lib/tauri/session";
 export * from "@/lib/tauri/settings";
+export * from "@/lib/tauri/streak";
 export * from "@/lib/tauri/stats";
 export * from "@/lib/tauri/study";
 export * from "@/lib/tauri/subjects";

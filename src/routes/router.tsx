@@ -3,6 +3,7 @@ import { createHashRouter, type RouteObject } from "react-router";
 import { AppShell } from "@/components/AppShell";
 import { DesktopEvents } from "@/components/DesktopEvents";
 import { Settings } from "@/routes/Settings";
+import { Streak } from "@/routes/Streak";
 import { Timer } from "@/routes/Timer";
 import { Timers } from "@/routes/Timers";
 import { Zen } from "@/routes/Zen";
@@ -67,6 +68,7 @@ export const router = createHashRouter([
               return { Component: Cards };
             },
           },
+          { path: "streak", element: <Streak /> },
           {
             // Тоже отдельным куском: на вкладке «Карточка» разбор рисуется
             // той же разметкой, что и на экране карточек, а значит тянет

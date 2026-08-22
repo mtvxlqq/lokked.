@@ -9,6 +9,7 @@
 //! built-in `core` crate instead.
 
 pub mod backup;
+pub mod base64;
 pub mod card;
 pub mod cli;
 pub mod clock;
