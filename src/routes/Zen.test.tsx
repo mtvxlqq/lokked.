@@ -56,6 +56,7 @@ function backend(
         return Promise.resolve({
           minutes_only: false,
           font_size: "normal",
+          dim_when_idle: true,
           ...options.settings,
         } satisfies ZenSettings);
       case "pause_session":
@@ -200,6 +201,23 @@ describe("чёрный экран", () => {
     await act(async () => {
       window.dispatchEvent(new MouseEvent("mousemove"));
     });
+    expect(digits.className).not.toContain("glow-timer-dim");
+  });
+
+  it("с выключенным затемнением экран не гаснет", async () => {
+    // Таймер в углу зрения читают, не касаясь мыши: кто выключил затемнение,
+    // тот именно этого и хотел.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    backend({ settings: { dim_when_idle: false } });
+    renderZen();
+
+    const digits = await screen.findByText("1:12:24");
+
+    await act(async () => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(digits.className).toContain("glow-timer");
     expect(digits.className).not.toContain("glow-timer-dim");
   });
 

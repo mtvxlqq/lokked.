@@ -21,6 +21,9 @@ pub const KEY_MINUTES_ONLY: &str = "zen.minutes_only";
 /// Size of the digits on the black screen. Stored as a [`ZenFontSize`] slug.
 pub const KEY_FONT_SIZE: &str = "zen.font_size";
 
+/// «Гасить экран без движения» on the black screen. Stored as `1` / `0`.
+pub const KEY_DIM_WHEN_IDLE: &str = "zen.dim_when_idle";
+
 /// Where the study day starts, as a number of seconds after local midnight.
 pub const KEY_DAY_START: &str = "day.start_offset_seconds";
 
@@ -94,12 +97,30 @@ impl ZenFontSize {
 }
 
 /// Everything the black screen reads out of the settings table.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ZenSettings {
     /// Show `1:07` instead of `1:07:24` — a ticking seconds digit is exactly
     /// the kind of movement the black screen exists to remove.
     pub minutes_only: bool,
     pub font_size: ZenFontSize,
+    /// Fade the digits after a few seconds without a movement. On by
+    /// default, because that is how the screen has always behaved — and off
+    /// for the student who keeps the timer in the corner of their eye and
+    /// wants to read it without touching anything.
+    pub dim_when_idle: bool,
+}
+
+/// Not `#[derive(Default)]`: dimming defaults to on, and a derive would
+/// quietly give it `false` — turning the black screen into a lamp for
+/// everyone who never opened the settings screen.
+impl Default for ZenSettings {
+    fn default() -> Self {
+        Self {
+            minutes_only: false,
+            font_size: ZenFontSize::default(),
+            dim_when_idle: true,
+        }
+    }
 }
 
 impl ZenSettings {
@@ -112,6 +133,13 @@ impl ZenSettings {
             match key {
                 KEY_MINUTES_ONLY => settings.minutes_only = value == "1",
                 KEY_FONT_SIZE => settings.font_size = ZenFontSize::parse(value).unwrap_or_default(),
+                KEY_DIM_WHEN_IDLE => {
+                    settings.dim_when_idle = match value {
+                        "1" => true,
+                        "0" => false,
+                        _ => Self::default().dim_when_idle,
+                    }
+                }
                 _ => {}
             }
         }
@@ -120,13 +148,17 @@ impl ZenSettings {
     }
 
     /// The rows to write for these settings.
-    pub fn to_pairs(&self) -> [(&'static str, String); 2] {
+    pub fn to_pairs(&self) -> [(&'static str, String); 3] {
         [
             (
                 KEY_MINUTES_ONLY,
                 if self.minutes_only { "1" } else { "0" }.to_string(),
             ),
             (KEY_FONT_SIZE, self.font_size.as_str().to_string()),
+            (
+                KEY_DIM_WHEN_IDLE,
+                if self.dim_when_idle { "1" } else { "0" }.to_string(),
+            ),
         ]
     }
 }

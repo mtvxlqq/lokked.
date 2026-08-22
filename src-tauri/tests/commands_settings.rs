@@ -7,7 +7,8 @@ use chrono::TimeDelta;
 use lokked_lib::commands::settings::{day_start, read_day, read_zen, write_day, write_zen};
 use lokked_lib::commands::ErrorKind;
 use lokked_lib::core::settings::{
-    DaySettings, ZenFontSize, ZenSettings, KEY_DAY_START, KEY_FONT_SIZE, KEY_MINUTES_ONLY,
+    DaySettings, ZenFontSize, ZenSettings, KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE,
+    KEY_MINUTES_ONLY,
 };
 use lokked_lib::db::settings::SettingsRepo;
 use lokked_lib::db::Database;
@@ -27,7 +28,7 @@ fn an_untouched_install_reports_the_defaults() {
 fn what_was_saved_is_what_is_read_back() {
     let db = new_db();
 
-    let saved = write_zen(&db, true, "large").unwrap();
+    let saved = write_zen(&db, true, "large", false).unwrap();
     let read = read_zen(&db).unwrap();
 
     assert_eq!(
@@ -35,6 +36,7 @@ fn what_was_saved_is_what_is_read_back() {
         ZenSettings {
             minutes_only: true,
             font_size: ZenFontSize::Large,
+            dim_when_idle: false,
         }
     );
     assert_eq!(read, saved);
@@ -44,11 +46,11 @@ fn what_was_saved_is_what_is_read_back() {
 fn saving_twice_replaces_the_stored_rows_instead_of_piling_them_up() {
     let db = new_db();
 
-    write_zen(&db, true, "small").unwrap();
-    write_zen(&db, false, "normal").unwrap();
+    write_zen(&db, true, "small", false).unwrap();
+    write_zen(&db, false, "normal", true).unwrap();
 
     assert_eq!(read_zen(&db).unwrap(), ZenSettings::default());
-    assert_eq!(SettingsRepo::new(&db).all().unwrap().len(), 2);
+    assert_eq!(SettingsRepo::new(&db).all().unwrap().len(), 3);
 }
 
 #[test]
@@ -58,17 +60,18 @@ fn the_stored_rows_use_the_documented_keys_and_values() {
     let db = new_db();
     let repo = SettingsRepo::new(&db);
 
-    write_zen(&db, true, "large").unwrap();
+    write_zen(&db, true, "large", false).unwrap();
 
     assert_eq!(repo.get(KEY_MINUTES_ONLY).unwrap().as_deref(), Some("1"));
     assert_eq!(repo.get(KEY_FONT_SIZE).unwrap().as_deref(), Some("large"));
+    assert_eq!(repo.get(KEY_DIM_WHEN_IDLE).unwrap().as_deref(), Some("0"));
 }
 
 #[test]
 fn an_unknown_font_size_is_rejected_and_nothing_is_written() {
     let db = new_db();
 
-    let error = write_zen(&db, true, "gigantic").unwrap_err();
+    let error = write_zen(&db, true, "gigantic", true).unwrap_err();
 
     assert_eq!(error.kind, ErrorKind::Validation);
     assert!(error.message.contains("gigantic"));
@@ -88,6 +91,7 @@ fn a_value_left_over_from_another_version_does_not_break_reading() {
         ZenSettings {
             minutes_only: true,
             font_size: ZenFontSize::Normal,
+            dim_when_idle: true,
         }
     );
 }
@@ -100,7 +104,7 @@ fn an_unknown_setting_is_left_alone_by_a_save() {
     let repo = SettingsRepo::new(&db);
     repo.set("day.start_offset_seconds", "14400").unwrap();
 
-    write_zen(&db, true, "large").unwrap();
+    write_zen(&db, true, "large", true).unwrap();
 
     assert_eq!(
         repo.get("day.start_offset_seconds").unwrap().as_deref(),
@@ -109,6 +113,18 @@ fn an_unknown_setting_is_left_alone_by_a_save() {
 }
 
 // --- граница учебного дня --------------------------------------------------
+
+#[test]
+fn dimming_stays_on_until_it_is_switched_off() {
+    // Апдейт не должен менять поведение экрана у того, кто ничего не трогал.
+    let db = new_db();
+
+    assert!(read_zen(&db).unwrap().dim_when_idle);
+
+    write_zen(&db, false, "normal", false).unwrap();
+
+    assert!(!read_zen(&db).unwrap().dim_when_idle);
+}
 
 #[test]
 fn the_study_day_starts_at_midnight_until_it_is_changed() {
@@ -148,7 +164,7 @@ fn a_boundary_outside_the_day_is_rejected_and_nothing_is_written() {
 fn the_two_groups_of_settings_do_not_overwrite_each_other() {
     let db = new_db();
 
-    write_zen(&db, true, "large").unwrap();
+    write_zen(&db, true, "large", false).unwrap();
     write_day(&db, 3 * 60 * 60).unwrap();
 
     assert_eq!(day_start(&db).unwrap(), TimeDelta::hours(3));
@@ -157,6 +173,7 @@ fn the_two_groups_of_settings_do_not_overwrite_each_other() {
         ZenSettings {
             minutes_only: true,
             font_size: ZenFontSize::Large,
+            dim_when_idle: false,
         }
     );
 }

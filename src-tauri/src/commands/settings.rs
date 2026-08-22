@@ -31,10 +31,12 @@ pub fn write_zen(
     db: &Database,
     minutes_only: bool,
     font_size: &str,
+    dim_when_idle: bool,
 ) -> Result<ZenSettings, CommandError> {
     let settings = ZenSettings {
         minutes_only,
         font_size: ZenFontSize::parse(font_size)?,
+        dim_when_idle,
     };
 
     let repo = SettingsRepo::new(db);
@@ -87,8 +89,9 @@ pub fn set_zen_settings(
     db: State<'_, Database>,
     minutes_only: bool,
     font_size: String,
+    dim_when_idle: bool,
 ) -> Result<ZenSettings, CommandError> {
-    write_zen(&db, minutes_only, &font_size)
+    write_zen(&db, minutes_only, &font_size, dim_when_idle)
 }
 
 /// How long a blitz card lasts, as it is stored.

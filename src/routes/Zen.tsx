@@ -24,6 +24,7 @@ const SWIPE_PX = 60;
 const DEFAULT_SETTINGS: ZenSettings = {
   minutes_only: false,
   font_size: "normal",
+  dim_when_idle: true,
 };
 
 /**
@@ -41,10 +42,19 @@ const DEFAULT_SETTINGS: ZenSettings = {
  */
 export function Zen() {
   const navigate = useNavigate();
-  const dimmed = useIdle();
 
   const [session, setSession] = useState<SessionSnapshot | null>(null);
   const [settings, setSettings] = useState<ZenSettings>(DEFAULT_SETTINGS);
+
+  /**
+   * Экран приглушён: прошло время без движения — и студент не выключил
+   * затемнение. Бездействие считается всегда, даже когда гасить нечего: это
+   * дешевле, чем подписываться и отписываться от событий вслед за настройкой,
+   * и не создаёт состояния, в котором настройку поменяли, а слушатели остались
+   * от прошлого выбора.
+   */
+  const idle = useIdle();
+  const dimmed = idle && settings.dim_when_idle;
 
   /** Откуда начался текущий свайп, чтобы отличить жест от касания. */
   const touchStartY = useRef<number | null>(null);

@@ -5,7 +5,8 @@
 use chrono::TimeDelta;
 use lokked_lib::core::settings::{
     blitz_record_key, BlitzSettings, DaySettings, SettingsError, ZenFontSize, ZenSettings,
-    DEFAULT_BLITZ_SECONDS, KEY_BLITZ_SECONDS, KEY_DAY_START, KEY_FONT_SIZE, KEY_MINUTES_ONLY,
+    DEFAULT_BLITZ_SECONDS, KEY_BLITZ_SECONDS, KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE,
+    KEY_MINUTES_ONLY,
 };
 
 #[test]
@@ -15,6 +16,28 @@ fn nothing_stored_yields_the_defaults() {
     assert_eq!(settings, ZenSettings::default());
     assert!(!settings.minutes_only);
     assert_eq!(settings.font_size, ZenFontSize::Normal);
+    // Гаснуть без движения — то, как чёрный экран вёл себя всегда: у тех, кто
+    // ничего не выбирал, поведение меняться не должно.
+    assert!(settings.dim_when_idle);
+}
+
+#[test]
+fn dimming_is_stored_as_one_or_zero() {
+    let on = ZenSettings::from_pairs([(KEY_DIM_WHEN_IDLE, "1")]);
+    let off = ZenSettings::from_pairs([(KEY_DIM_WHEN_IDLE, "0")]);
+
+    assert!(on.dim_when_idle);
+    assert!(!off.dim_when_idle);
+}
+
+#[test]
+fn an_unreadable_dimming_value_reads_as_the_default() {
+    // Дефолт у флага — «гасить», поэтому непонятное значение читается как
+    // «гасить», а не как «нет»: непрочитанная строка не должна тихо менять
+    // поведение экрана.
+    for stored in ["", "нет", "yes", "2"] {
+        assert!(ZenSettings::from_pairs([(KEY_DIM_WHEN_IDLE, stored)]).dim_when_idle);
+    }
 }
 
 #[test]
@@ -61,6 +84,7 @@ fn keys_from_elsewhere_in_the_table_are_ignored() {
 
     assert!(settings.minutes_only);
     assert_eq!(settings.font_size, ZenFontSize::Normal);
+    assert!(settings.dim_when_idle);
 }
 
 #[test]
@@ -68,6 +92,7 @@ fn settings_survive_a_round_trip_through_the_stored_pairs() {
     let settings = ZenSettings {
         minutes_only: true,
         font_size: ZenFontSize::Large,
+        dim_when_idle: false,
     };
 
     let stored = settings.to_pairs();

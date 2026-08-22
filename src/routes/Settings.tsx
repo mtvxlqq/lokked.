@@ -158,6 +158,11 @@ export function Settings() {
               checked={zen.minutes_only}
               onChange={(minutes_only) => saveZen({ ...zen, minutes_only })}
             />
+            <Switch
+              label="Гасить экран без движения"
+              checked={zen.dim_when_idle}
+              onChange={(dim_when_idle) => saveZen({ ...zen, dim_when_idle })}
+            />
             <Select
               label="Размер цифр"
               value={zen.font_size}

@@ -26,6 +26,8 @@ export type ZenSettings = {
   /** Показывать «1:12» вместо «1:12:24». */
   minutes_only: boolean;
   font_size: ZenFontSize;
+  /** Гасить цифры через несколько секунд без движения. */
+  dim_when_idle: boolean;
 };
 
 export function zenSettings(): Promise<ZenSettings> {
@@ -36,6 +38,7 @@ export function saveZenSettings(settings: ZenSettings): Promise<ZenSettings> {
   return invoke<ZenSettings>("set_zen_settings", {
     minutesOnly: settings.minutes_only,
     fontSize: settings.font_size,
+    dimWhenIdle: settings.dim_when_idle,
   });
 }
 

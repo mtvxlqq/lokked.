@@ -8,7 +8,11 @@ import type { BlitzSettings, DaySettings, ZenSettings } from "@/lib/tauri";
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
 
-const defaults: ZenSettings = { minutes_only: false, font_size: "normal" };
+const defaults: ZenSettings = {
+  minutes_only: false,
+  font_size: "normal",
+  dim_when_idle: true,
+};
 const midnight: DaySettings = { start_offset_seconds: 0 };
 const twentySeconds: BlitzSettings = { seconds: 20 };
 
@@ -34,11 +38,16 @@ function backend(
       case "zen_settings":
         return Promise.resolve(stored);
       case "set_zen_settings": {
-        const { minutesOnly, fontSize } = args as {
+        const { minutesOnly, fontSize, dimWhenIdle } = args as {
           minutesOnly: boolean;
           fontSize: ZenSettings["font_size"];
+          dimWhenIdle: boolean;
         };
-        stored = { minutes_only: minutesOnly, font_size: fontSize };
+        stored = {
+          minutes_only: minutesOnly,
+          font_size: fontSize,
+          dim_when_idle: dimWhenIdle,
+        };
         return Promise.resolve(stored);
       }
       case "day_settings":
@@ -67,7 +76,13 @@ beforeEach(() => {
 
 describe("настройки", () => {
   it("показывает сохранённые значения чёрного экрана", async () => {
-    backend({ stored: { minutes_only: true, font_size: "large" } });
+    backend({
+      stored: {
+        minutes_only: true,
+        font_size: "large",
+        dim_when_idle: false,
+      },
+    });
     render(<Settings />);
 
     const toggle = await screen.findByRole("switch", {
@@ -75,6 +90,9 @@ describe("настройки", () => {
     });
     expect(toggle).toHaveAttribute("aria-checked", "true");
     expect(screen.getByLabelText("Размер цифр")).toHaveValue("large");
+    expect(
+      screen.getByRole("switch", { name: "Гасить экран без движения" }),
+    ).toHaveAttribute("aria-checked", "false");
   });
 
   it("сохраняет переключатель «только минуты»", async () => {
@@ -90,6 +108,7 @@ describe("настройки", () => {
       expect(invoke).toHaveBeenCalledWith("set_zen_settings", {
         minutesOnly: true,
         fontSize: "normal",
+        dimWhenIdle: true,
       }),
     );
     expect(toggle).toHaveAttribute("aria-checked", "true");
@@ -106,9 +125,30 @@ describe("настройки", () => {
       expect(invoke).toHaveBeenCalledWith("set_zen_settings", {
         minutesOnly: false,
         fontSize: "small",
+        dimWhenIdle: true,
       }),
     );
     expect(select).toHaveValue("small");
+  });
+
+  it("сохраняет переключатель затемнения", async () => {
+    backend();
+    render(<Settings />);
+    const toggle = await screen.findByRole("switch", {
+      name: "Гасить экран без движения",
+    });
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+
+    await userEvent.click(toggle);
+
+    await waitFor(() =>
+      expect(invoke).toHaveBeenCalledWith("set_zen_settings", {
+        minutesOnly: false,
+        fontSize: "normal",
+        dimWhenIdle: false,
+      }),
+    );
+    expect(toggle).toHaveAttribute("aria-checked", "false");
   });
 
   it("если запись не удалась, возвращает переключатель как было", async () => {
