@@ -23,7 +23,14 @@ use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    // Горячие клавиши ставит платформа: на Windows приложение перехватывает
+    // их само, а на Wayland это делает пользователь через настройки системы,
+    // и приложению остаётся слушать только свою командную строку.
+    let builder = platform::shortcuts::install(tauri::Builder::default(), |app, command| {
+        desktop::handle_cli(app, &[String::new(), command.to_string()]);
+    });
+
+    builder
         // Only one Lokked at a time: a second launch is how the global
         // hotkey talks to the running app (`lokked --toggle`), so its argv
         // is handed over instead of a second window opening.

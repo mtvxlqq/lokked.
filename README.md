@@ -144,10 +144,24 @@ weight decides how early a card comes, not whether it comes at all.
 is a plain shuffle; all the way right is a sitting made almost entirely of
 what is not going well.
 
-## Global hotkeys on Wayland
+## Global hotkeys
 
-Wayland does not let an application grab a global shortcut for itself, so
-Lokked is driven from the outside: a second launch hands its arguments to the
+The same three actions everywhere, reached two different ways.
+
+**On Windows** the app registers them itself and they work while it is in the
+background:
+
+| Shortcut     | What it does                                 |
+| ------------ | -------------------------------------------- |
+| `Ctrl+Alt+P` | Pause a running session, resume a paused one |
+| `Ctrl+Alt+Z` | Open the black screen                        |
+| `Ctrl+Alt+S` | Stop the session and write it down           |
+
+`Super` is left alone on purpose: on Windows it belongs to the shell.
+
+**On Wayland** an application cannot grab a global shortcut for itself — a
+compositor refusing that is the security model, not a bug — so Lokked is
+driven from the outside instead: a second launch hands its arguments to the
 copy that is already running.
 
 | Command           | What it does                                 |
@@ -202,6 +216,43 @@ in current Fedora libraries and fails on every one of them. Skipping the
 strip costs a few megabytes in an image that is ~100 MB of GTK and WebKit
 anyway. That step also downloads `linuxdeploy` on first use, so it needs
 network access; `npm run tauri build -- --bundles rpm` skips it entirely.
+
+## Windows
+
+Everything the app needs is in the box: the timer, the cards and the
+statistics work the same, the database lands in
+`%APPDATA%\com.lokked.app\lokked.sqlite3` with its backups next to it, and
+the global hotkeys above are registered by the app itself.
+
+Two things are done through Win32 directly, declared in
+`src-tauri/src/platform/windows.rs` rather than pulled in as a binding crate:
+
+- **Staying awake** — `SetThreadExecutionState`. The flag belongs to the
+  thread that set it and lapses when that thread ends, so the call is made
+  from one long-lived thread of the app's own rather than from whichever
+  pool thread answered the command.
+- **Suspend and resume** — `PowerRegisterSuspendResumeNotification` in
+  callback mode. The app has no window procedure to hook `WM_POWERBROADCAST`
+  into, and the callback form needs none.
+
+To build the installers locally, on a Windows machine:
+
+```powershell
+npm ci
+npm run tauri build -- --bundles msi,nsis
+```
+
+They land in `src-tauri\target\release\bundle\`. Pushing a `v*` tag builds
+them on CI instead and attaches them to the GitHub release, along with the
+`.rpm` and `.deb`.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push: the frontend (lint, build,
+Vitest) and Rust on both Linux and Windows (`cargo fmt --check`, Clippy with
+`-D warnings`, `cargo test`). The Windows job earns its keep — the Win32
+backend above does not compile on a Linux machine at all, so CI is where it
+is checked.
 
 ## Troubleshooting
 

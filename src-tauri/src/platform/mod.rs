@@ -10,11 +10,11 @@
 //! no per-target implementation and because [`crate::core`] consumes it
 //! through its own [`crate::core::clock::Clock`] trait.
 //!
-//! All backend modules are declared unconditionally while they are still
-//! stubs, so `cargo clippy` and `cargo fmt` cover every one of them on every
-//! host. Once a backend pulls in OS-specific dependencies, gate its `mod`
-//! declaration with `#[cfg(target_os = "…")]` and gate the dependency itself
-//! with `[target.'cfg(…)'.dependencies]` in `Cargo.toml`.
+//! A backend that only compiles on its own OS is gated at its `mod`
+//! declaration — [`windows`] calls Win32 directly, so it exists only on
+//! Windows, and its dependencies are gated the same way in `Cargo.toml`.
+//! The stubs that are still portable stay declared unconditionally, so
+//! `cargo clippy` and `cargo fmt` cover them on every host.
 
 use std::error::Error;
 use std::fmt;
@@ -23,6 +23,8 @@ pub mod clock;
 pub mod linux;
 pub mod mobile;
 pub mod noop;
+pub mod shortcuts;
+#[cfg(target_os = "windows")]
 pub mod windows;
 
 /// Something the host OS refused or could not do.
