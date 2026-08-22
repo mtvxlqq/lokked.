@@ -21,13 +21,16 @@ use chrono::{DateTime, TimeDelta, Utc};
 use serde::Serialize;
 
 use crate::core::clock::Clock;
-use crate::core::scheduler::{shuffle, StudyMode};
+use crate::core::scheduler::StudyMode;
 use crate::core::stats::{blitz_score, review_summary, ReviewOutcome, ReviewSummary};
 
 use super::cards::CardView;
 use super::{CommandError, ErrorKind};
 
 pub mod actions;
+pub(crate) mod plan;
+
+use plan::Plan;
 
 /// One card in the queue, with the answer kept back until it is revealed.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -88,8 +91,16 @@ pub struct StudyRun {
     pub(crate) deck_id: String,
     pub(crate) deck_name: String,
     pub(crate) mode: StudyMode,
+    /// The cards in the order they were dealt, up to and including the one
+    /// on screen. A run that draws as it goes fills this in one card at a
+    /// time, so a card may appear in it more than once.
     pub(crate) queue: Vec<CardView>,
-    /// Index of the card on screen; equals `queue.len()` when the run is over.
+    /// How many cards the run deals in total.
+    pub(crate) total: usize,
+    /// Where the next card comes from, and what is known about the deck.
+    pub(crate) plan: Plan,
+    /// Index of the card on screen; equals [`total`](Self::total) when the
+    /// run is over.
     pub(crate) position: usize,
     pub(crate) shown_at: DateTime<Utc>,
     pub(crate) revealed_at: Option<DateTime<Utc>>,
@@ -159,7 +170,7 @@ pub(crate) fn card_view(card: &CardView, revealed: bool) -> StudyCardView {
 }
 
 pub(crate) fn view(run: &StudyRun) -> StudyView {
-    let finished = run.position >= run.queue.len();
+    let finished = run.position >= run.total;
     let revealed = run.revealed_at.is_some();
     let timed = run.mode.is_timed();
 
@@ -167,8 +178,8 @@ pub(crate) fn view(run: &StudyRun) -> StudyView {
         deck_id: run.deck_id.clone(),
         deck_name: run.deck_name.clone(),
         mode: run.mode.as_str().to_string(),
-        total: run.queue.len(),
-        position: (run.position + 1).min(run.queue.len()),
+        total: run.total,
+        position: (run.position + 1).min(run.total),
         answered: run.results.len(),
         revealed,
         card: run
@@ -183,36 +194,39 @@ pub(crate) fn view(run: &StudyRun) -> StudyView {
     }
 }
 
-/// Builds a run out of `cards`, in the order the mode calls for.
+/// Builds a run out of the cards a [`Plan`] holds.
 ///
-/// The whole deck goes in for a marathon; everything else takes a sitting's
-/// worth. «Слабые» arrives already ordered by how badly it is going, so it
-/// is not shuffled — the worst card should be the first one.
+/// The length is the mode's sitting, never more than the deck itself: the
+/// whole deck for a marathon, twenty cards for everything else. A run that
+/// draws as it goes starts with one card and asks the plan for the next one
+/// after every answer; a run whose order was settled up front simply follows
+/// it.
 pub(crate) fn begin(
     deck_id: &str,
     deck_name: &str,
     mode: StudyMode,
-    mut cards: Vec<CardView>,
+    mut plan: Plan,
     seconds_per_card: Option<i64>,
-    seed: u64,
     clock: &dyn Clock,
 ) -> Result<StudyRun, CommandError> {
-    if cards.is_empty() {
+    if plan.pool.is_empty() {
         return Err(conflict("в колоде нет карточек"));
     }
 
-    if mode != StudyMode::Weak {
-        shuffle(&mut cards, seed);
-    }
-    if let Some(limit) = mode.limit() {
-        cards.truncate(limit);
-    }
+    let total = mode.limit().unwrap_or(plan.pool.len()).min(plan.pool.len());
+    let queue = if plan.deals_as_it_goes() {
+        plan.deal().into_iter().collect()
+    } else {
+        plan.pool.iter().take(total).cloned().collect()
+    };
 
     Ok(StudyRun {
         deck_id: deck_id.to_string(),
         deck_name: deck_name.to_string(),
         mode,
-        queue: cards,
+        queue,
+        total,
+        plan,
         position: 0,
         shown_at: clock.now(),
         revealed_at: None,

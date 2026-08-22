@@ -8,7 +8,9 @@
 use chrono::TimeDelta;
 use tauri::State;
 
-use crate::core::settings::{BlitzSettings, DaySettings, ZenFontSize, ZenSettings};
+use crate::core::settings::{
+    AdaptiveSettings, BlitzSettings, DaySettings, ZenFontSize, ZenSettings,
+};
 use crate::db::settings::SettingsRepo;
 use crate::db::Database;
 
@@ -134,6 +136,50 @@ pub fn set_blitz_settings(
     seconds: i64,
 ) -> Result<BlitzSettings, CommandError> {
     write_blitz(&db, seconds)
+}
+
+/// How sharply the picker leans towards the weak cards, as it is stored.
+pub fn read_adaptive(db: &Database) -> Result<AdaptiveSettings, CommandError> {
+    let stored = SettingsRepo::new(db).all()?;
+
+    Ok(AdaptiveSettings::from_pairs(
+        stored
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str())),
+    ))
+}
+
+/// Validates and stores the lean towards the weak cards.
+pub fn write_adaptive(
+    db: &Database,
+    aggressiveness: i64,
+) -> Result<AdaptiveSettings, CommandError> {
+    let settings = AdaptiveSettings::new(aggressiveness)?;
+
+    let repo = SettingsRepo::new(db);
+    for (key, value) in settings.to_pairs() {
+        repo.set(key, &value)?;
+    }
+
+    Ok(settings)
+}
+
+/// The exponent [`crate::commands::study`] weighs a deck with.
+pub fn adaptive_exponent(db: &Database) -> Result<f64, CommandError> {
+    Ok(read_adaptive(db)?.exponent())
+}
+
+#[tauri::command]
+pub fn adaptive_settings(db: State<'_, Database>) -> Result<AdaptiveSettings, CommandError> {
+    read_adaptive(&db)
+}
+
+#[tauri::command]
+pub fn set_adaptive_settings(
+    db: State<'_, Database>,
+    aggressiveness: i64,
+) -> Result<AdaptiveSettings, CommandError> {
+    write_adaptive(&db, aggressiveness)
 }
 
 #[tauri::command]

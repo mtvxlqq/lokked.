@@ -1,8 +1,10 @@
 //! The `cards` table: two sides, an optional hint, and tags.
 //!
 //! The scheduling columns (`ease`, `interval_days`, `due_at`, `reps`,
-//! `lapses`) are left alone here. They are a cache computed from `reviews`
-//! and belong to the scheduler (M17), not to editing a card.
+//! `lapses`) are a cache of what the adaptive picker computed, not state of
+//! their own — see [`CardRepo::cache_weight`]. Editing a card leaves them
+//! alone, and losing them costs nothing: `reviews` is the source of truth and
+//! every weight can be recomputed from it.
 
 use chrono::{DateTime, Utc};
 use rusqlite::{params, OptionalExtension};
@@ -23,6 +25,17 @@ pub struct Card {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub deleted_at: Option<DateTime<Utc>>,
+}
+
+/// What the adaptive picker last computed for a card.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct WeightCache {
+    /// The weight itself, stored in `ease`.
+    pub weight: f64,
+    /// How many answers that weight was computed from.
+    pub reps: i64,
+    /// How many of those were «не помню».
+    pub lapses: i64,
 }
 
 /// A card on its way into the table.
@@ -185,6 +198,49 @@ impl<'a> CardRepo<'a> {
             params![id, deck_id, Utc::now()],
         )?;
         Ok(())
+    }
+
+    /// Writes down what the picker last computed for a card.
+    ///
+    /// `ease` holds the weight, `reps` the number of answers behind it and
+    /// `lapses` how many of those were «не помню». `interval_days` and
+    /// `due_at` stay `NULL` on purpose: this scheduler has no due dates —
+    /// every card stays in rotation and only its weight changes.
+    ///
+    /// `updated_at` is deliberately not touched. The cache is derived
+    /// locally and recomputed at will; bumping the column would make every
+    /// answered card look edited to the sync that column exists for.
+    pub fn cache_weight(&self, id: &str, cache: WeightCache) -> Result<(), DbError> {
+        self.db.connection().execute(
+            "UPDATE cards SET ease = ?2, reps = ?3, lapses = ?4
+             WHERE id = ?1 AND deleted_at IS NULL",
+            params![id, cache.weight, cache.reps, cache.lapses],
+        )?;
+        Ok(())
+    }
+
+    /// The cached weight of a card, or `None` if it has never been answered.
+    pub fn weight_cache(&self, id: &str) -> Result<Option<WeightCache>, DbError> {
+        self.db
+            .connection()
+            .query_row(
+                "SELECT ease, reps, lapses FROM cards WHERE id = ?1",
+                params![id],
+                |row| {
+                    let weight: Option<f64> = row.get(0)?;
+                    let reps: Option<i64> = row.get(1)?;
+                    let lapses: Option<i64> = row.get(2)?;
+
+                    Ok(weight.map(|weight| WeightCache {
+                        weight,
+                        reps: reps.unwrap_or(0),
+                        lapses: lapses.unwrap_or(0),
+                    }))
+                },
+            )
+            .optional()
+            .map(Option::flatten)
+            .map_err(DbError::from)
     }
 
     pub fn soft_delete(&self, id: &str) -> Result<(), DbError> {

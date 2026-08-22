@@ -9,5 +9,6 @@ export { EmptyState } from "@/components/ui/EmptyState";
 export { Input } from "@/components/ui/Input";
 export { Select } from "@/components/ui/Select";
 export { SegmentedControl } from "@/components/ui/SegmentedControl";
+export { Slider } from "@/components/ui/Slider";
 export { Switch } from "@/components/ui/Switch";
 export { Textarea } from "@/components/ui/Textarea";

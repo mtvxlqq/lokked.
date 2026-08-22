@@ -30,6 +30,9 @@ pub const KEY_DAY_START: &str = "day.start_offset_seconds";
 /// How long one card lasts in a blitz, in seconds.
 pub const KEY_BLITZ_SECONDS: &str = "blitz.seconds";
 
+/// How strongly the card picker leans towards the weak cards, in percent.
+pub const KEY_AGGRESSIVENESS: &str = "cards.aggressiveness";
+
 /// Why a setting from the UI was rejected.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SettingsError {
@@ -38,6 +41,8 @@ pub enum SettingsError {
     InvalidDayStart(i64),
     /// A blitz card was given an unusable amount of time.
     InvalidBlitzSeconds(i64),
+    /// The picker's aggressiveness was outside the slider.
+    InvalidAggressiveness(i64),
 }
 
 impl fmt::Display for SettingsError {
@@ -51,6 +56,10 @@ impl fmt::Display for SettingsError {
             Self::InvalidBlitzSeconds(seconds) => write!(
                 f,
                 "на карточку в блице нужно от {MIN_BLITZ_SECONDS} до {MAX_BLITZ_SECONDS} секунд, а не {seconds}"
+            ),
+            Self::InvalidAggressiveness(percent) => write!(
+                f,
+                "перекос в сторону слабых задаётся числом от 0 до 100, а не {percent}"
             ),
         }
     }
@@ -272,6 +281,73 @@ impl BlitzSettings {
 
     pub fn to_pairs(&self) -> [(&'static str, String); 1] {
         [(KEY_BLITZ_SECONDS, self.seconds.to_string())]
+    }
+}
+
+/// The strongest lean towards the weak cards the slider allows.
+///
+/// The value is an exponent the weights are raised to: `0` flattens them all
+/// to one — a plain shuffle — `1` uses them as computed, and `2` squares the
+/// gaps, so a card going badly comes up many times more often than one that
+/// is not. Above two a run turns into the same three cards over and over.
+pub const MAX_AGGRESSIVENESS_EXPONENT: f64 = 2.0;
+
+/// Where the slider sits by default: the weights as they are computed.
+pub const DEFAULT_AGGRESSIVENESS: i64 = 50;
+
+/// How strongly the card picker leans towards the cards going badly.
+///
+/// Stored as a percentage of [`MAX_AGGRESSIVENESS_EXPONENT`] rather than as
+/// the exponent itself: it is a slider on the settings screen, and a whole
+/// number survives being written to the table and read back without any
+/// question of formatting.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AdaptiveSettings {
+    pub aggressiveness: i64,
+}
+
+impl Default for AdaptiveSettings {
+    fn default() -> Self {
+        Self {
+            aggressiveness: DEFAULT_AGGRESSIVENESS,
+        }
+    }
+}
+
+impl AdaptiveSettings {
+    /// Validates a value from the settings screen.
+    pub fn new(aggressiveness: i64) -> Result<Self, SettingsError> {
+        if !(0..=100).contains(&aggressiveness) {
+            return Err(SettingsError::InvalidAggressiveness(aggressiveness));
+        }
+
+        Ok(Self { aggressiveness })
+    }
+
+    /// Reads the value out of the table, falling back to the default.
+    pub fn from_pairs<'a>(pairs: impl IntoIterator<Item = (&'a str, &'a str)>) -> Self {
+        let mut settings = Self::default();
+
+        for (key, value) in pairs {
+            if key == KEY_AGGRESSIVENESS {
+                settings = value
+                    .parse::<i64>()
+                    .ok()
+                    .and_then(|percent| Self::new(percent).ok())
+                    .unwrap_or_default();
+            }
+        }
+
+        settings
+    }
+
+    pub fn to_pairs(&self) -> [(&'static str, String); 1] {
+        [(KEY_AGGRESSIVENESS, self.aggressiveness.to_string())]
+    }
+
+    /// The exponent [`crate::core::scheduler::weights::weight`] takes.
+    pub fn exponent(&self) -> f64 {
+        MAX_AGGRESSIVENESS_EXPONENT * self.aggressiveness as f64 / 100.0
     }
 }
 

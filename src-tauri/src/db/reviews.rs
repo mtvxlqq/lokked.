@@ -195,6 +195,33 @@ impl<'a> ReviewRepo<'a> {
             .map_err(DbError::from)
     }
 
+    /// Every answer given in one deck since `since`, oldest first.
+    ///
+    /// `(card_id, reviewed_at, result)` — what the adaptive picker needs to
+    /// weigh a card. The rows come back flat rather than grouped: grouping
+    /// them into per-card histories is
+    /// [`crate::core::scheduler::weights`]'s job, and it stays out of SQL so
+    /// it can be tested without a database.
+    pub fn history_for_deck(
+        &self,
+        deck_id: &str,
+        since: DateTime<Utc>,
+    ) -> Result<Vec<(String, DateTime<Utc>, String)>, DbError> {
+        let conn = self.db.connection();
+        let mut stmt = conn.prepare(
+            "SELECT r.card_id, r.reviewed_at, r.result
+             FROM reviews r
+             JOIN cards c ON c.id = r.card_id
+             WHERE c.deck_id = ?1 AND c.deleted_at IS NULL AND r.reviewed_at >= ?2
+             ORDER BY r.reviewed_at",
+        )?;
+        let rows = stmt.query_map(params![deck_id, since], |row| {
+            Ok((row.get(0)?, row.get(1)?, row.get(2)?))
+        })?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()
+            .map_err(DbError::from)
+    }
+
     /// How each card of one deck has been going since `since`.
     ///
     /// Returns `(card_id, shown, correct)` for every card that was answered

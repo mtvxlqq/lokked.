@@ -4,9 +4,10 @@
 
 use chrono::TimeDelta;
 use lokked_lib::core::settings::{
-    blitz_record_key, BlitzSettings, DaySettings, SettingsError, ZenFontSize, ZenSettings,
-    DEFAULT_BLITZ_SECONDS, KEY_BLITZ_SECONDS, KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE,
-    KEY_MINUTES_ONLY,
+    blitz_record_key, AdaptiveSettings, BlitzSettings, DaySettings, SettingsError, ZenFontSize,
+    ZenSettings, DEFAULT_AGGRESSIVENESS, DEFAULT_BLITZ_SECONDS, KEY_AGGRESSIVENESS,
+    KEY_BLITZ_SECONDS, KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE, KEY_MINUTES_ONLY,
+    MAX_AGGRESSIVENESS_EXPONENT,
 };
 
 #[test]
@@ -220,4 +221,58 @@ fn an_unreadable_blitz_time_falls_back_to_the_default() {
 fn a_record_is_kept_under_a_key_of_its_deck() {
     assert_eq!(blitz_record_key("d-1"), "blitz.best.d-1");
     assert_ne!(blitz_record_key("d-1"), blitz_record_key("d-2"));
+}
+
+// --- перекос в сторону слабых ----------------------------------------------
+
+#[test]
+fn nothing_stored_leaves_the_slider_in_the_middle() {
+    let settings = AdaptiveSettings::from_pairs([]);
+
+    assert_eq!(settings.aggressiveness, DEFAULT_AGGRESSIVENESS);
+    // Середина ползунка — веса как они посчитаны, без растягивания.
+    assert!((settings.exponent() - 1.0).abs() < 1e-9);
+}
+
+#[test]
+fn the_ends_of_the_slider_mean_shuffle_and_full_lean() {
+    assert_eq!(AdaptiveSettings::new(0).unwrap().exponent(), 0.0);
+    assert_eq!(
+        AdaptiveSettings::new(100).unwrap().exponent(),
+        MAX_AGGRESSIVENESS_EXPONENT
+    );
+}
+
+#[test]
+fn a_slider_position_outside_the_slider_is_refused() {
+    assert_eq!(
+        AdaptiveSettings::new(-1),
+        Err(SettingsError::InvalidAggressiveness(-1))
+    );
+    assert!(AdaptiveSettings::new(101).is_err());
+    assert!(AdaptiveSettings::new(0).is_ok());
+    assert!(AdaptiveSettings::new(100).is_ok());
+}
+
+#[test]
+fn the_slider_survives_a_round_trip_through_the_table() {
+    let settings = AdaptiveSettings::new(80).unwrap();
+    let pairs = settings.to_pairs();
+
+    assert_eq!(pairs[0], (KEY_AGGRESSIVENESS, "80".to_string()));
+    assert_eq!(
+        AdaptiveSettings::from_pairs(pairs.iter().map(|(key, value)| (*key, value.as_str()))),
+        settings
+    );
+}
+
+#[test]
+fn an_unreadable_slider_position_falls_back_to_the_middle() {
+    for stored in ["", "сильнее", "-5", "200", "0.7"] {
+        assert_eq!(
+            AdaptiveSettings::from_pairs([(KEY_AGGRESSIVENESS, stored)]).aggressiveness,
+            DEFAULT_AGGRESSIVENESS,
+            "значение {stored} должно читаться как значение по умолчанию"
+        );
+    }
 }

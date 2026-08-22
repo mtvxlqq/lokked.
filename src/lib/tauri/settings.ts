@@ -56,3 +56,24 @@ export function blitzSettings(): Promise<BlitzSettings> {
 export function saveBlitzSettings(seconds: number): Promise<BlitzSettings> {
   return invoke<BlitzSettings>("set_blitz_settings", { seconds });
 }
+
+// ------------------------------------------------------- подбор карточек
+
+export type AdaptiveSettings = {
+  /**
+   * Насколько сильно подбор перекошен в сторону слабых карточек, 0–100.
+   * Ноль — обычное перемешивание, сотня — сильный перекос. Ни при каком
+   * значении карточка не выпадает из оборота совсем.
+   */
+  aggressiveness: number;
+};
+
+export function adaptiveSettings(): Promise<AdaptiveSettings> {
+  return invoke<AdaptiveSettings>("adaptive_settings");
+}
+
+export function saveAdaptiveSettings(
+  aggressiveness: number,
+): Promise<AdaptiveSettings> {
+  return invoke<AdaptiveSettings>("set_adaptive_settings", { aggressiveness });
+}

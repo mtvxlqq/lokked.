@@ -453,7 +453,7 @@ fn repeating_mistakes_deals_exactly_the_missed_cards() {
         .collect();
     missed.sort();
 
-    let mut view = study::repeat_mistakes(&env.state, &env.clock, 7).unwrap();
+    let mut view = study::repeat_mistakes(&env.state, &env.clock).unwrap();
     assert_eq!(view.total, 2);
     assert_eq!(view.answered, 0);
 
@@ -487,7 +487,7 @@ fn there_is_nothing_to_repeat_after_a_clean_run() {
     answer(&env, Grade::Easy);
 
     assert_eq!(
-        study::repeat_mistakes(&env.state, &env.clock, 7)
+        study::repeat_mistakes(&env.state, &env.clock)
             .unwrap_err()
             .kind,
         ErrorKind::Conflict
@@ -740,7 +740,7 @@ fn repeating_the_mistakes_of_a_blitz_is_still_a_blitz() {
     answer(&env, Grade::Again);
     answer(&env, Grade::Good);
 
-    let view = study::repeat_mistakes(&env.state, &env.clock, 3).unwrap();
+    let view = study::repeat_mistakes(&env.state, &env.clock).unwrap();
 
     assert_eq!(view.mode, "blitz");
     assert_eq!(view.total, 1);

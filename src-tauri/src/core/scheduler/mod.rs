@@ -1,9 +1,13 @@
 //! Choosing what to study and in which order.
 //!
-//! The four modes differ in exactly two things: how many cards they deal and
-//! which ones. Both live here as pure functions. The «when is this card due
-//! next» calculation (SM-2 / FSRS) lands here in M17, next to the same
-//! generator.
+//! The five modes differ in exactly two things: how many cards they deal and
+//! which ones. Both live here as pure functions.
+//!
+//! Which card comes next inside a run is not a plain shuffle: every card
+//! carries a weight computed from its own history ([`weights`]), and the next
+//! one is drawn in proportion to those weights ([`pick`]). Nothing is ever
+//! taken out of rotation — a card answered perfectly just comes round
+//! rarely.
 //!
 //! Randomness is seeded rather than taken from the system, so a run can be
 //! replayed exactly in a test. The generator is a few lines of arithmetic
@@ -13,6 +17,9 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
+
+pub mod pick;
+pub mod weights;
 
 /// How many cards a classic run deals: one sitting, not one deck.
 ///
@@ -162,6 +169,12 @@ impl Rng {
         z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
         z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
         z ^ (z >> 31)
+    }
+
+    /// A number in `[0, 1)`, drawn from the top 53 bits — the ones a `f64`
+    /// can hold without rounding.
+    pub fn next_f64(&mut self) -> f64 {
+        (self.next_u64() >> 11) as f64 / (1_u64 << 53) as f64
     }
 
     /// A number in `[0, bound)`, without the bias a plain `%` would add.

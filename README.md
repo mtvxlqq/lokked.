@@ -72,6 +72,32 @@ Two conventions worth knowing before adding code:
 - **Hash routing, not browser routing.** A release build serves the frontend
   over Tauri's asset protocol, which has no SPA fallback.
 
+## How cards are picked
+
+Cards are not shuffled evenly. Every card in a deck carries a weight computed
+from its own answers in `reviews` — recent accuracy (with the newest answers
+counting for more), how long it has been out of sight, what the last answer
+was, and how much history there is to judge by. The next card is drawn at
+random in proportion to those weights.
+
+Two rules hold whatever the weights say:
+
+- **Nothing leaves the rotation.** A card answered perfectly fifty times sinks
+  to a small weight and stays there. It comes round rarely; it never
+  disappears, the way a due-date queue would hide it.
+- **Nothing repeats immediately.** The last few cards dealt are held back from
+  the draw, so a heavy card cannot come up twice in a row.
+
+Because the draw is with replacement, a card may come round more than once
+inside one sitting — which is the point: answering «не помню» recomputes that
+card's weight straight away and usually brings it back within the next
+handful. A marathon is the exception: it runs the whole deck, so there the
+weight decides how early a card comes, not whether it comes at all.
+
+**Settings → Карточки** has a slider for how far this leans. All the way left
+is a plain shuffle; all the way right is a sitting made almost entirely of
+what is not going well.
+
 ## Global hotkeys on Wayland
 
 Wayland does not let an application grab a global shortcut for itself, so

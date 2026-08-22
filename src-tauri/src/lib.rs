@@ -72,6 +72,8 @@ pub fn run() {
             commands::settings::set_day_settings,
             commands::settings::blitz_settings,
             commands::settings::set_blitz_settings,
+            commands::settings::adaptive_settings,
+            commands::settings::set_adaptive_settings,
             commands::decks::list_decks,
             commands::decks::create_deck,
             commands::decks::update_deck,

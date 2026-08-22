@@ -4,11 +4,14 @@
 //! for staying out of each other's way.
 
 use chrono::TimeDelta;
-use lokked_lib::commands::settings::{day_start, read_day, read_zen, write_day, write_zen};
+use lokked_lib::commands::settings::{
+    adaptive_exponent, day_start, read_adaptive, read_day, read_zen, write_adaptive, write_day,
+    write_zen,
+};
 use lokked_lib::commands::ErrorKind;
 use lokked_lib::core::settings::{
-    DaySettings, ZenFontSize, ZenSettings, KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE,
-    KEY_MINUTES_ONLY,
+    DaySettings, ZenFontSize, ZenSettings, DEFAULT_AGGRESSIVENESS, KEY_AGGRESSIVENESS,
+    KEY_DAY_START, KEY_DIM_WHEN_IDLE, KEY_FONT_SIZE, KEY_MINUTES_ONLY,
 };
 use lokked_lib::db::settings::SettingsRepo;
 use lokked_lib::db::Database;
@@ -176,4 +179,42 @@ fn the_two_groups_of_settings_do_not_overwrite_each_other() {
             dim_when_idle: false,
         }
     );
+}
+
+#[test]
+fn an_untouched_install_picks_cards_by_the_weights_as_computed() {
+    let db = new_db();
+
+    assert_eq!(
+        read_adaptive(&db).unwrap().aggressiveness,
+        DEFAULT_AGGRESSIVENESS
+    );
+    assert!((adaptive_exponent(&db).unwrap() - 1.0).abs() < 1e-9);
+}
+
+#[test]
+fn moving_the_slider_is_stored_and_read_back() {
+    let db = new_db();
+
+    write_adaptive(&db, 0).unwrap();
+
+    assert_eq!(read_adaptive(&db).unwrap().aggressiveness, 0);
+    assert_eq!(adaptive_exponent(&db).unwrap(), 0.0);
+    assert_eq!(
+        SettingsRepo::new(&db)
+            .get(KEY_AGGRESSIVENESS)
+            .unwrap()
+            .as_deref(),
+        Some("0")
+    );
+}
+
+#[test]
+fn a_slider_position_the_screen_should_never_send_is_rejected() {
+    let db = new_db();
+
+    let error = write_adaptive(&db, 140).unwrap_err();
+
+    assert_eq!(error.kind, ErrorKind::Validation);
+    assert!(SettingsRepo::new(&db).all().unwrap().is_empty());
 }

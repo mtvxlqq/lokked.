@@ -1,14 +1,18 @@
 //! What can be done to a run: start it, turn a card over, grade it, and read
 //! what it added up to.
 
+use std::collections::HashMap;
+
 use chrono::{Local, TimeDelta};
 use tauri::State;
 
 use crate::core::clock::Clock;
 use crate::core::dayline::day_key;
 use crate::core::review::Grade;
+use crate::core::scheduler::weights::CardHistory;
 use crate::core::scheduler::{weakest, CardAccuracy, StudyMode, WEAK_LIMIT, WEAK_MIN_SHOWS};
 use crate::core::settings::blitz_record_key;
+use crate::db::cards::CardRepo;
 use crate::db::decks::DeckRepo;
 use crate::db::reviews::{NewReview, ReviewRepo};
 use crate::db::settings::SettingsRepo;
@@ -16,13 +20,36 @@ use crate::db::Database;
 use crate::platform::clock::SystemClock;
 
 use super::super::cards::CardView;
-use super::super::settings::{blitz_seconds, day_start};
+use super::super::settings::{adaptive_exponent, blitz_seconds, day_start};
 use super::super::CommandError;
+use super::plan::{histories_from_rows, order_by_weight, Plan};
 use super::{begin, conflict, no_run, summarise, view, StudyState, StudySummaryView, StudyView};
 
 /// How far back «слабые» looks. A month is long enough to have data and
 /// short enough that a card learnt since then is not still called weak.
 const WEAK_WINDOW_DAYS: i64 = 30;
+
+/// How far back the picker reads a deck's answers when weighing it.
+///
+/// Longer than «слабые» looks, because a weight is not a verdict: half a year
+/// of answers is enough for the window of recent ones to be full for every
+/// card that has ever been studied, and old enough rows change nothing —
+/// only the last [`crate::core::scheduler::weights::RECENT_ANSWERS`] of them
+/// count towards accuracy.
+const HISTORY_WINDOW_DAYS: i64 = 180;
+
+/// What `reviews` remembers about the cards of one deck.
+fn deck_histories(
+    db: &Database,
+    deck_id: &str,
+    clock: &dyn Clock,
+) -> Result<HashMap<String, CardHistory>, CommandError> {
+    let since = clock.now() - TimeDelta::days(HISTORY_WINDOW_DAYS);
+
+    Ok(histories_from_rows(
+        ReviewRepo::new(db).history_for_deck(deck_id, since)?,
+    ))
+}
 
 /// Picks the cards of a «слабые» run: worst accuracy first.
 fn weak_cards(
@@ -73,13 +100,24 @@ pub fn start(
         .ok_or_else(|| CommandError::not_found("колода"))?;
 
     let cards = super::super::cards::list(db, deck_id)?;
-    let cards = match mode {
-        StudyMode::Weak => weak_cards(db, deck_id, cards, clock)?,
-        _ => cards,
+    let histories = deck_histories(db, deck_id, clock)?;
+    let exponent = adaptive_exponent(db)?;
+    let now = clock.now();
+
+    // Порядок «слабых» задаёт их точность, марафон проходит колоду целиком —
+    // им остаётся решить, в каком порядке. Остальные режимы тянут карточку
+    // по одной, и вес пересчитывается после каждого ответа.
+    let plan = match mode {
+        StudyMode::Weak => Plan::fixed(weak_cards(db, deck_id, cards, clock)?, histories, exponent),
+        StudyMode::Marathon => {
+            let ordered = order_by_weight(cards, &histories, exponent, now, seed);
+            Plan::fixed(ordered, histories, exponent)
+        }
+        _ => Plan::adaptive(cards, histories, exponent, now, seed),
     };
     let seconds = mode.is_timed().then(|| blitz_seconds(db)).transpose()?;
 
-    let run = begin(deck_id, &deck.name, mode, cards, seconds, seed, clock)?;
+    let run = begin(deck_id, &deck.name, mode, plan, seconds, clock)?;
     let drawn = view(&run);
     *state.lock() = Some(run);
 
@@ -151,6 +189,13 @@ pub fn answer(
         device_id: None,
     })?;
 
+    // Вес карточки пересчитывается сразу: «не помню» должно вернуть её
+    // в пределах ближайших нескольких карточек, а не следующего захода.
+    let cache = run.plan.answered(&card.id, grade, now);
+    // Кэш производный — если его не удалось записать, ответ всё равно
+    // засчитан, а вес пересчитается из `reviews` в следующий раз.
+    let _ = CardRepo::new(db).cache_weight(&card.id, cache);
+
     run.results.push(crate::core::stats::ReviewOutcome {
         card_id: card.id,
         grade,
@@ -160,7 +205,16 @@ pub fn answer(
     run.shown_at = now;
     run.revealed_at = None;
 
-    if run.position >= run.queue.len() {
+    if run.position < run.total {
+        match run.plan.deal() {
+            Some(next) => run.queue.push(next),
+            // Тянуть больше неоткуда: прогон заканчивается на том, что уже
+            // показано, а не зависает на пустом экране.
+            None => run.total = run.queue.len(),
+        }
+    }
+
+    if run.position >= run.total {
         keep_record(db, run)?;
     }
 
@@ -214,11 +268,7 @@ pub fn summary(db: &Database, state: &StudyState) -> Result<StudySummaryView, Co
 }
 
 /// Starts a new run over just the cards missed in the one that finished.
-pub fn repeat_mistakes(
-    state: &StudyState,
-    clock: &dyn Clock,
-    seed: u64,
-) -> Result<StudyView, CommandError> {
+pub fn repeat_mistakes(state: &StudyState, clock: &dyn Clock) -> Result<StudyView, CommandError> {
     let mut active = state.lock();
     let run = active.as_ref().ok_or_else(no_run)?;
 
@@ -234,13 +284,14 @@ pub fn repeat_mistakes(
     }
 
     // Повтор идёт в том же режиме: блиц остаётся блицем, со своим временем.
+    // Порядок при этом фиксирован — это разбор конкретных ошибок, а не ещё
+    // один заход по колоде.
     let next = begin(
         &run.deck_id,
         &run.deck_name,
         run.mode,
-        cards,
+        run.plan.repeat(cards),
         run.seconds_per_card,
-        seed,
         clock,
     )?;
     let drawn = view(&next);
@@ -315,7 +366,7 @@ pub fn study_summary(
 
 #[tauri::command]
 pub fn study_repeat_mistakes(state: State<'_, StudyState>) -> Result<StudyView, CommandError> {
-    repeat_mistakes(&state, &SystemClock, seed_from(&SystemClock))
+    repeat_mistakes(&state, &SystemClock)
 }
 
 #[tauri::command]

@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 
 import { Screen } from "@/components/Screen";
-import { Card, Select, Switch } from "@/components/ui";
+import { Card, Select, Slider, Switch } from "@/components/ui";
 import {
+  adaptiveSettings,
   blitzSettings,
   daySettings,
   errorMessage,
+  saveAdaptiveSettings,
   saveBlitzSettings,
   saveDaySettings,
   saveZenSettings,
   zenSettings,
+  type AdaptiveSettings,
   type BlitzSettings,
   type DaySettings,
   type ZenFontSize,
@@ -24,6 +27,18 @@ const FONT_SIZES: { value: ZenFontSize; label: string }[] = [
 
 /** Сколько секунд даётся на карточку в блице. */
 const BLITZ_SECONDS = [10, 15, 20, 30, 45, 60];
+
+/**
+ * Словами — то, что ползунок делает с подбором. Проценты сами по себе ничего
+ * не говорят: важно, «поровну» или «в основном слабые».
+ */
+function leanLabel(aggressiveness: number): string {
+  if (aggressiveness <= 10) return "Поровну";
+  if (aggressiveness <= 35) return "Слегка";
+  if (aggressiveness <= 65) return "Заметно";
+  if (aggressiveness <= 90) return "Сильно";
+  return "Только слабые";
+}
 
 /** Начало учебного дня выбирается по часам: минуты здесь ничего не решают. */
 const DAY_START_HOURS = Array.from({ length: 24 }, (_, hour) => ({
@@ -41,17 +56,24 @@ export function Settings() {
   const [zen, setZen] = useState<ZenSettings | null>(null);
   const [day, setDay] = useState<DaySettings | null>(null);
   const [blitz, setBlitz] = useState<BlitzSettings | null>(null);
+  const [adaptive, setAdaptive] = useState<AdaptiveSettings | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    Promise.all([zenSettings(), daySettings(), blitzSettings()])
-      .then(([loadedZen, loadedDay, loadedBlitz]) => {
+    Promise.all([
+      zenSettings(),
+      daySettings(),
+      blitzSettings(),
+      adaptiveSettings(),
+    ])
+      .then(([loadedZen, loadedDay, loadedBlitz, loadedAdaptive]) => {
         if (cancelled) return;
         setZen(loadedZen);
         setDay(loadedDay);
         setBlitz(loadedBlitz);
+        setAdaptive(loadedAdaptive);
       })
       .catch((failure: unknown) => {
         if (!cancelled) setError(errorMessage(failure));
@@ -106,6 +128,19 @@ export function Settings() {
       });
   }
 
+  function saveAdaptive(aggressiveness: number) {
+    const previous = adaptive;
+    setAdaptive({ aggressiveness });
+    setError(null);
+
+    saveAdaptiveSettings(aggressiveness)
+      .then(setAdaptive)
+      .catch((failure: unknown) => {
+        setError(errorMessage(failure));
+        setAdaptive(previous);
+      });
+  }
+
   return (
     <Screen title="Настройки">
       <Card title="Учебный день">
@@ -143,6 +178,25 @@ export function Settings() {
               </option>
             ))}
           </Select>
+        ) : (
+          <p className="text-14 text-text-dim">
+            {error ? "Настройки не прочитались" : "Загрузка…"}
+          </p>
+        )}
+      </Card>
+
+      <Card title="Карточки">
+        {adaptive ? (
+          <Slider
+            label="Перекос в сторону слабых"
+            hint="Внутри любого режима слабые карточки выпадают чаще, а знакомые реже — но из оборота не выходит ни одна. Слева — обычное перемешивание, справа — заход почти целиком из того, что не даётся."
+            min={0}
+            max={100}
+            step={5}
+            value={adaptive.aggressiveness}
+            valueLabel={leanLabel(adaptive.aggressiveness)}
+            onChange={(event) => saveAdaptive(Number(event.target.value))}
+          />
         ) : (
           <p className="text-14 text-text-dim">
             {error ? "Настройки не прочитались" : "Загрузка…"}

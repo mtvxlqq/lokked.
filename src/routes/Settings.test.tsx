@@ -1,9 +1,14 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Settings } from "@/routes/Settings";
-import type { BlitzSettings, DaySettings, ZenSettings } from "@/lib/tauri";
+import type {
+  AdaptiveSettings,
+  BlitzSettings,
+  DaySettings,
+  ZenSettings,
+} from "@/lib/tauri";
 
 const invoke = vi.hoisted(() => vi.fn());
 vi.mock("@tauri-apps/api/core", () => ({ invoke }));
@@ -15,6 +20,7 @@ const defaults: ZenSettings = {
 };
 const midnight: DaySettings = { start_offset_seconds: 0 };
 const twentySeconds: BlitzSettings = { seconds: 20 };
+const middleOfTheSlider: AdaptiveSettings = { aggressiveness: 50 };
 
 /** Настройки, которые бэкенд помнит между вызовами. */
 function backend(
@@ -22,12 +28,14 @@ function backend(
     stored?: ZenSettings;
     storedDay?: DaySettings;
     storedBlitz?: BlitzSettings;
+    storedAdaptive?: AdaptiveSettings;
     saveFails?: boolean;
   } = {},
 ) {
   let stored = options.stored ?? defaults;
   let storedDay = options.storedDay ?? midnight;
   let storedBlitz = options.storedBlitz ?? twentySeconds;
+  let storedAdaptive = options.storedAdaptive ?? middleOfTheSlider;
 
   invoke.mockImplementation((command: string, args?: unknown) => {
     if (options.saveFails && command.startsWith("set_")) {
@@ -58,6 +66,13 @@ function backend(
         const { seconds } = args as { seconds: number };
         storedBlitz = { seconds };
         return Promise.resolve(storedBlitz);
+      }
+      case "adaptive_settings":
+        return Promise.resolve(storedAdaptive);
+      case "set_adaptive_settings": {
+        const { aggressiveness } = args as { aggressiveness: number };
+        storedAdaptive = { aggressiveness };
+        return Promise.resolve(storedAdaptive);
       }
       case "set_day_settings": {
         const { startOffsetSeconds } = args as { startOffsetSeconds: number };
@@ -204,6 +219,44 @@ describe("настройки", () => {
       "база недоступна",
     );
     expect(select).toHaveValue(String(4 * 60 * 60));
+  });
+
+  it("показывает перекос подбора словами, а не процентами", async () => {
+    backend({ storedAdaptive: { aggressiveness: 100 } });
+    render(<Settings />);
+
+    const slider = await screen.findByLabelText("Перекос в сторону слабых");
+    expect(slider).toHaveValue("100");
+    expect(screen.getByText("Только слабые")).toBeInTheDocument();
+  });
+
+  it("сохраняет сдвинутый перекос подбора", async () => {
+    backend();
+    render(<Settings />);
+    const slider = await screen.findByLabelText("Перекос в сторону слабых");
+
+    fireEvent.change(slider, { target: { value: "0" } });
+
+    await waitFor(() =>
+      expect(invoke).toHaveBeenCalledWith("set_adaptive_settings", {
+        aggressiveness: 0,
+      }),
+    );
+    expect(slider).toHaveValue("0");
+    expect(screen.getByText("Поровну")).toBeInTheDocument();
+  });
+
+  it("возвращает ползунок на место, если сохранить не удалось", async () => {
+    backend({ storedAdaptive: { aggressiveness: 50 }, saveFails: true });
+    render(<Settings />);
+    const slider = await screen.findByLabelText("Перекос в сторону слабых");
+
+    fireEvent.change(slider, { target: { value: "85" } });
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "база недоступна",
+    );
+    expect(slider).toHaveValue("50");
   });
 
   it("сохраняет время карточки в блице", async () => {
